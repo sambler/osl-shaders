@@ -1,0 +1,19 @@
+/*
+    light vector shader by Michel Anders (c)2012
+    http://blenderthings.blogspot.co.uk/2012/11/getting-light-vector-in-osl-for-blender.html
+*/
+
+/* not working as expected - request for lamp appears to be failing */
+
+#include "stdosl.h"
+
+shader lightvec(
+output color Color = 1)
+{
+    vector L;
+    getattribute("Lamp","object:location",L);
+    P=transform("object","world",P);
+    float cost=abs(dot(normalize(L-P),N));
+    Color = color(cost,1-cost,.2);
+}
+
