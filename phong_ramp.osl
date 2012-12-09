@@ -1,0 +1,20 @@
+/*
+    phong ramp texture by Thomas Dinges (c)2012
+    http://www.openshading.com/osl/example-shaders/
+*/
+
+#include <stdosl.h>
+
+shader node_phong_ramp_bsdf(
+    float Exponent = 2.0,
+    normal Normal = N,
+    output closure color BSDF = 0)
+{
+    color Color[8];
+    
+    for(int i = 0; i < 8; i++)
+        Color[i] = transformc("hsv", "rgb", color(i/7.0, 1.0, 1.0));
+    
+    BSDF = phong_ramp(N, Exponent, Color);
+}
+
