@@ -1,0 +1,14 @@
+
+This is a collection of osl shaders that I have found.
+
+For each shader you should find a script file, a small rendered preview file and a sample noodle file showing the node setup used for the preview render. The preview renders were generated using bmps.blend which is available from blenders svn repository at https://svn.blender.org/svnroot/bf-blender/trunk/lib/tests/rendering/cycles/blend_files/bmps.blend a copy is not included here due to size considerations.
+
+This collection is intended for use with a version of blender that has been compiled with osl shading enabled. OSL was introduced into blender svn around November 2012 to be included in the 2.65 release. There is a good chance that these can also be adapted with minimum effort to other render engines that support OSL shaders.
+
+
+Most shaders here can be found elsewhere on the web, I am just collecting them here and providing some conversion to be used in blender if needed.
+
+DISCLAIMER:
+While I try and find relevant licensing info and keep it with each shader I cannot guarantee that you are totally free to use these shaders the way you plan. It is up to you to make sure you use these within any legal bounds.
+
+
