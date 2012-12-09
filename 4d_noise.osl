@@ -1,0 +1,19 @@
+/*
+    4D noise texture by Thomas Dinges (c)2012
+    http://www.openshading.com/osl/example-shaders/
+*/
+
+#include <stdosl.h>
+
+shader node_4D_noise(
+    float Time = 1.0,
+    output color Perlin = (0.8),
+    output color UPerlin = (0.8))
+{   
+    /* Perlin*/
+    Perlin= noise("perlin", P, Time);
+   
+    /* UPerlin */
+    UPerlin= noise("uperlin", P, Time);
+}
+
