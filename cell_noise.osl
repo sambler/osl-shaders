@@ -1,0 +1,17 @@
+/*
+    cell noise texture by Thomas Dinges (c)2012
+    http://www.openshading.com/osl/example-shaders/
+*/
+
+#include <stdosl.h>
+
+shader node_cellnoise(
+    float Saturation = 0.5,
+    float Value = 1.0,
+    point Vector = P,
+    output color Color = (0.0))
+{
+    float Fac = (noise("cell", Vector));
+    Color = color("hsv", (smoothstep(0, 1, Fac)), Saturation, Value);
+}
+
