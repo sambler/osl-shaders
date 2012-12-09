@@ -1,0 +1,16 @@
+/*
+    toon shader by Michel Anders (c)2012
+    http://blenderthings.blogspot.co.uk/2012/11/a-toon-osl-shader-for-blender.html
+*/
+
+#include "stdosl.h"
+
+shader toon(
+    color Color = 1,
+    float Angle = 50,
+    output color Col = 0)
+{
+    float angle = cos(radians(Angle));
+    if(abs(dot(-I,N)) > angle) Col = Color;
+}
+
