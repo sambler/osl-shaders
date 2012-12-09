@@ -1,0 +1,108 @@
+/*
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ */
+ 
+ /* Simple Ambient Occlusion
+  * 
+  * by François GASTALDO
+  *
+  * contact me at : pressf9@free.fr
+  *
+  * blog (3D, shaders, photos and more) : http://vadrouillegraphique.blogspot.fr/
+  *
+  * Small Documentation :
+	This shader is a general purpose Ambient Occlusion
+	
+	You can use it for color or for closure, or for both at same time.
+	
+	if you connect use just the ' ColorIn ' or just the ' closureIn ' inputs
+	and connect nothing to 'ColorHit' or 'closureHit'. then Occlusion will be black.
+	
+	AO Angle is in RADIANS,  1.0 = 180° AO search 
+  
+	Maxdistance limit distance of occluding objects.
+  
+  * This shader is made for educationnal purpose only. Use it in production at your own risk.
+  *
+  * Closures are for Blender/Cycles. They could need adaptation for your renderer.
+  *
+  * If you use this shader, please credit it and me. Thank you.
+  *
+  *  Enjoy !
+  *
+  * François Gastaldo
+  */
+ 
+#include "stdosl.h"
+#include "node_fresnel.h"
+#include "oslutil.h"
+
+shader GAO(
+    color ColorIn = color(1.0,1.0,1.0),
+    color ColorHit = color(0.0 , 0.0 , 0.0 ),
+    closure color closureIn = color(1.0,1.0,1.0) * emission() ,
+    closure color closureHit = 0.0 ,
+    float AO_Angle = 0.95 ,
+    float maxDistance = 25.0 ,
+    vector Normalbump = vector (0.0 , 0.0 , 0.0),
+    output color CoulOut = color(1.0,0.0,0.0) ,
+    output closure color closureOut = closureIn)
+{
+    // Disable diffuse emission from this material
+    
+    int RTdiffuse = raytype ("diffuse");
+    
+    if (  RTdiffuse ) {
+        //closure color NullClosure = 0.0;
+        CoulOut =ColorIn;
+        closureOut =   closureIn  ;
+
+        // If you want to make AO without indirect illumination, activate this line.
+        //closureOut =   NullClosure;
+    } else {
+        // compute  vector to trace Ray = random * N
+        vector bruitvector = vector ( 0.0 , 0.0 , 0.0 );
+        vector VectorAO =  N  + Normalbump + (0.001 * noise("perlin", P*10000.0 ));
+
+        if ( AO_Angle != 0.0 ){
+            bruitvector = AO_Angle * ( 1.0- 2.0 * noise("cell", VectorAO*10000.0 ) );
+            VectorAO +=  bruitvector;
+        }
+
+        // Trace Ray  for AO
+        float Dist = 1.0;
+        float mixage = 1.0;
+        vector DirTrace = normalize(VectorAO);
+        
+        int DoTrace = trace (P, DirTrace, "maxdist" , maxDistance );
+
+        if ( DoTrace) {
+            // If hit something
+            int HitTrace = getmessage ("trace", "hitdist" ,  Dist );
+
+            mixage = clamp ( (Dist / maxDistance) , 0.0 , 1.0 );
+
+            // make a gradient between the 2 colors to have smoother (and better quality) AO.
+            CoulOut = mix  ( ColorHit , ColorIn , mixage );
+            closureOut = (closureIn * mixage)  + closureHit * (1.0 - mixage );
+           
+        } else {
+            // else, return black
+            CoulOut = ColorIn;
+            closureOut = closureIn;
+        }
+    }
+}
+
