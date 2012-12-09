@@ -1,0 +1,81 @@
+/*
+    interior shader by fbbdev (c)2012
+    http://fbbdev.wordpress.com/2012/10/12/cycles-osl-interior-shader/
+    
+    an easy way to render random interior room textures for a tall building
+    see above page for node setup to make use of this.
+*/
+
+#include <stdosl.h>
+
+/* These constants are used to access
+   vector, normal and point components */
+#define X 0
+#define Y 1
+#define Z 2
+
+shader interior_mapping(
+  vector RoomCount = vector(5, 5, 5),
+  float AtlasRows = 1.0,
+  float Emission = 0.0,
+  float LightsOn = 0.0,
+  output vector TexCoords = vector(0, 0, 0),
+  output normal WallNormal = N,
+  output float EmissionFactor = 0.0)
+{
+    vector roomSize = vector(1/max(RoomCount[X], 1), 1/max(RoomCount[Y], 1), 1/max(RoomCount[Z], 1));
+
+    point localP = transform("object", P);
+    vector localI = transform("object", -I);
+
+    vector nextWall = step(vector(0, 0, 0), localI);
+    vector walls = (floor(localP/roomSize)+nextWall)*roomSize;
+    vector signs = nextWall*2-1;
+
+    point roomID = floor(localP/roomSize);
+    roomID -= step(RoomCount, roomID);
+    float c = clamp(LightsOn, 0.0, 1.0);
+    int emit = cellnoise(roomID) < c;
+
+    vector wall_on_surface = vector(
+    walls[X] == localP[X],
+    walls[Y] == localP[Y],
+    walls[Z] == localP[Z]);
+    walls += roomSize*signs*wall_on_surface;
+
+    vector sf = (walls-localP)/localI;
+    point intersectionXY = sf[Z]*localI+localP;
+    point intersectionXZ = sf[Y]*localI+localP;
+    point intersectionYZ = sf[X]*localI+localP;
+
+    float xVSz = step(sf[X], sf[Z]);
+    float sf_xVSz = mix(sf[Z], sf[X], xVSz);
+    point intersection = mix(intersectionXY, intersectionYZ, xVSz);
+    intersection = mix(intersectionXZ, intersection, step(sf_xVSz, sf[Y]));
+
+    TexCoords = (intersection-(roomID*roomSize))/roomSize;
+    if (!step(sf_xVSz, sf[Y])) {
+        TexCoords[Y] = TexCoords[Z];
+        TexCoords[X] = mod(TexCoords[X]+1+nextWall[Y]*(1-wall_on_surface[Z])*2+floor(cellnoise(roomID)*6), 4.0);
+    } else if (xVSz == 1) {
+        TexCoords[X] = TexCoords[Y];
+        TexCoords[Y] = TexCoords[Z];
+        TexCoords[X] = mod(TexCoords[X]+nextWall[X]*(1-wall_on_surface[Z])*2+floor(cellnoise(roomID)*6), 4.0);
+    } else {
+        TexCoords[X] += 4 + nextWall[Z]*(1-wall_on_surface[Z]);
+    }
+    
+    TexCoords[Z] = 0;
+    TexCoords[Y] += mod(floor(cellnoise(roomID)*6), AtlasRows);
+    TexCoords /= vector(6, AtlasRows, 1);
+    
+    normal normalXY = transform("object", "common", normal(0, 0, 1)*(-signs));
+    normal normalXZ = transform("object", "common", normal(0, 1, 0)*(-signs));
+    normal normalYZ = transform("object", "common", normal(1, 0, 0)*(-signs));
+    
+    WallNormal = mix(normalXY, normalYZ, xVSz);
+    WallNormal = mix(normalXZ, WallNormal, step(sf_xVSz, sf[Y]));
+    
+    EmissionFactor = emit*Emission;
+}
+

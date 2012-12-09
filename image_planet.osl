@@ -1,0 +1,85 @@
+/*
+    image planet texture by fbbdev (c)2012
+    http://fbbdev.wordpress.com/2012/09/15/cycles-osl/
+    
+    shader is to easily merge together a day and night surface, with cloud
+    and specular mask and atmosphere colour.
+    The barrier between night and day textures is based off the sun position.
+    
+    Planet textures from this solar system are available at 
+    http://www.celestiamotherlode.net/
+    
+    Other images can also be found at http://pds.jpl.nasa.gov/planets/
+*/
+
+#include "stdosl.h"
+
+float factor_map(float factor, float boundary, float dmargin, float nmargin) {
+    float result = 0.0;
+    if (boundary == 0) return 0;
+    if (boundary == 1) return 1;
+    if (factor <= boundary)
+        result = factor/boundary*0.5;
+    else
+        result = (factor-boundary)/(1.0-boundary)*0.5+0.5;
+    
+    return smoothstep(nmargin, 1.0-dmargin, result);
+}
+
+float color_average(color c) {
+    return (c[0]+c[1]+c[2])/3.0;
+}
+
+closure color closure_mix(closure color Closure1, closure color Closure2, float factor) {
+  return (1.0-factor)*Closure1+factor*Closure2;
+}
+
+/*
+color fresnel_mix(color Color1, color Color2, float eta) {
+  float Kr, Kt;
+  fresnel(I, N, eta, Kr, Kt);
+  return Kr*Color2+Kt*Color1;
+}
+*/
+
+closure color fresnel_closure_mix(closure color Closure1, closure color Closure2, float eta) {
+  float Kr, Kt;
+  fresnel(I, N, eta, Kr, Kt);
+  return Kr*Closure2+Kt*Closure1;
+}
+
+color cloud_mix(color Surface, color Clouds) {
+  return (1.0-color_average(Clouds))*Surface+Clouds;
+}
+
+closure color cloud_closure_mix(closure color Closure1, closure color Closure2, color Clouds) {
+  return (1.0-color_average(Clouds))*Closure1+color_average(Clouds)*Closure2;
+}
+
+shader planet(
+    vector SunPosition = vector(0, 0, 0),
+    color Day = color(0.8, 0.8, 0.8),
+    color Night = color(0.1, 0.1, 0.1),
+    color CloudLayer = color(0, 0, 0),
+    color SpecularMask = color(1, 1, 1),
+    color Atmosphere = color(0, 1, 1),
+    float AtmosphereFresnel = 1.0,
+    float DayMultiplier = 1.0,
+    float NightEmission = 0.3,
+    float Boundary = 0.5,
+    float DayMargin = 0.2,
+    float NightMargin = 0.2,
+    output closure color BSDF = background())
+{
+    float b = clamp(Boundary, 0, 1);
+    float dm = clamp(DayMargin, 0, 0.5);
+    float nm = clamp(NightMargin, 0, 0.5);
+    float factor = factor_map((dot(N, normalize(LightPosition-P))+1)/2, b, dm, nm);
+    float atmosphere;
+
+    BSDF = closure_mix(cloud_closure_mix(NightEmission*Night*emission(), color(0, 0, 0)*diffuse(N), CloudLayer),
+               fresnel_closure_mix(DayMultiplier*cloud_mix(Day, CloudLayer)*diffuse(N), DayMultiplier*Atmosphere*emission(), AtmosphereFresnel) +
+               Day*(1.0-SpecularMask)*phong(N, 10),
+               factor);
+}
+

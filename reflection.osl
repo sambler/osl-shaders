@@ -1,0 +1,16 @@
+/*
+    reflection texture by fbbdev (c)2012
+    part of interior shader
+    http://fbbdev.wordpress.com/2012/10/12/cycles-osl-interior-shader/
+*/
+
+#include <stdosl.h>
+
+shader pure_reflection(
+            color Color = color(0.8, 0.8, 0.8),
+            float Factor = 1.0,
+            output closure color BSDF = reflection(N))
+{
+    BSDF = Factor*Color*reflection(N);
+}
+
