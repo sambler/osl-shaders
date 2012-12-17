@@ -1,0 +1,65 @@
+/*
+ * MRmand.sl -- Mandelbrot texture
+ * MRmandelbrot.osl
+ *
+ * DESCRIPTION:
+ * Creates a Mandelbrot set as a texture
+ *
+ * PARAMETERS:
+ * Vector -- texture coordinates
+ * maxIterations -- maximum loops to calculate the factor
+ *                  smaller values give less colour variation
+ *
+ * HINTS:
+ * Feed the factor into a colorRamp to control the colour being fed into the next node.
+ *
+ * AUTHOR: Michael Rivero
+ * rivero AT squareusa DOT com 
+ *
+ * History:
+ * Created: 12/18/98
+ * 17/12/2012 - converted to blender osl shader by Shane Ambler
+ *
+ */
+
+
+surface MRMandelbrot (
+        point Vector = P,
+        int maxiteration = 500,
+        output float Fac = 1.0 )
+{
+    float lt;
+    float ls;
+
+    /* Map the U and V values to the bounds of the Mandelbrot set. */
+
+    ls = mod(Vector[1], 1.0);
+    lt = mod(Vector[0], 1.0);
+
+    float real = ( ls * 3.0 ) - 2.0;
+    float imag = ( lt * 3.0 ) - 1.5;
+    float tmpval;
+    float got_away = 0, iter;
+    float tempreal, tempimag, Creal, Cimag;
+    float r2;
+    Creal = real;
+    Cimag = imag;
+
+    for (iter=0; iter<maxiteration && got_away == 0; iter+=1)
+    {
+        /* z = z^2 + c */
+        tempreal = real;
+        tempimag = imag;
+        real = (tempreal * tempreal) -  (tempimag * tempimag);
+        imag = 2 * tempreal * tempimag;
+        real += Creal;
+        imag += Cimag;
+        r2 = (real*real) + (imag*imag);
+
+        if(r2 >= 4) got_away = 1;
+    }
+
+    Fac = mod((iter / 10), 1.0);
+    
+}
+
