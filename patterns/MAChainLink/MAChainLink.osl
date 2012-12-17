@@ -1,0 +1,44 @@
+/*
+    Chainlink shader by Michel J. Anders (c)2012
+    license: cc-by-sa
+    http://blenderthings.blogspot.com.au/2012/12/a-chainlink-fence-osl-shader-for.html
+*/
+
+#include "stdosl.h"
+
+float arc(float x){ return sqrt(1-(x-0.5)*(x-0.5)/0.25); }
+
+shader chainlink(
+        point Vector = P,
+        float Width = 0.05,
+        output float Fac = 0,
+        output float Displ = 0
+){
+    float x = mod(Vector[0],1);
+    float y = mod(Vector[1],1);
+    float ox = x ;
+    float oy = y ;
+    x += Width * (0.5 - oy );
+    y -= Width * (ox - 0.5 );
+
+    if ( y > 0.5 ){
+        y = 1 - y;
+        x = 1 - x;
+    }
+    if ( x > 0.5 ){
+        if ( y > 0.5 - Width ){
+            Fac = 1;
+            Displ = arc((y-(0.5-Width))/Width);
+        }else if (x < 0.5 + Width) {
+            Fac = 1;
+            Displ = arc((x-0.5)/Width);
+        }else{
+            float r = hypot(x-0.5,y-0.5);
+            if (r < Width) {
+                Fac = 1;
+                Displ = arc(r/Width);
+            }
+        }
+    }
+}
+
