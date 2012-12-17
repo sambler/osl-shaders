@@ -1,0 +1,133 @@
+/*
+ * hextile.sl -- surface shader for hexagonal tiles in st space
+ *
+ * DESCRIPTION
+ *       This surface shader operates in s-t space and gives a pattern of
+ *    hexagonal tiles, similar to that found as floor patterns in public
+ *    places and such.
+ *       The basic pattern is a hexagonal tiling, with a little bit of
+ *    color variation from tile to tile.  On top of that is some staining
+ *    (presumably due to water or something), which darkens the tile or
+ *    mortar underneath it.  Finally, there is Scuffing due to people's
+ *    shoes, which really only affects the tile part not the mortar part.
+ *
+ *
+ * PARAMTERS
+ *    DiffuseAmt, SpecularAmt, Roughness, SpecularColor - work just like plastic
+ *    TileColor - the color of the tiles
+ *    MortarColor - the color of the mortar (space between the tiles)
+ *    TileRadius - the "radius" (in s-t units) of a single tile
+ *    MortarWidth - the width of the mortar (in s-t units)
+ *    TileVary - the color variance from tile to tile
+ *
+ * ANTIALIASING
+ *    Some rudimentary antialiasing is performed on the borders between
+ *    tile and mortar.
+ *
+ * HINTS & APPLICATIONS
+ *    If all of the default parameters are used, the tiles look just like
+ *    the floors in the public areas of the Washington DC subway system.
+ *
+ * AUTHOR: written by Larry Gritz, 1994
+ *
+ * HISTORY:
+ *    15 Feb 1994 -- written by lg
+ *       Dec 2012 -- converted/hacked to OSL by varkenvarken
+ *    17 Dec 2012 -- rename inputs by SAmbler
+ *
+ * last modified 15 Feb 94 by Larry Gritz
+ */
+
+shader
+LGHexTile (
+    point Vector = P,
+    float DiffuseAmt = .5,
+    float SpecularAmt = .2,
+    float Roughness = .1,
+    color SpecularColor = 1,
+    color TileColor = color(.55,0,0),
+    color MortarColor = color(.5,.5,.5),
+    float TileRadius = 0.2,
+    float MortarWidth = 0.02,
+    float TileVary = 0.15,
+    float Scuffing = 0.5,
+    float ScuffFrequency = 4,
+    color ScuffColor = color (.05,.05,.05),
+    float Stains = 0.4,
+    float StainFrequency = 2,
+    output closure color BSDF = diffuse(N)
+)
+{
+    #define snoise(x) (2*noise(x)-1)
+    #define snoise2(x,y) (2*noise((x),(y))-1)
+    #define MINFILTERWIDTH 1.0e-7
+    #define M_SQRT3 1.7320508 /* sqrt(3) */
+    
+    point Nf;
+    color Ct, Ctile;
+    float tilewidth;
+    float ss, tt;
+    float ttile, stile;
+    float x, y;
+    float mortar;
+    float swidth, twidth, sfuzz, tfuzz, fuzzmax;
+    float mw2, mw2srt3;
+    float tileindex;
+    float stain, scuff;
+    float ks;
+
+    float s = Vector[0];
+    float t = Vector[1];
+
+    swidth = abs(Dx(s)) + abs(Dy(s));
+    twidth = abs(Dx(t)) + abs(Dy(t));
+    sfuzz = 0.5 * swidth;
+    tfuzz = 0.5 * twidth;
+    fuzzmax = max(sfuzz, tfuzz);
+    Nf = N;
+
+    tilewidth = TileRadius * M_SQRT3;
+    tt = mod (t, 1.5*TileRadius);
+    ttile = floor(t/(1.5*TileRadius));
+    if (mod(ttile/2, 1) == 0.5)
+       ss = s + tilewidth/2;
+    else ss = s;
+    stile = floor(ss / tilewidth);
+    ss = mod(ss, tilewidth);
+    mortar = 0;
+    mw2 = MortarWidth/2;
+    if (tt < TileRadius) {
+      mortar =  1 - (smoothstep(mw2,mw2+sfuzz,ss) *
+             (1 - smoothstep(tilewidth-mw2-sfuzz,tilewidth-mw2,ss)));
+    }
+    else {
+      x = tilewidth/2 - abs(ss - tilewidth/2);
+      y = M_SQRT3 * (tt - TileRadius);
+      if (y > x) {
+      if (mod (ttile/2, 1) == 0.5)
+          stile -= 1;
+      ttile += 1;
+      if (ss > tilewidth/2)
+          stile += 1;
+    }
+
+        mw2srt3 = M_SQRT3*mw2;
+        mortar = (smoothstep(x-mw2srt3-tfuzz, x-mw2srt3, y) *
+            (1 - smoothstep(x+mw2srt3, x+mw2srt3+tfuzz, y)));
+    }
+
+    tileindex = stile+41*ttile;
+    Ctile = TileColor * (1 + TileVary * snoise(tileindex+0.5));
+
+    stain = Stains * smoothstep (.5,1, noise(s*StainFrequency,t*StainFrequency));
+
+    scuff = Scuffing * smoothstep (.6,1, noise(t*ScuffFrequency-90.26,s*ScuffFrequency+123.82));
+
+    ks = SpecularAmt * (1-scuff/2);
+    Ct = (1-stain) * mix(mix(Ctile, ScuffColor, scuff), MortarColor, mortar);
+
+    Nf = normalize(N);
+    BSDF = Ct*DiffuseAmt*diffuse(Nf);
+    BSDF += SpecularColor*ks*microfacet_beckmann(Nf,Roughness);
+}
+
