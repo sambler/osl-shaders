@@ -15,13 +15,13 @@
 #define Z 2
 
 shader interior_mapping(
-  vector RoomCount = vector(5, 5, 5),
-  float AtlasRows = 1.0,
-  float Emission = 0.0,
-  float LightsOn = 0.0,
-  output vector TexCoords = vector(0, 0, 0),
-  output normal WallNormal = N,
-  output float EmissionFactor = 0.0)
+        vector RoomCount = vector(5, 5, 5),
+        float AtlasRows = 1.0,
+        float Emission = 0.0,
+        float LightsOn = 0.0,
+        output vector TexCoords = vector(0, 0, 0),
+        output normal WallNormal = N,
+        output float EmissionFactor = 0.0)
 {
     vector roomSize = vector(1/max(RoomCount[X], 1), 1/max(RoomCount[Y], 1), 1/max(RoomCount[Z], 1));
 
