@@ -1,0 +1,35 @@
+/*
+    SAMandelbrot -- a mandelbrot texture by Shane Ambler (c)2012
+    License: BSD
+    
+    While this gives basically the same pattern as MRMandelbrot I find this
+    one has more detail and a smoother gradient with more predictable colour selection 
+    when fed into a colour ramp.
+*/
+
+#include "stdosl.h"
+
+shader mandelbrot(
+    point Vector = P,
+    int maxIterations = 100,
+    output float Fac = 0.0)
+{
+    int max_iterations = 100;
+    float x = 0.0;
+    float y = 0.0;
+
+    float tu = (mod(Vector[0],1.0)*3.0)-1.5;
+    float tv = (mod(Vector[1],1.0)*3.0)-2.0;
+    
+    int i = 0;
+    while (x*x + y*y < 4 && i < max_iterations) {
+        float t = x*x - y*y + tv;
+        y = 2*x*y + tu;
+        x = t;
+
+        ++i;
+    }
+
+    Fac = (float)i / (float)max_iterations;
+}
+
