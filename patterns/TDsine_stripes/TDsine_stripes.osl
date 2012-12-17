@@ -5,7 +5,7 @@
 
 #include "stdosl.h"
 
-shader sine_pattern(
+shader TDsine_pattern(
             color Color = color(0.8),
             float Time = 1.0,
             float Intensity = 1.0,

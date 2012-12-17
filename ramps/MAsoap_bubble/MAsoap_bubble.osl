@@ -6,7 +6,7 @@
 
 #include "stdosl.h"
 
-surface soapbubble (
+surface MAsoapbubble (
         float InteriorIOR  = 1, // approximate refractive index of air
         float SurfaceIOR   = 1.3, // approximate refractive index of water
         float Thickness    = 1000, // 1000 nm = 1 micron

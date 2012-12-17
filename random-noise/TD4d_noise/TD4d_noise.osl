@@ -5,7 +5,7 @@
 
 #include <stdosl.h>
 
-shader node_4D_noise(
+shader TD4D_noise(
     float Time = 1.0,
     output color Perlin = (0.8),
     output color UPerlin = (0.8))

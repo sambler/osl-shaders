@@ -8,7 +8,7 @@
 
 #include <stdosl.h>
 
-shader node_diffuse_ramp_bsdf(
+shader TDnode_diffuse_ramp_bsdf(
 	color Color1 = color(0.8, 0.0, 0.0),
 	color Color2 = color(0.0, 0.8, 0.0),
 	color Color3 = color(0.0, 0.0, 0.8),

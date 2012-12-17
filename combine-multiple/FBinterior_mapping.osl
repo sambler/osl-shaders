@@ -14,7 +14,7 @@
 #define Y 1
 #define Z 2
 
-shader interior_mapping(
+shader FBinterior_mapping(
         vector RoomCount = vector(5, 5, 5),
         float AtlasRows = 1.0,
         float Emission = 0.0,

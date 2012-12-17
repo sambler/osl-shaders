@@ -6,7 +6,7 @@
 
 #include <stdosl.h>
 
-shader pure_reflection(
+shader FBreflection(
             color Color = color(0.8, 0.8, 0.8),
             float Factor = 1.0,
             output closure color BSDF = reflection(N))

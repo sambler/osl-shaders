@@ -56,7 +56,7 @@ closure color cloud_closure_mix(closure color Closure1, closure color Closure2, 
   return (1.0-color_average(Clouds))*Closure1+color_average(Clouds)*Closure2;
 }
 
-shader planet(
+shader FBplanet(
     vector SunPosition = vector(0, 0, 0),
     color Day = color(0.8, 0.8, 0.8),
     color Night = color(0.1, 0.1, 0.1),

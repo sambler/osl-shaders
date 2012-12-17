@@ -5,7 +5,7 @@
 
 #include <stdosl.h>
 
-shader node_phong_ramp_bsdf(
+shader TDphong_ramp_bsdf(
     float Exponent = 2.0,
     normal Normal = N,
     output closure color BSDF = 0)

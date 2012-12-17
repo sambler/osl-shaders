@@ -23,7 +23,7 @@ int gcd(int A, int B){
 // smallest common multiple (assumes a, b > 0 )
 int scm(int a, int b){ return a*b/gcd(a,b); }
 
-shader weave(
+shader MAweave(
         color WarpColor = color(0.8,0,0),
         color WeftColor = color(0,0.8,0),
         int skip = 1,

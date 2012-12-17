@@ -8,7 +8,7 @@
 
 #include "stdosl.h"
 
-shader lightvec(
+shader MAlightvec(
 output color Color = 1)
 {
     vector L;

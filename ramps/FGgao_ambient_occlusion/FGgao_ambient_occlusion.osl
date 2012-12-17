@@ -49,7 +49,7 @@
 #include "node_fresnel.h"
 #include "oslutil.h"
 
-shader GAO(
+shader FGgao_ambient_occlusion(
     color ColorIn = color(1.0,1.0,1.0),
     color ColorHit = color(0.0 , 0.0 , 0.0 ),
     closure color closureIn = color(1.0,1.0,1.0) * emission() ,

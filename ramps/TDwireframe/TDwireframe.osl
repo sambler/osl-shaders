@@ -6,7 +6,7 @@
 #include "stdosl.h"
 #include "oslutil.h"
 
-shader node_wireframe(
+shader TDwireframe(
     float Line_Width = 2.0,
     int Raster = 1,
     output float Factor = 0.0)

@@ -6,7 +6,7 @@
 
 #include "stdosl.h"
 
-shader toon(
+shader MAtoon(
     color Color = 1,
     float Angle = 50,
     output color Col = 0)
