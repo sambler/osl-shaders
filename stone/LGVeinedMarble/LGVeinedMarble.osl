@@ -1,0 +1,83 @@
+/*
+ * veinedmarble.sl -- surface shader for a nice veined marble.
+ *
+ * DESCRIPTION:
+ *   Makes solid marble texture with strong veins.  The "veincolor" parameter
+ *   controls the color of the veins.  The background color is given by the
+ *   surface color (Cs).
+ * 
+ * PARAMETERS:
+ *   Ka, Kd, Ks, roughness, specularcolor - same as plastic
+ *   veinfreq - controls fhe lowest frequency of the color veins
+ *   veinlevels - how many "levels" of vein tendrills it has
+ *   warpfreq - lowest frequency of the turbulent warping in the marble
+ *   warping - controls how much turbulent warping there will be
+ *   veincolor - the color of the veins
+ *   sharpness - controls how sharp or fuzzy the veins are (higher = sharper)
+ *
+ *
+ * AUTHOR: Larry Gritz, the George Washington University
+ *         email: gritz AT seas DOT gwu DOT edu 
+ *
+ * HISTORY:
+ *
+ * last modified  29 Jun 1994 by Larry Gritz
+ * 2012-12-19 converted to blender osl shader by Shane Ambler
+ *
+ */
+
+
+#include "stdosl.h"
+
+
+shader LGVeinedMarble (
+        point Vector = P,
+        float DiffuseAmt = 0.8,
+        color DiffuseColor = color(1.0),
+        float SpecularAmt = 0.2,
+        float Roughness = 0.005,
+        color SpecularColor = color(1.0),
+        float VeinFreq = 1.0,
+        float VeinLevels = 2.0,
+        color VeinColor = color(0.2, 0.15, 0.08),
+        float WarpFreq = 1.0,
+        float Warping = 0.5,
+        float Sharpness = 8.0,
+        output closure color BSDF = diffuse(N) )
+{
+#define snoise(x) (2*noise(x)-1)
+    color Ct;
+    point Nf;
+    point PP, offset;
+    float i, turb, freq, j;
+    float turbsum;
+
+    PP = transform ("shader", Vector);
+
+    /* perturb the lookup */
+    freq = 1;
+    offset = 0;
+    for (i = 0;  i < 6;  i += 1) {
+        offset += 2 * Warping * ( noise (WarpFreq * freq * PP) - 0.5)  / freq;
+        freq *= 2;
+    }
+    PP += offset;
+
+    /* Now calculate the veining function for the lookup area */
+    turbsum = 0;  freq = 1;
+    PP *= VeinFreq;
+    for (i = 0;  i < VeinLevels;  i += 1) {
+        turb = abs (snoise (PP));
+        turb = pow (smoothstep (0.8, 1, 1 - turb), Sharpness) / freq;
+        turbsum += (1-turbsum) * turb;
+        freq *= 3;
+        PP *= 3;
+    }
+
+    Ct = mix (DiffuseColor, VeinColor, turbsum);
+
+    Nf = normalize(N);
+    BSDF = Ct * DiffuseAmt * diffuse(Nf);
+    BSDF += SpecularColor * SpecularAmt * microfacet_beckmann(Nf,Roughness);
+}
+
