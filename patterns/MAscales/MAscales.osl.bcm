@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="MAPPING" translation="Vector(0.0, 0.0, 0.0)" rotation="Vector(0.0, 0.0, 0.0)" scale="Vector(60.0, 60.0, 60.0)" use_min="False" use_max="False" vector="Vector(0.0, 0.0, 0.0)" loc="-486, 554" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" diffuse_color1="rgba(0.20000, 0.80000, 0.20000, 1.0)" diffuse_color2="rgba(0.80000, 0.20000, 0.20000, 1.0)" coordinates="Vector(0.0, 0.0, 0.0)" n="0.0" loc="-138, 556" />
+		<node type="TEX_MUSGRAVE" musgrave="FBM" scale="0.48800" detail="4.80000" dimension="2.0" lacunarity="1.0" offset="0.0" gain="1.0" loc="163, 618" />
+		<node type="VALTORGB" interpolation="CONSTANT" fac="0.5" stops="4" stop1="0.0|rgba(0.02624, 0.00802, 0.04817, 1.0)" stop2="0.11818|rgba(1.0, 1.0, 1.0, 1.0)" stop3="0.81363|rgba(0.79910, 0.43965, 0.13563, 1.0)" stop4="1.0|rgba(0.79910, 0.43965, 0.13563, 1.0)" loc="424, 643" />
+		<node type="OUTPUT_MATERIAL" loc="1161, 405" />
+		<node type="TEX_COORD" dupli="False" loc="-725, 478" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.0" loc="729, 610" />
+		<node type="MIX_SHADER" fac="0.11999" loc="976, 560" />
+		<node type="BSDF_GLOSSY" distribution="BECKMANN" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.20000" loc="727, 475" />
+		<node type="INVERT" fac="1.0" color="rgba(0.0, 0.0, 0.0, 1.0)" loc="199, 287" />
+	</nodes>
+	<links>
+		<link to="1" input="2" from="0" output="0" />
+		<link to="2" input="0" from="1" output="3" />
+		<link to="4" input="0" from="7" output="0" />
+		<link to="7" input="1" from="6" output="0" />
+		<link to="7" input="2" from="8" output="0" />
+		<link to="6" input="0" from="3" output="0" />
+		<link to="3" input="0" from="2" output="1" />
+		<link to="9" input="1" from="1" output="2" />
+		<link to="4" input="2" from="9" output="0" />
+		<link to="0" input="0" from="5" output="2" />
+	</links>
+	<scripts>
+		<script name="MAscales.osl" id="0">
+/*<br />    scales shader by Michel J. Anders (c)2012<br />    license: cc-by-sa<br />    http://blenderthings.blogspot.co.uk/2012/11/a-scales-osl-shader-for-blender.html<br />*/<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader MAscales(<br />    color Diffuse_Color1 = color(0.2, 0.8, 0.2),<br />    color Diffuse_Color2 = color(0.8, 0.2, 0.2),<br />    vector Coordinates = 0,<br />    float n = 0,<br />    output color Color = 0,<br />    output int Index = 1,<br />    output float Distance = 0,<br />    output vector Vindex = 0)<br />{<br />    float sx = mod(Coordinates[0],1);<br />    float sy = mod(Coordinates[1],1);<br />    <br />    vector p  = vector(sx,sy,0);<br />    vector p0 = vector(0.5,0,0);<br />    vector p1 = vector(0.5,1,0);<br />    vector p2 = vector(0,0.5,0);<br />    vector p3 = vector(1,0.5,0);<br />    <br />    vector cell = vector(floor(Coordinates[0]),floor(Coordinates[1]),0);<br />    int oddx = int(cell[0])%2;<br />    int oddy = int(cell[1])%2;<br />    <br />    float dist(vector a, vector b, float n){<br />        float x = b[0]-a[0];<br />     float y = b[1]-a[1];<br />     float r2 = x*x+y*y;<br />     if ( n != 0.0 ) {<br />            float theta = atan2(y,x);<br />         float cost, sint;<br />            sincos(theta, sint, cost);<br />         float cost2= cos(theta*2);<br />         float Y = pow(abs(sint),1+n*(1-cost2*cost2));<br />         r2 /= cost*cost+Y*Y;<br />        }<br />        return sqrt(r2);<br />    }<br />    <br />    float d1 = dist(p,p0,n);<br />    if ( d1&lt;=0.5 ){<br />        Color = Diffuse_Color1;<br />        Index = 0 ;<br />        Distance = d1;<br />        Vindex = cell + p0;<br />    } else {<br />        float d2 = dist(p,p2,n);<br />        float d3 = dist(p,p3,n);<br />        if ( d2 &lt;= 0.5 ) {<br />            Color = Diffuse_Color2;<br />            Index = 1;<br />            Distance = d2;<br />            Vindex = cell + p2;<br />        } else if ( d3 &lt;= 0.5 ) {<br />            Color = Diffuse_Color2;<br />            Index = 1;<br />            Distance = d3;<br />            Vindex = cell + p3;<br />        } else {<br />            Color = Diffuse_Color1;<br />            Index = 0;<br />            Distance = dist(p,p1,n);<br />            Vindex = cell + p1;<br />       }<br />    }<br />}<br /><br />
+		</script>
+	</scripts>
+</material>

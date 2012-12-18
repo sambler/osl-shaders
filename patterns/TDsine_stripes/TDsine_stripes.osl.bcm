@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="TEX_COORD" dupli="False" loc="-942, 265" />
+		<node type="MAPPING" translation="Vector(0.45000, 0.0, 0.0)" rotation="Vector(0.0, -0.78539, 0.0)" scale="Vector(4.0, 4.0, 4.0)" use_min="False" use_max="False" vector="Vector(0.0, 0.0, 0.0)" loc="-718, 333" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.29999" loc="-221, 329" />
+		<node type="BSDF_VELVET" color="rgba(1.0, 0.26910, 0.18532, 1.0)" sigma="1.0" loc="-215, 178" />
+		<node type="MIX_SHADER" fac="0.09999" loc="-21, 291" />
+		<node type="OUTPUT_MATERIAL" loc="185, 294" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" color="rgba(1.0, 0.93714, 0.69854, 1.0)" time="0.40000" intensity="0.50000" stripes="10" vector="Vector(0.0, 0.0, 0.0)" loc="-425, 329" />
+	</nodes>
+	<links>
+		<link to="4" input="1" from="2" output="0" />
+		<link to="2" input="0" from="6" output="1" />
+		<link to="1" input="0" from="0" output="0" />
+		<link to="5" input="0" from="4" output="0" />
+		<link to="4" input="2" from="3" output="0" />
+		<link to="6" input="4" from="1" output="0" />
+	</links>
+	<scripts>
+		<script name="TDsine_stripes.osl" id="0">
+/*<br />    Sine stripes texture by Thomas Dinges (c)2012<br />    http://www.openshading.com/osl/example-shaders/<br />*/<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader TDsine_pattern(<br />            color Color = color(0.8),<br />            float Time = 1.0,<br />            float Intensity = 1.0,<br />            int Stripes = 10,<br />            point Vector = P,<br />            output float Fac = 1.0,<br />            output color ColorOut = color(0.8))<br />{<br />    point Pos = Vector;<br />    Pos[0] -= 0.5;<br />    float pattern_col = 0.0;<br />    <br />    for( float i = 0.0; i &lt; Stripes; ++i )<br />    {<br />        float t = Time/10.0 * (i);<br />        <br />        Pos[0] += sin( (Pos[1] + t) * 10.0  ) * 0.1;<br />        <br />        float f = abs(Intensity / Pos[0] / 1000.0);<br />        pattern_col += f;<br />    }<br />    <br />    color C = transformc(&quot;hsv&quot;, Color);<br />    <br />    Fac = pattern_col;<br />    ColorOut = color(&quot;hsv&quot;, C[0], C[1], (Fac*C[2]));<br />}<br /><br />
+		</script>
+	</scripts>
+</material>

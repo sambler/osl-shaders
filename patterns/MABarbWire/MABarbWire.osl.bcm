@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="SCRIPT" mode="INTERNAL" script="0" width="0.05000" turns="2" spiketurns="2" xscale="1.0" pos="Vector(0.0, 0.0, 0.0)" loc="-219, 356" />
+		<node type="BSDF_TRANSPARENT" color="rgba(1.0, 1.0, 1.0, 1.0)" loc="-224, 120" />
+		<node type="BSDF_GLOSSY" distribution="BECKMANN" color="rgba(0.48658, 0.48658, 0.48658, 1.0)" roughness="0.20000" loc="-222, 41" />
+		<node type="MAPPING" translation="Vector(0.0, 0.0, 0.0)" rotation="Vector(0.0, 0.0, 0.0)" scale="Vector(15.0, 15.0, 15.0)" use_min="False" use_max="False" vector="Vector(0.0, 0.0, 0.0)" loc="-503, 315" />
+		<node type="TEX_COORD" dupli="False" loc="-702, 259" />
+		<node type="MIX_SHADER" fac="0.5" loc="-31, 231" />
+		<node type="OUTPUT_MATERIAL" loc="165, 323" />
+	</nodes>
+	<links>
+		<link to="6" input="0" from="5" output="0" />
+		<link to="6" input="2" from="0" output="1" />
+		<link to="5" input="0" from="0" output="0" />
+		<link to="0" input="4" from="3" output="0" />
+		<link to="3" input="0" from="4" output="2" />
+		<link to="5" input="1" from="1" output="0" />
+		<link to="5" input="2" from="2" output="0" />
+	</links>
+	<scripts>
+		<script name="MABarbWire.osl" id="0">
+/*<br />    Barbwire shader by Michel J. Anders (c)2012<br />    license: cc-by-sa<br />    http://blenderthings.blogspot.com.au/2012/12/a-barbwire-osl-shader-for-blender-cycles.html<br />*/<br /><br />#include &quot;stdosl.h&quot;<br /><br />float arc(float r){ return sqrt(0.25-(r-0.5)*(r-0.5)); }<br /><br />shader barbwire(<br />        float Width = 0.05,<br />        int Turns = 2,<br />        int Spiketurns = 2,<br />        float Xscale = 1,<br />        point Pos = P,<br />        output float Fac = 0,<br />        output float Displ = 0 )<br />{<br />    float x = mod(Pos[0],1);<br />    float y = mod(Pos[1],1);<br /><br />    if ( x &gt; 0.5 ) {<br />        x = 1 - x;<br />        y = 1 - y;<br />    }<br /><br />    float w = Width/2;<br />    float t = M_2PI*x*Turns;<br /><br />    float c = cos(t);<br />    float h = c*w+w;<br />    float l = c*w-w;<br /><br />    y -= 0.5;<br />    // the barb part<br />    float BWidth = Width*Xscale;<br />    float Lw = BWidth*(Spiketurns-1);<br />    float Hw = BWidth*Spiketurns;<br />    if ( x &gt; Lw &amp;&amp; x &lt; Hw &amp;&amp; y &gt; 1.5*Width &amp;&amp; y&lt;4*Width ) { // the spikey part<br />        if( y&lt;3*Width || y-3*Width &lt; x-Width){<br />            Fac = 1;<br />            Displ = arc(mod(x,BWidth)/BWidth);<br />        }<br />    } else if ( x &lt; Hw &amp;&amp; abs(y) &lt; 2*Width ){<br />        if ( abs(y) &gt; 1.5*Width) { // the rounded top and bottom parts<br />            if ( abs(y) - 1.5*Width &lt; w*arc(mod(x,BWidth)/BWidth) ){<br />                Fac = 1;<br />                Displ = arc(mod(x,BWidth)/BWidth);<br />            }<br />        } else { // the main part<br />            Fac = 1;<br />            Displ = arc(mod(x,BWidth)/BWidth);<br />        }<br />    }<br />    // the wire part<br />    else {<br />        // alternating top/bottom checks to get correct crossings<br />        if ( (int)(t/M_PI) % 2 == 1 ){<br /><br />            if ( y &gt; l &amp;&amp; y &lt; h ) {<br />                Fac = 1;<br />                Displ = arc((y-l)/Width);<br />            } else if ( -y &gt; l &amp;&amp; -y &lt; h ) {<br />                Fac = 1;<br />                Displ = arc((-y-l)/Width);<br />            }<br /><br />        } else {<br /><br />            if ( -y &gt; l &amp;&amp; -y &lt; h ) {<br />                Fac = 1;<br />                Displ = arc((-y-l)/Width);<br />            } else if ( y &gt; l &amp;&amp; y &lt; h ) {<br />                Fac = 1;<br />                Displ = arc((y-l)/Width);<br />            }<br />        }<br />    }<br />}<br /><br />
+		</script>
+	</scripts>
+</material>

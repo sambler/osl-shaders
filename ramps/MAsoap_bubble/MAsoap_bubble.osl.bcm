@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="BSDF_GLOSSY" distribution="BECKMANN" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.38999" loc="-171, 314" />
+		<node type="BSDF_GLOSSY" distribution="SHARP" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.00499" loc="-174, 156" />
+		<node type="MIX_SHADER" fac="0.23999" loc="63, 257" />
+		<node type="BSDF_TRANSPARENT" color="rgba(1.0, 1.0, 1.0, 1.0)" loc="73, 343" />
+		<node type="MIX_SHADER" fac="0.20000" loc="270, 339" />
+		<node type="OUTPUT_MATERIAL" loc="487, 316" />
+		<node type="TEX_MUSGRAVE" musgrave="FBM" scale="5.0" detail="2.0" dimension="2.0" lacunarity="1.0" offset="0.0" gain="1.0" loc="85, 129" />
+		<node type="MATH" operation="MULTIPLY" use_clamp="False" value1="0.5" value2="0.40000" loc="316, 186" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" interiorior="1.0" surfaceior="1.29999" thickness="1000.0" loc="-435, 269" />
+	</nodes>
+	<links>
+		<link to="7" input="0" from="6" output="1" />
+		<link to="5" input="2" from="7" output="0" />
+		<link to="2" input="2" from="1" output="0" />
+		<link to="2" input="1" from="0" output="0" />
+		<link to="4" input="1" from="3" output="0" />
+		<link to="4" input="2" from="2" output="0" />
+		<link to="5" input="0" from="4" output="0" />
+		<link to="0" input="0" from="8" output="0" />
+	</links>
+	<scripts>
+		<script name="MAsoap_bubble.osl" id="0">
+/*<br />    soap bubble shader by Michel J. Anders (c)2012<br />    license: cc-by-sa<br />    http://blenderthings.blogspot.co.uk/2012/11/a-soap-bubble-osl-shader-for-blender.html<br />*/<br /><br />#include &quot;stdosl.h&quot;<br /><br />surface MAsoapbubble (<br />        float InteriorIOR  = 1, // approximate refractive index of air<br />        float SurfaceIOR   = 1.3, // approximate refractive index of water<br />        float Thickness    = 1000, // 1000 nm = 1 micron<br />        output color Color = 0)<br />{<br />    // condition for constructive interference:<br />    // 2 * SurfaceIOR * Thickness * cos(t2) == (m-0.5)*lambda<br />    // Thickness and lambda in nm<br />    float eta = InteriorIOR/SurfaceIOR;<br />        // note that N should be the perturbed normal<br />    vector T = normalize(refract(I,N,eta));<br />        // no need to divide by (len(-I) * len(T)) as these are normalized<br />    float cost2 = dot(-I , T);<br />    float opd = 2*SurfaceIOR*Thickness*cost2;<br />    <br />    int mmin = int(ceil(opd/750+0.5));<br />    int mmax = int(floor(opd/350+0.5));<br />        // if mmax &lt; mmin the film is too thin to show an effect<br />    int m = (mmin + mmax)/2;<br />    <br />    if (m &gt; 0){<br />     float lambda = opd / (m - 0.5);<br />            color c = wavelength_color(lambda);<br />            Color =  c;<br />    }<br />}<br /><br />
+		</script>
+	</scripts>
+</material>

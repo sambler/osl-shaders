@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="OUTPUT_MATERIAL" loc="-75, 344" />
+		<node type="TEX_COORD" dupli="False" loc="-524, 318" />
+		<node type="SCRIPT" mode="EXTERNAL" script="file:///home/shane/Projects3D/BlenderLib/OSL-Shaders/patterns/DWParquetTile/DWParqueteTile.osl" vector="Vector(0.0, 0.0, 0.0)" diffuseamt="0.75" specularamt="0.24999" roughness="0.19999" specularcolor="rgba(1.0, 1.0, 1.0, 1.0)" ringscale="25.0" grainscale="55.0" grainy="1.0" wavy="0.07999" texturescale="15.0" lightwood="rgba(0.56999, 0.29199, 0.125, 1.0)" darkwood="rgba(0.27500, 0.15000, 0.05999, 1.0)" groovecolor="rgba(0.05000, 0.03999, 0.01499, 1.0)" plankspertile="4" plankwidth="0.20000" plankvary="0.60000" groovewidth="0.10000" loc="-333, 353" />
+	</nodes>
+	<links>
+		<link to="0" input="0" from="2" output="0" />
+		<link to="2" input="0" from="1" output="2" />
+	</links>
+</material>

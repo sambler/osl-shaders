@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="OUTPUT_MATERIAL" loc="300, 300" />
+		<node type="MIX_SHADER" fac="0.5" loc="75, 304" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.0, 0.0, 0.0, 1.0)" roughness="0.0" loc="-149, 133" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.14668, 0.26591, 0.39999, 1.0)" roughness="0.0" loc="-145, 262" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" line_width="0.99999" raster="1" loc="-142, 435" />
+	</nodes>
+	<links>
+		<link to="0" input="0" from="1" output="0" />
+		<link to="1" input="0" from="4" output="0" />
+		<link to="1" input="2" from="2" output="0" />
+		<link to="1" input="1" from="3" output="0" />
+	</links>
+	<scripts>
+		<script name="TDwireframe.osl" id="0">
+/*<br />    Wireframe texture by Thomas Dinges (c)2012<br />    http://www.openshading.com/osl/example-shaders/<br />*/<br /><br />#include &quot;stdosl.h&quot;<br />#include &quot;oslutil.h&quot;<br /><br />shader TDwireframe(<br />    float Line_Width = 2.0,<br />    int Raster = 1,<br />    output float Factor = 0.0)<br />{<br />    //Factor = wireframe(&quot;triangles&quot;, Line_Width, Raster);<br />    /*  currently blender always provides triangles at this point in the render <br />        as in fully triangulated mesh that the render engine works with<br />        at some stage the polygons option will provide original poly edges instead */<br />    Factor = wireframe(&quot;polygons&quot;, Line_Width, Raster);<br />}<br /><br />
+		</script>
+	</scripts>
+</material>

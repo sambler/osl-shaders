@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="MATH" operation="MULTIPLY" use_clamp="False" value1="0.5" value2="0.69999" loc="-310, 48" />
+		<node type="SEPRGB" image="rgba(0.80000, 0.80000, 0.80000, 1.0)" loc="-445, 180" />
+		<node type="MATH" operation="MULTIPLY" use_clamp="False" value1="0.5" value2="0.49999" loc="-298, 378" />
+		<node type="COMBRGB" red="0.0" green="0.0" blue="0.0" loc="-123, 207" />
+		<node type="MATH" operation="MULTIPLY" use_clamp="False" value1="0.5" value2="1.30000" loc="-307, 211" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.0" loc="-7, 217" />
+		<node type="OUTPUT_MATERIAL" loc="219, 212" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" time="1.0" loc="-692, 121" />
+	</nodes>
+	<links>
+		<link to="6" input="0" from="5" output="0" />
+		<link to="2" input="0" from="1" output="0" />
+		<link to="4" input="0" from="1" output="1" />
+		<link to="0" input="0" from="1" output="2" />
+		<link to="5" input="0" from="3" output="0" />
+		<link to="3" input="2" from="0" output="0" />
+		<link to="3" input="0" from="2" output="0" />
+		<link to="3" input="1" from="4" output="0" />
+		<link to="1" input="0" from="7" output="0" />
+	</links>
+	<scripts>
+		<script name="TD4d_noise.osl" id="0">
+/*<br />    4D noise texture by Thomas Dinges (c)2012<br />    http://www.openshading.com/osl/example-shaders/<br />*/<br /><br />#include &lt;stdosl.h&gt;<br /><br />shader TD4D_noise(<br />    float Time = 1.0,<br />    output color Perlin = (0.8),<br />    output color UPerlin = (0.8))<br />{   <br />    /* Perlin*/<br />    Perlin= noise(&quot;perlin&quot;, P, Time);<br />   <br />    /* UPerlin */<br />    UPerlin= noise(&quot;uperlin&quot;, P, Time);<br />}<br /><br />
+		</script>
+	</scripts>
+</material>

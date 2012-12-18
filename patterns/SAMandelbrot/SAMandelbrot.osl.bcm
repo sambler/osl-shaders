@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="VALTORGB" interpolation="EASE" fac="0.5" stops="7" stop1="0.0|rgba(1.0, 0.0, 0.0, 1.0)" stop2="0.16818|rgba(1.0, 0.21223, 0.0, 1.0)" stop3="0.32727|rgba(1.0, 1.0, 0.0, 1.0)" stop4="0.5|rgba(0.0, 1.0, 0.0, 1.0)" stop5="0.66818|rgba(0.0, 0.0, 1.0, 1.0)" stop6="0.83636|rgba(0.07036, 0.0, 0.22322, 1.0)" stop7="1.0|rgba(0.27467, 0.0, 1.0, 1.0)" loc="-345, 410" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.0" loc="-48, 407" />
+		<node type="OUTPUT_MATERIAL" loc="147, 400" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" maxiterations="500" vector="Vector(0.0, 0.0, 0.0)" loc="-603, 411" />
+		<node type="MAPPING" translation="Vector(-0.19999, 0.09999, 0.0)" rotation="Vector(0.0, -0.52359, 0.52359)" scale="Vector(10.0, 10.0, 10.0)" use_min="False" use_max="False" vector="Vector(0.0, 0.0, 0.0)" loc="-896, 411" />
+		<node type="TEX_COORD" dupli="False" loc="-1134, 377" />
+	</nodes>
+	<links>
+		<link to="2" input="0" from="1" output="0" />
+		<link to="1" input="0" from="0" output="0" />
+		<link to="0" input="0" from="3" output="0" />
+		<link to="3" input="1" from="4" output="0" />
+		<link to="4" input="0" from="5" output="2" />
+	</links>
+	<scripts>
+		<script name="SAMandelbrot.osl" id="0">
+/*<br />    SAMandelbrot -- a mandelbrot texture by Shane Ambler (c)2012<br />    License: BSD<br />    <br />    While this gives basically the same pattern as MRMandelbrot I find this<br />    one has more detail and a smoother gradient with more predictable colour selection <br />    when fed into a colour ramp.<br />*/<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader mandelbrot(<br />    point Vector = P,<br />    int maxIterations = 100,<br />    output float Fac = 0.0)<br />{<br />    int max_iterations = 100;<br />    float x = 0.0;<br />    float y = 0.0;<br /><br />    float tu = (mod(Vector[0],1.0)*3.0)-1.5;<br />    float tv = (mod(Vector[1],1.0)*3.0)-2.0;<br />    <br />    int i = 0;<br />    while (x*x + y*y &lt; 4 &amp;&amp; i &lt; max_iterations) {<br />        float t = x*x - y*y + tv;<br />        y = 2*x*y + tu;<br />        x = t;<br /><br />        ++i;<br />    }<br /><br />    Fac = (float)i / (float)max_iterations;<br />}<br /><br />
+		</script>
+	</scripts>
+</material>
