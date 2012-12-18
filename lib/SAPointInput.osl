@@ -1,0 +1,27 @@
+/*
+    SAPointInput -- a helper to alloow you to input point coordinates 
+    by Shane Ambler (c)2012
+    License: BSD
+    
+    Various nodes use a vector input that you can manually set to an x,y,z
+    value if you don't input uv coordinates into them.
+    While we have a normal input that we can adjust using the ball for input
+    the values used are not displayed within the node editor making
+    it hard for someone to replicate settings from viewing a node tree
+    screenshot.
+    This script simply allows the input to be visible for easy sharing.
+*/
+
+#include "stdosl.h"
+
+shader SAPointInput(
+    float X = 0.0,
+    float Y = 0.0,
+    float Z = 0.0,
+    output point Vector = 0.0)
+{
+    Vector[0] = X;
+    Vector[1] = Y;
+    Vector[2] = Z;
+}
+

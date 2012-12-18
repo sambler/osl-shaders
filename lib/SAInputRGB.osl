@@ -1,0 +1,21 @@
+/*
+    SAPointInput -- a helper to alloow you to input point coordinates 
+    by Shane Ambler (c)2012
+    License: BSD
+    
+    While you can display a colourwheel within the node tree the exact values 
+    used aren't displayed.
+    This script simply allows the input to be visible for easy sharing.
+*/
+
+#include "stdosl.h"
+
+shader SARGBInput(
+    float R = 0.0,
+    float G = 0.0,
+    float B = 0.0,
+    output color Color = color(0.0) )
+{
+    Color = color(R,G,B);
+}
+
