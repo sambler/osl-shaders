@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="FRAME" label="Images from BlenderGuru.com" loc="-792, -346" />
+		<node type="FRAME" custom_color="rgb(0.60799, 0.24135, 0.21812)" label="To animate the clouds" loc="-1166, 52" />
+		<node type="TEX_COORD" dupli="False" loc="-1606, 295" />
+		<node type="MAPPING" translation="Vector(0.0, 0.0, 0.0)" rotation="Vector(0.0, 0.0, 0.0)" scale="Vector(1.0, 1.0, 1.0)" use_min="False" use_max="False" vector="Vector(0.0, 0.0, 0.0)" loc="-1218, 529" />
+		<node type="MATH" operation="MULTIPLY" use_clamp="False" value1="0.5" value2="1.0" loc="-484, -176" />
+		<node type="OUTPUT_MATERIAL" loc="-140, 122" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" sunposition="Vector(0.0, 45.0, 0.0)" day="rgba(0.80000, 0.80000, 0.80000, 1.0)" night="rgba(0.10000, 0.10000, 0.10000, 1.0)" cloudlayer="rgba(0.0, 0.0, 0.0, 1.0)" specularmask="rgba(1.0, 1.0, 1.0, 1.0)" atmosphere="rgba(0.0, 1.0, 1.0, 1.0)" atmospherefresnel="1.0" daymultiplier="1.0" nightemission="0.30000" boundary="0.5" daymargin="0.29999" nightmargin="0.39999" loc="-430, 429" />
+		<node type="TEX_IMAGE" image="file:///home/shane/Projects3D/BlenderLib/OSL-Shaders/combine-multiple/FBImagePlanet/textures/Color Map.jpg" source="FILE" color_space="COLOR" projection="FLAT" loc="-15, 1010" />
+		<node type="TEX_IMAGE" image="file:///home/shane/Projects3D/BlenderLib/OSL-Shaders/combine-multiple/FBImagePlanet/textures/Night Lights.jpg" source="FILE" color_space="COLOR" projection="FLAT" loc="-16, 771" />
+		<node type="TEX_IMAGE" image="file:///home/shane/Projects3D/BlenderLib/OSL-Shaders/combine-multiple/FBImagePlanet/textures/Clouds.png" source="FILE" color_space="COLOR" projection="FLAT" loc="-21, 535" />
+		<node type="TEX_IMAGE" image="file:///home/shane/Projects3D/BlenderLib/OSL-Shaders/combine-multiple/FBImagePlanet/textures/Spec Mask.png" source="FILE" color_space="COLOR" projection="FLAT" loc="-24, 316" />
+		<node type="TEX_IMAGE" image="file:///home/shane/Projects3D/BlenderLib/OSL-Shaders/combine-multiple/FBImagePlanet-test/textures/Bump.jpg" source="FILE" color_space="COLOR" projection="FLAT" loc="-19, 70" />
+		<node type="MAPPING" translation="Vector(0.0, 0.0, 0.0)" rotation="Vector(0.0, 0.0, 0.0)" scale="Vector(1.0, 1.0, 1.0)" use_min="False" use_max="False" vector="Vector(0.0, 0.0, 0.0)" loc="-100, 36" />
+	</nodes>
+	<links>
+		<link to="5" input="0" from="6" output="0" />
+		<link to="5" input="2" from="4" output="0" />
+		<link to="6" input="4" from="10" output="0" />
+		<link to="6" input="3" from="9" output="0" />
+		<link to="6" input="2" from="8" output="0" />
+		<link to="6" input="1" from="7" output="0" />
+		<link to="7" input="0" from="3" output="0" />
+		<link to="3" input="0" from="2" output="2" />
+		<link to="8" input="0" from="3" output="0" />
+		<link to="10" input="0" from="3" output="0" />
+		<link to="9" input="0" from="12" output="0" />
+		<link to="12" input="0" from="2" output="2" />
+		<link to="4" input="0" from="11" output="0" />
+		<link to="11" input="0" from="3" output="0" />
+	</links>
+	<scripts>
+		<script name="FBimage_planet.osl" id="0">
+/*<br />    image planet texture by fbbdev (c)2012<br />    http://fbbdev.wordpress.com/2012/09/15/cycles-osl/<br />    <br />    shader is to easily merge together a day and night surface, with cloud<br />    and specular mask and atmosphere colour.<br />    The barrier between night and day textures is based off the sun position.<br />    <br />    Planet textures from this solar system are available at <br />    http://www.celestiamotherlode.net/<br />    <br />    Other images can also be found at http://pds.jpl.nasa.gov/planets/<br />    <br />    The sample node setup uses images from <br />    http://www.blenderguru.com/videos/create-a-realistic-earth/<br />    It uses one UVSphere and a plane emitting light to one side - the black background keeps it dark.<br />    I made the clouds move separate from the planet by animating the location <br />    in the UV mapping node going into the clouds image texture.<br />    Not a great result but could pass for a distant planet animation.<br />    Might be possible to improve it with a better cloud image.<br />    For close ups you will probably want to have the clouds on a separate sphere.<br />    <br />*/<br /><br />#include &quot;stdosl.h&quot;<br /><br /><br />float factor_map(float factor, float boundary, float dmargin, float nmargin) {<br />    float result = 0.0;<br />    if (boundary == 0) return 0;<br />    if (boundary == 1) return 1;<br />    if (factor &lt;= boundary)<br />        result = factor/boundary*0.5;<br />    else<br />        result = (factor-boundary)/(1.0-boundary)*0.5+0.5;<br />    <br />    return smoothstep(nmargin, 1.0-dmargin, result);<br />}<br /><br />float color_average(color c) {<br />    return (c[0]+c[1]+c[2])/3.0;<br />}<br /><br />closure color closure_mix(closure color Closure1, closure color Closure2, float factor) {<br />    return (1.0-factor)*Closure1+factor*Closure2;<br />}<br /><br />color fresnel_mix(color Color1, color Color2, float eta) {<br />  float Kr, Kt;<br />  fresnel(I, N, eta, Kr, Kt);<br />  return Kr*Color2+Kt*Color1;<br />}<br /><br />closure color fresnel_closure_mix(closure color Closure1, closure color Closure2, float eta) {<br />    float Kr, Kt;<br />    fresnel(I, N, eta, Kr, Kt);<br />    return Kr*Closure2+Kt*Closure1;<br />}<br /><br />color cloud_mix(color Surface, color Clouds) {<br />    return (1.0-color_average(Clouds))*Surface+Clouds;<br />}<br /><br />closure color cloud_closure_mix(closure color Closure1, closure color Closure2, color Clouds) {<br />    return (1.0-color_average(Clouds))*Closure1+color_average(Clouds)*Closure2;<br />}<br /><br />shader FBplanet(<br />        vector SunPosition = vector(0, 0, 0),<br />        color Day = color(0.8, 0.8, 0.8),<br />        color Night = color(0.1, 0.1, 0.1),<br />        color CloudLayer = color(0, 0, 0),<br />        color SpecularMask = color(1, 1, 1),<br />        color Atmosphere = color(0, 1, 1),<br />        float AtmosphereFresnel = 1.0,<br />        float DayMultiplier = 1.0,<br />        float NightEmission = 0.3,<br />        float Boundary = 0.5,<br />        float DayMargin = 0.3,<br />        float NightMargin = 0.4,<br />        output closure color BSDF = background())<br />{<br />    float b = clamp(Boundary, 0, 1);<br />    float dm = clamp(DayMargin, 0, 0.5);<br />    float nm = clamp(NightMargin, 0, 0.5);<br />    float factor = factor_map((dot(N, normalize(SunPosition-P))+1)/2, b, dm, nm);<br />    float atmosphere;<br /><br />    BSDF = closure_mix(cloud_closure_mix(NightEmission*Night*emission(), <br />            color(0, 0, 0)*diffuse(N), CloudLayer),<br />            fresnel_closure_mix(DayMultiplier*cloud_mix(Day, CloudLayer)*diffuse(N), <br />            DayMultiplier*Atmosphere*emission(), AtmosphereFresnel) +<br />            Day*(1.0-SpecularMask)*microfacet_beckmann(N, 10), factor);<br />}<br /><br />
+		</script>
+	</scripts>
+</material>
