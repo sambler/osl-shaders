@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="OUTPUT_MATERIAL" loc="354, 297" />
+		<node type="TEX_COORD" dupli="False" loc="-351, 335" />
+		<node type="MATH" operation="MULTIPLY" use_clamp="False" value1="0.5" value2="5.0" loc="138, 231" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.31783, 0.31783, 0.31783, 1.0)" roughness="0.0" loc="121, 362" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" loc="-132, 368" />
+	</nodes>
+	<links>
+		<link to="0" input="0" from="3" output="0" />
+		<link to="0" input="2" from="2" output="0" />
+		<link to="4" input="0" from="1" output="3" />
+		<link to="2" input="0" from="4" output="0" />
+		<link to="3" input="0" from="4" output="1" />
+	</links>
+	<scripts>
+		<script name="ChPlanet.osl" id="0">
+/* planet procedural noise <br /> * based on farsthary blender patch<br /> * by Charlie http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page16<br /> *<br /> * small changes to use more consistent naming and default noise choice<br /> * by Shane Ambler<br /> */ <br /><br />#include "stdosl.h"<br />#include "node_texture.h"<br /><br /><br />color planet_noise(point pp, float offset, string b, float dtl, int h, float height){<br />      <br />       float xdy, xdz, ydx, ydz, zdx, zdy, off;<br />       color cp = 0;<br />       float d = offset;<br />       float x = pp[0];<br />       float y = pp[1];<br />       float z = pp[2];<br />       point ptemp;<br />       <br />       off = offset * 1000.0;<br />       x = noise_turbulence(pp, b, dtl, h); <br />       ptemp = point(x + off, y , z); y = noise_turbulence(ptemp, b, dtl, h); <br />       ptemp = point(x, y + off, z); z = noise_turbulence(ptemp, b, dtl, h); <br />       <br />       ptemp = point(x , y + d, z); xdy = x - noise_turbulence(ptemp, b, dtl, h); <br />       ptemp = point(x, y, z + d); xdz = x - noise_turbulence(ptemp, b, dtl, h); <br /><br />       ptemp = point(x + d, y, z); ydx = y - noise_turbulence(ptemp, b, dtl, h); <br />       ptemp = point(x, y, z + d); ydz = y - noise_turbulence(ptemp, b, dtl, h); <br /><br />       ptemp = point(x + d, y, z); zdx = z - noise_turbulence(ptemp, b, dtl, h); <br />       ptemp = point(x, y + d, z); zdy = z - noise_turbulence(ptemp, b, dtl, h); <br /><br />       cp[0] = zdy - ydz;<br />       cp[1] = zdx - xdz;<br />       cp[2] = ydx - xdy;<br />       <br />       return cp+height;<br />}<br /><br />shader ChPlanet(<br />    vector Vector = N,<br />    int Basis = 0,<br />    float Offset = 0.001, <br />    float Scale = 1.0, <br />    float Distortion = 0.0,<br />    float Noisedepth = 1.0, <br />    float Detail = 4.0,<br />    float Height = 0.5,<br />    int Hard = 1,<br />    output float Intensity = 0,<br />    output color Color = 0<br />    )<br />{<br />    string noisetype;<br />       <br />    if (Basis == 0) { noisetype = "Perlin"; }<br />    if (Basis == 1) { noisetype = "Cell Noise"; }<br />    if (Basis == 2) { noisetype = "Voronoi F1"; }<br />    if (Basis == 3) { noisetype = "Voronoi F2"; }<br />    if (Basis == 4) { noisetype = "Voronoi F3"; }<br />    if (Basis == 5) { noisetype = "Voronoi F4"; }<br />    if (Basis == 6) { noisetype = "Voronoi F2-F1"; }<br />    if (Basis == 7) { noisetype = "Voronoi Crackle"; }<br />    else { noisetype = "Voronoi F2"; }<br /><br />    point pp = Vector * Scale;<br /><br />    Color = planet_noise(pp, Offset, noisetype, Detail, Hard, Height);<br /><br />    Intensity = luminance(Color);<br /><br />}<br /><br /><br />
+		</script>
+	</scripts>
+</material>

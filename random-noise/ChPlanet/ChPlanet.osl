@@ -1,0 +1,78 @@
+/* planet procedural noise 
+ * based on farsthary blender patch
+ * by Charlie http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page16
+ *
+ * small changes to use more consistent naming and default noise choice
+ * by Shane Ambler
+ */ 
+
+#include "stdosl.h"
+#include "node_texture.h"
+
+
+color planet_noise(point pp, float offset, string b, float dtl, int h, float height){
+      
+       float xdy, xdz, ydx, ydz, zdx, zdy, off;
+       color cp = 0;
+       float d = offset;
+       float x = pp[0];
+       float y = pp[1];
+       float z = pp[2];
+       point ptemp;
+       
+       off = offset * 1000.0;
+       x = noise_turbulence(pp, b, dtl, h); 
+       ptemp = point(x + off, y , z); y = noise_turbulence(ptemp, b, dtl, h); 
+       ptemp = point(x, y + off, z); z = noise_turbulence(ptemp, b, dtl, h); 
+       
+       ptemp = point(x , y + d, z); xdy = x - noise_turbulence(ptemp, b, dtl, h); 
+       ptemp = point(x, y, z + d); xdz = x - noise_turbulence(ptemp, b, dtl, h); 
+
+       ptemp = point(x + d, y, z); ydx = y - noise_turbulence(ptemp, b, dtl, h); 
+       ptemp = point(x, y, z + d); ydz = y - noise_turbulence(ptemp, b, dtl, h); 
+
+       ptemp = point(x + d, y, z); zdx = z - noise_turbulence(ptemp, b, dtl, h); 
+       ptemp = point(x, y + d, z); zdy = z - noise_turbulence(ptemp, b, dtl, h); 
+
+       cp[0] = zdy - ydz;
+       cp[1] = zdx - xdz;
+       cp[2] = ydx - xdy;
+       
+       return cp+height;
+}
+
+shader ChPlanet(
+    vector Vector = N,
+    int Basis = 0,
+    float Offset = 0.001, 
+    float Scale = 1.0, 
+    float Distortion = 0.0,
+    float Noisedepth = 1.0, 
+    float Detail = 4.0,
+    float Height = 0.5,
+    int Hard = 1,
+    output float Intensity = 0,
+    output color Color = 0
+    )
+{
+    string noisetype;
+       
+    if (Basis == 0) { noisetype = "Perlin"; }
+    if (Basis == 1) { noisetype = "Cell Noise"; }
+    if (Basis == 2) { noisetype = "Voronoi F1"; }
+    if (Basis == 3) { noisetype = "Voronoi F2"; }
+    if (Basis == 4) { noisetype = "Voronoi F3"; }
+    if (Basis == 5) { noisetype = "Voronoi F4"; }
+    if (Basis == 6) { noisetype = "Voronoi F2-F1"; }
+    if (Basis == 7) { noisetype = "Voronoi Crackle"; }
+    else { noisetype = "Voronoi F2"; }
+
+    point pp = Vector * Scale;
+
+    Color = planet_noise(pp, Offset, noisetype, Detail, Hard, Height);
+
+    Intensity = luminance(Color);
+
+}
+
+
