@@ -1,7 +1,12 @@
 /*
- * MRmand.sl -- Mandelbrot texture
  * MRmandelbrot.osl
- *
+ * from https://github.com/sambler/osl-shaders
+ * 
+ * original script from -
+ * http://www.renderman.org/RMR/RMRShaders.html
+ * 
+ * MRmand.sl -- Mandelbrot texture
+ * 
  * DESCRIPTION:
  * Creates a Mandelbrot set as a texture
  *

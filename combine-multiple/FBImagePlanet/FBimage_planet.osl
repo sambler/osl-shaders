@@ -1,5 +1,8 @@
 /*
     image planet texture by fbbdev (c)2012
+    from https://github.com/sambler/osl-shaders
+
+    original script from -
     http://fbbdev.wordpress.com/2012/09/15/cycles-osl/
     
     shader is to easily merge together a day and night surface, with cloud

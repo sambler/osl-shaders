@@ -1,5 +1,7 @@
 /*
     SAMandelbrot -- a mandelbrot texture by Shane Ambler (c)2012
+    from https://github.com/sambler/osl-shaders
+    
     License: BSD
     
     While this gives basically the same pattern as MRMandelbrot I find this

@@ -1,6 +1,10 @@
 /*
     fingerprint pattern by Michel J. Anders (c)2012
+    from https://github.com/sambler/osl-shaders
+    
     license: cc-by-sa
+    
+    original script from -
     http://blenderthings.blogspot.com.au/2012/12/a-fingerprint-osl-shader-for-blender.html
 */
 

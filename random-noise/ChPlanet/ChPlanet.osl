@@ -1,6 +1,13 @@
-/* planet procedural noise 
+/* 
+ * ChPlanet.osl
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from -
+ * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page16
+ *
+ * planet procedural noise 
  * based on farsthary blender patch
- * by Charlie http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page16
+ * by Charlie 
  *
  * small changes to use more consistent naming and default noise choice
  * by Shane Ambler

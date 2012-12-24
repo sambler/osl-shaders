@@ -1,6 +1,10 @@
 /*
  * LGGreenMarble.osl
- * previously -
+ * from https://github.com/sambler/osl-shaders
+ * 
+ * original script from -
+ * http://www.renderman.org/RMR/RMRShaders.html
+ *
  * greenmarble.sl -- RenderMan compatible shader for green veined marble.
  *
  * DESCRIPTION:

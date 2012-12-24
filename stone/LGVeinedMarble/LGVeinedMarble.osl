@@ -1,4 +1,10 @@
 /*
+ * LGVeinedMarble.osl
+ * from https://github.com/sambler/osl-shaders
+ * 
+ * original script from -
+ * http://www.renderman.org/RMR/RMRShaders.html
+ *
  * veinedmarble.sl -- surface shader for a nice veined marble.
  *
  * DESCRIPTION:

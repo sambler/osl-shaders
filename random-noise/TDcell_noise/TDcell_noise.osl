@@ -1,5 +1,8 @@
 /*
     cell noise texture by Thomas Dinges (c)2012
+    from https://github.com/sambler/osl-shaders
+    
+    original script from -
     http://www.openshading.com/osl/example-shaders/
 */
 

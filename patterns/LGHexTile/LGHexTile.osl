@@ -1,4 +1,10 @@
 /*
+ * LGHexTile.osl
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from -
+ * http://www.renderman.org/RMR/RMRShaders.html
+ *
  * hextile.sl -- surface shader for hexagonal tiles in st space
  *
  * DESCRIPTION

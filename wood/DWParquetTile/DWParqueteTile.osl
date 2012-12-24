@@ -1,4 +1,10 @@
 /*
+ * DWParquetTile.osl
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from -
+ * http://www.renderman.org/RMR/RMRShaders.html
+ *
  * DWParquetTile.sl -- yet another surface shader for wood
  *-was:
  * parquet_plank.sl -- another surface shader for wood.
