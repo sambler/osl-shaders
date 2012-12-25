@@ -46,7 +46,7 @@
 
 shader
 LGHexTile (
-    point Vector = P,
+    vector Vector = P,
     float DiffuseAmt = .5,
     float SpecularAmt = .2,
     float Roughness = .1,

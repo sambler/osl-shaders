@@ -10,10 +10,10 @@
 #include <stdosl.h>
 
 shader TDcellnoise(
-    float Saturation = 0.5,
-    float Value = 1.0,
-    point Vector = P,
-    output color Color = (0.0))
+        vector Vector = P,
+        float Saturation = 0.5,
+        float Value = 1.0,
+        output color Color = (0.0))
 {
     float Fac = (noise("cell", Vector));
     Color = color("hsv", (smoothstep(0, 1, Fac)), Saturation, Value);

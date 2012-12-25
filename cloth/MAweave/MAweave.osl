@@ -29,6 +29,7 @@ int gcd(int A, int B){
 int scm(int a, int b){ return a*b/gcd(a,b); }
 
 shader MAweave(
+        vector Vector = vector(0),
         color WarpColor = color(0.8,0,0),
         color WeftColor = color(0,0.8,0),
         int skip = 1,
@@ -36,7 +37,6 @@ shader MAweave(
         int overrun = 1,
         float WarpWidth = 0.8,
         float WeftWidth = 0.8,
-        vector Coordinates = 0,
         output color Color = 0,
         output int Index = 0,
         output float Dist = 0)
@@ -44,8 +44,8 @@ shader MAweave(
     int ny = underrun + overrun;
     int nx = scm(skip,ny);
     
-    float x = mod(Coordinates[0],1.0);
-    float y = mod(Coordinates[1],1.0);
+    float x = mod(Vector[0],1.0);
+    float y = mod(Vector[1],1.0);
     
     int ix = int(floor(x*nx));
     int iy = int(floor(y*ny));

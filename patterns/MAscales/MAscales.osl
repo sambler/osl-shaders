@@ -12,17 +12,17 @@
 #include "stdosl.h"
 
 shader MAscales(
-    color Diffuse_Color1 = color(0.2, 0.8, 0.2),
-    color Diffuse_Color2 = color(0.8, 0.2, 0.2),
-    vector Coordinates = 0,
-    float n = 0,
-    output color Color = 0,
-    output int Index = 1,
-    output float Distance = 0,
-    output vector Vindex = 0)
+        vector Vector = 0,
+        color Diffuse_Color1 = color(0.2, 0.8, 0.2),
+        color Diffuse_Color2 = color(0.8, 0.2, 0.2),
+        float n = 0,
+        output color Color = 0,
+        output int Index = 1,
+        output float Distance = 0,
+        output vector Vindex = 0)
 {
-    float sx = mod(Coordinates[0],1);
-    float sy = mod(Coordinates[1],1);
+    float sx = mod(Vector[0],1);
+    float sy = mod(Vector[1],1);
     
     vector p  = vector(sx,sy,0);
     vector p0 = vector(0.5,0,0);
@@ -30,7 +30,7 @@ shader MAscales(
     vector p2 = vector(0,0.5,0);
     vector p3 = vector(1,0.5,0);
     
-    vector cell = vector(floor(Coordinates[0]),floor(Coordinates[1]),0);
+    vector cell = vector(floor(Vector[0]),floor(Vector[1]),0);
     int oddx = int(cell[0])%2;
     int oddy = int(cell[1])%2;
     

@@ -13,17 +13,17 @@
 
 float arc(float r){ return sqrt(0.25-(r-0.5)*(r-0.5)); }
 
-shader barbwire(
+shader MABarbWire(
+        vector Vector = P,
         float Width = 0.05,
         int Turns = 2,
         int Spiketurns = 2,
         float Xscale = 1,
-        point Pos = P,
         output float Fac = 0,
         output float Displ = 0 )
 {
-    float x = mod(Pos[0],1);
-    float y = mod(Pos[1],1);
+    float x = mod(Vector[0],1);
+    float y = mod(Vector[1],1);
 
     if ( x > 0.5 ) {
         x = 1 - x;

@@ -28,8 +28,8 @@
  */
 
 
-surface MRMandelbrot (
-        point Vector = P,
+shader MRMandelbrot (
+        vector Vector = P,
         int maxiteration = 500,
         output float Fac = 1.0 )
 {

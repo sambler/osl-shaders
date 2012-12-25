@@ -31,9 +31,9 @@
 
 #include "stdosl.h"
 
-surface
+shader
 LGGreenMarble (
-        point Vector = P,
+        vector Vector = P,
         float DiffuseAmt = 0.6,
         color SpecularColor = color(1.0),
         float SpecularAmt = 0.4,

@@ -75,7 +75,7 @@
 #include "stdosl.h"
 
 shader DWParquetTile (
-        point Vector = P,
+        vector Vector = P,
         float DiffuseAmt = 0.75 ,
         float SpecularAmt = 0.15,
         float Roughness = 0.025,

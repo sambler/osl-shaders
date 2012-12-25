@@ -13,7 +13,7 @@
 #include "node_texture.h"
 
 shader MAFingerprint(
-        point Vector = P,
+        vector Vector = P,
         float Scale = 1.0,
         int Ridges = 5,
         int Seed = 42,

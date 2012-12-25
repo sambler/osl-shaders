@@ -14,7 +14,7 @@
 #include "stdosl.h"
 
 shader MAlightvec(
-output color Color = 1)
+        output color Color = 1)
 {
     vector L;
     getattribute("Lamp","object:location",L);

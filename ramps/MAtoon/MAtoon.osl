@@ -12,11 +12,11 @@
 #include "stdosl.h"
 
 shader MAtoon(
-    color Color = 1,
+    color Shading = 1,
     float Angle = 50,
-    output color Col = 0)
+    output color Color = 0)
 {
     float angle = cos(radians(Angle));
-    if(abs(dot(-I,N)) > angle) Col = Color;
+    if(abs(dot(-I,N)) > angle) Color = Shading;
 }
 

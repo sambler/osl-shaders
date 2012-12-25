@@ -13,8 +13,8 @@
 
 float arc(float x){ return sqrt(1-(x-0.5)*(x-0.5)/0.25); }
 
-shader chainlink(
-        point Vector = P,
+shader MAChainLink(
+        vector Vector = P,
         float Width = 0.05,
         output float Fac = 0,
         output float Displ = 0

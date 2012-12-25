@@ -9,14 +9,14 @@
 
 #include "stdosl.h"
 
-shader TDsine_pattern(
-            color Color = color(0.8),
-            float Time = 1.0,
-            float Intensity = 1.0,
-            int Stripes = 10,
-            point Vector = P,
-            output float Fac = 1.0,
-            output color ColorOut = color(0.8))
+shader TDsine_stripes(
+        vector Vector = P,
+        color StripeColor = color(0.8),
+        float Time = 1.0,
+        float Intensity = 1.0,
+        int Stripes = 10,
+        output float Fac = 1.0,
+        output color Color = color(0.8))
 {
     point Pos = Vector;
     Pos[0] -= 0.5;
@@ -32,9 +32,9 @@ shader TDsine_pattern(
         pattern_col += f;
     }
     
-    color C = transformc("hsv", Color);
+    color C = transformc("hsv", StripeColor);
     
     Fac = pattern_col;
-    ColorOut = color("hsv", C[0], C[1], (Fac*C[2]));
+    Color = color("hsv", C[0], C[1], (Fac*C[2]));
 }
 
