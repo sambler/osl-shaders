@@ -1,0 +1,37 @@
+/*
+ * MAMinDistance.osl by Michel J. Anders (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: cc-by-sa
+ *
+ * original script from -
+ * http://blenderthings.blogspot.com.au/2012/12/a-replacement-for-missing-osl-distance.html
+ *
+ */
+
+#include "stdosl.h"
+
+// replacement for the missing distance(a, b, q) function
+
+// shortest distance from q to a line segment a -> b
+// based on information from the following two sites:
+// http://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
+// http://paulbourke.net/geometry/pointlineplane/
+
+float minimum_distance(point v, point w, point p) {
+    // Return minimum distance between line segment vw and point p
+    vector s = w - v;
+    float l2 = dot(s,s);
+
+    if (l2 == 0.0) return distance(p, v);
+
+    float t = dot(p - v, s) / l2;
+
+    if (t < 0.0) return distance(p, v);
+    else if (t > 1.0) return distance(p, w);
+
+    vector projection = v + t * (s);
+
+    return distance(p, projection);
+}
+
