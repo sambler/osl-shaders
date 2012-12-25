@@ -1,13 +1,14 @@
 /*
-    diffuse ramp texture by Thomas Dinges (c)2012
-    from https://github.com/sambler/osl-shaders
-    
-    original script from -
-    http://www.openshading.com/osl/example-shaders/
-    
-    NOTE: diffuse_ramp function added to blender svn at r52887 12/12/2012
-    This will not run in the 2.65 release
-*/
+ * TDDiffuse_ramp.osl by Thomas Dinges (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from -
+ * http://www.openshading.com/osl/example-shaders/
+ *
+ * NOTE: diffuse_ramp function added to blender svn at r52887 12/12/2012
+ * This will not run in the 2.65 release
+ *
+ */
 
 #include <stdosl.h>
 

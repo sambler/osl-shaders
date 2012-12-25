@@ -1,8 +1,13 @@
 /*
-    reflection texture by fbbdev (c)2012
-    part of interior shader
-    http://fbbdev.wordpress.com/2012/10/12/cycles-osl-interior-shader/
-*/
+ * FBReflection.osl by fbbdev (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from -
+ * http://fbbdev.wordpress.com/2012/10/12/cycles-osl-interior-shader/
+ *
+ * part of FBInterior_mapping.osl
+ *
+ */
 
 #include <stdosl.h>
 

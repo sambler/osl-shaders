@@ -1,12 +1,13 @@
 /*
-    scales shader by Michel J. Anders (c)2012
-    from https://github.com/sambler/osl-shaders
-    
-    license: cc-by-sa
-    
-    original script from -
-    http://blenderthings.blogspot.co.uk/2012/11/a-scales-osl-shader-for-blender.html
-*/
+ * MAScales.osl by Michel J. Anders (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: cc-by-sa
+ *
+ * original script from -
+ * http://blenderthings.blogspot.co.uk/2012/11/a-scales-osl-shader-for-blender.html
+ *
+ */
 
 #include "stdosl.h"
 

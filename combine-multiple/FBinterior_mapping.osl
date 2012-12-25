@@ -1,13 +1,13 @@
 /*
-    interior shader by fbbdev (c)2012
-    from https://github.com/sambler/osl-shaders
-
-    original script from -
-    http://fbbdev.wordpress.com/2012/10/12/cycles-osl-interior-shader/
-    
-    an easy way to render random interior room textures for a tall building
-    see above page for node setup to make use of this.
-*/
+ * FBInterior_mapping.osl by fbbdev (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from -
+ * http://fbbdev.wordpress.com/2012/10/12/cycles-osl-interior-shader/
+ *
+ * an easy way to render random interior room textures for a tall building
+ * see above page for node setup to make use of this.
+ */
 
 #include <stdosl.h>
 

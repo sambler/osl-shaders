@@ -1,7 +1,11 @@
 /*
-    phong ramp texture by Thomas Dinges (c)2012
-    http://www.openshading.com/osl/example-shaders/
-*/
+ * TDPhong_ramp.osl by Thomas Dinges (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from -
+ * http://www.openshading.com/osl/example-shaders/
+ *
+ */
 
 #include <stdosl.h>
 

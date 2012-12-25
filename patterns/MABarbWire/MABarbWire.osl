@@ -1,12 +1,13 @@
 /*
-    Barbwire shader by Michel J. Anders (c)2012
-    from https://github.com/sambler/osl-shaders
-    
-    license: cc-by-sa
-    
-    original script from -
-    http://blenderthings.blogspot.com.au/2012/12/a-barbwire-osl-shader-for-blender-cycles.html
-*/
+ * MABarbWire.osl by Michel J. Anders (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: cc-by-sa
+ *
+ * original script from -
+ * http://blenderthings.blogspot.com.au/2012/12/a-barbwire-osl-shader-for-blender-cycles.html
+ *
+ */
 
 #include "stdosl.h"
 

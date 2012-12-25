@@ -1,12 +1,13 @@
 /*
-    SAPointInput -- a helper to alloow you to input point coordinates 
-    by Shane Ambler (c)2012
-    License: BSD
-    
-    While you can display a colourwheel within the node tree the exact values 
-    used aren't displayed.
-    This script simply allows the input to be visible for easy sharing.
-*/
+ * SAInputRGB.osl by Shane Ambler (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: BSD
+ *
+ * While you can display a colourwheel within the node tree the exact values 
+ * used aren't displayed.
+ * This script simply allows the input to be visible for easy sharing.
+ */
 
 #include "stdosl.h"
 

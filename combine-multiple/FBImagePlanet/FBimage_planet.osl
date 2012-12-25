@@ -1,29 +1,29 @@
 /*
-    image planet texture by fbbdev (c)2012
-    from https://github.com/sambler/osl-shaders
-
-    original script from -
-    http://fbbdev.wordpress.com/2012/09/15/cycles-osl/
-    
-    shader is to easily merge together a day and night surface, with cloud
-    and specular mask and atmosphere colour.
-    The barrier between night and day textures is based off the sun position.
-    
-    Planet textures from this solar system are available at 
-    http://www.celestiamotherlode.net/
-    
-    Other images can also be found at http://pds.jpl.nasa.gov/planets/
-    
-    The sample node setup uses images from 
-    http://www.blenderguru.com/videos/create-a-realistic-earth/
-    It uses one UVSphere and a plane emitting light to one side - the black background keeps it dark.
-    I made the clouds move separate from the planet by animating the location 
-    in the UV mapping node going into the clouds image texture.
-    Not a great result but could pass for a distant planet animation.
-    Might be possible to improve it with a better cloud image.
-    For close ups you will probably want to have the clouds on a separate sphere.
-    
-*/
+ *   FBImage_planet.osl by fbbdev (c)2012
+ *   from https://github.com/sambler/osl-shaders
+ *
+ *   original script from -
+ *   http://fbbdev.wordpress.com/2012/09/15/cycles-osl/
+ *   
+ *   shader is to easily merge together a day and night surface, with cloud
+ *   and specular mask and atmosphere colour.
+ *   The barrier between night and day textures is based off the sun position.
+ *   
+ *   Planet textures from this solar system are available at 
+ *   http://www.celestiamotherlode.net/
+ *   
+ *   Other images can also be found at http://pds.jpl.nasa.gov/planets/
+ *   
+ *   The sample node setup uses images from 
+ *   http://www.blenderguru.com/videos/create-a-realistic-earth/
+ *   It uses one UVSphere and a plane emitting light to one side - the black background keeps it dark.
+ *   I made the clouds move separate from the planet by animating the location 
+ *   in the UV mapping node going into the clouds image texture.
+ *   Not a great result but could pass for a distant planet animation.
+ *   Might be possible to improve it with a better cloud image.
+ *   For close ups you will probably want to have the clouds on a separate sphere.
+ *   
+ */
 
 #include "stdosl.h"
 

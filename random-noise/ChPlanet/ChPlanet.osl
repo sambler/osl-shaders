@@ -1,5 +1,5 @@
 /* 
- * ChPlanet.osl
+ * ChPlanet.osl by Charlie 
  * from https://github.com/sambler/osl-shaders
  *
  * original script from -
@@ -7,10 +7,7 @@
  *
  * planet procedural noise 
  * based on farsthary blender patch
- * by Charlie 
  *
- * small changes to use more consistent naming and default noise choice
- * by Shane Ambler
  */ 
 
 #include "stdosl.h"
