@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="MATH" operation="GREATER_THAN" use_clamp="False" value1="0.5" value2="0.0" loc="-476, 321" />
+		<node type="MATH" operation="POWER" use_clamp="False" value1="0.5" value2="0.5" loc="-504, 131" />
+		<node type="BUMP" strength="0.20000" loc="-345, 58" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.10447, 0.02454, 0.02358, 1.0)" roughness="0.0" loc="-134, 119" />
+		<node type="BSDF_GLOSSY" distribution="BECKMANN" color="rgba(0.46343, 0.21162, 0.14913, 1.0)" roughness="0.30000" loc="-141, -12" />
+		<node type="MIX_SHADER" fac="0.70000" loc="76, 153" />
+		<node type="MIX_SHADER" fac="0.5" loc="251, 314" />
+		<node type="TEX_COORD" dupli="False" loc="-942, 167" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" scale="40.0" density="2" seed="42" radius="0.14999" size="0.39999" loc="-750, 197" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.74549, 0.59489, 0.29647, 1.0)" roughness="0.0" loc="-121, 259" />
+		<node type="OUTPUT_MATERIAL" loc="451, 311" />
+	</nodes>
+	<links>
+		<link to="0" input="0" from="8" output="0" />
+		<link to="1" input="0" from="8" output="0" />
+		<link to="10" input="0" from="6" output="0" />
+		<link to="6" input="0" from="0" output="0" />
+		<link to="6" input="2" from="5" output="0" />
+		<link to="5" input="1" from="3" output="0" />
+		<link to="5" input="2" from="4" output="0" />
+		<link to="2" input="1" from="1" output="0" />
+		<link to="4" input="2" from="2" output="0" />
+		<link to="3" input="2" from="2" output="0" />
+		<link to="6" input="1" from="9" output="0" />
+		<link to="8" input="0" from="7" output="2" />
+	</links>
+	<scripts>
+		<script name="MAHagelslag.osl" id="0">
+/*<br /> * MAHagelslag.osl by Michel J. Anders (c)2012<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: cc-by-sa<br /> *<br /> * original script from -<br /> * http://blenderthings.blogspot.com.au/2012/12/a-hagelslag-sprinkles-osl-shader-for.html<br /> *<br /> *<br /> * In blender's homeland hagelslag is the name used for sprinkles.<br /> * Enjoy sprinkling blender's hagelslag on all your materials<br /> * to make them as delicious as can be ;)<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />// replacement for the missing distance(a, b, q) function<br />float minimum_distance(point v, point w, point p) {<br />  vector s = w - v;<br />  float l2 = dot(s,s);<br />  if (l2 == 0.0) return distance(p, v);<br />  float t = dot(p - v, s) / l2;<br />  if (t &lt; 0.0) return distance(p, v);<br />  else if (t &gt; 1.0) return distance(p, w);<br />  vector projection = v + t * (s);<br />  return distance(p, projection);<br />}<br /><br />shader MAHagelslag(<br />        vector Vector = P,<br />        float Scale = 1.0,<br />        int Density = 1,<br />        int Seed = 42,<br />        float Radius = 0.05,<br />        float Size = 1.0,<br />        output float Fac = 0 )<br />{<br />    point p = Vector * Scale;<br />    point f = floor(p);<br /><br />    int xx,yy,np;<br />    vector one = 1;<br /><br />    for( xx=-1; xx&lt;=1; xx++){<br />        for( yy=-1; yy&lt;=1; yy++){<br />            point ff = f + vector(xx,yy,0);<br /><br />            vector dp = vector(5,7,11);<br /><br />            for( np=0; np &lt; Density; np++){<br />                vector pd1 = 2*cellnoise(ff+dp)-one;<br />                vector pd2 = 2*cellnoise(ff+dp+Seed)-one;<br /><br />                dp *= 17;<br /><br />                point p1 = ff + pd1;<br />                point p2 = ff + pd2;<br /><br />                p2 = (p2 - p1)*Size+p1;<br /><br />                // reduce to 2D<br />                p1[2]=0;<br />                p2[2]=0;<br />                p [2]=0;<br /><br />                float r = minimum_distance(p1,p2,p);<br />                if ( r &lt; Radius ) {<br />                    Fac = 1 - r/Radius;<br />                    return;<br />                }<br />            }<br />        }<br />    }<br />}<br /><br />
+		</script>
+	</scripts>
+</material>
