@@ -1,0 +1,61 @@
+In the hope that others will help me grow this collection of shaders
+I thought I would list some guidlines of what I think should be considered
+when creating an osl script.
+
+In this repository I have chosen to use a convention used within the
+renderman community by starting the script name with the authors initials
+to prevent having ten scripts named marble1 marble2 marble3...
+While it doesn't appear to be necessary I also have the shader function
+name match the script filename.
+
+In order to help blender users make use of these scripts the first aim is
+to have some consistency. While the comments at the top don't make the script
+work any better it does help to identify the origin of the script and to help
+find the latest version as well as to find more sripts that may be helpful.
+Some explanation for using less obvious script settings are also useful
+within the comments.
+
+An example simple comment header --
+
+/*
+ * MAScales.osl by Michel J. Anders (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: cc-by-sa
+ *
+ * original script from -
+ * http://blenderthings.blogspot.co.uk/2012/11/a-scales-osl-shader-for-blender.html
+ *
+ */
+
+The first priority with scripts is to make the input and output paramater names
+feel consistent with blenders built-in nodes. For example the input sockets
+used for texture coordinates are called Vector. Output sockets use names like
+BSDF Color and Fac. Consider what node sockets will be connected to your script.
+
+While technical users will be making these scripts, we need to remember that
+most blender users are not technically minded and would rather not read
+through the script to understand what each paramater is for.
+
+Visible variable names should be descriptive and helpful to non-technical users.
+For example use a name like Density not a short non-descriptive name like Da.
+Multiple words joined together should be capitalised (camel case) as it helps
+to identify what words have been squashed together. It is OK to use common
+abbreviations like Freq Col and Amt within longer names to prevent them
+getting too long.
+
+It can help to order the variables so that they are grouped together logically.
+Using DWParquette as an example - I start with Vector then a few settings
+that effect the overall look, followed by controls for the grain appearance
+then colour choices and end off with adjusting the size of the planks
+that divide up each square. In LGVeinedMarble I have DiffuseAmt/Color
+followed by SpecularAmt/Rougness/Color VeinFreq/Level/Color then the
+warp settings and end with sharpness.
+
+If you are creating the script from scratch please choose a licensing term
+to apply to the script. While the creative commons terms are well kown you may
+wish to use a more traditional programming license such as BSD MIT or GPL.
+If you wish to restrict commercial use or any other terms of use
+please make that clear.
+
+
