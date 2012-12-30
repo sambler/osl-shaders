@@ -1,0 +1,44 @@
+/*
+ * TDYinYang.osl byThomas Dinges (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from -
+ * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page2
+ *
+ * Based on OpenGL Code by Inigo Quilez
+ * http://www.iquilezles.org/apps/shadertoy/index.html
+ *
+ */
+
+#include <stdosl.h>
+
+float yinyang(float x, float y, float rot) 
+{
+    float nx = x;
+    float ny = y;
+    x = 1.5*(nx*cos(0.2*rot) - ny*sin(0.2*rot));
+    y = 1.5*(nx*sin(0.2*rot) + ny*cos(0.2*rot));
+    float h = x*x + y*y;
+    float d = abs(y)-h;
+    float a = d-0.23;
+    float b = h-1.00;
+    float c = sign(a*b*(y+x + (y-x)*sign(d)));
+
+    c = mix( c, 0.0, smoothstep(0.98,1.00,h) );
+    c = mix( c, 1.0, smoothstep(1.00,1.02,h) );
+    return c;
+}
+
+shader node_yinyang(
+    point Vector = P,
+    float Scale = 1.0,
+    float Rotation = 1.0,
+    output color Color = (0.0),
+    output float Fac = 0.0)
+{
+    point p= Scale*Vector;
+    
+    Fac = yinyang(float(p[0]),float(p[1]), Rotation);
+    Color = color(Fac);
+}
+

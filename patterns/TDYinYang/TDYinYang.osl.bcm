@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" scale="1.0" rotation="1.0" loc="-298, 281" />
+		<node type="MAPPING" translation="Vector(0.0, 0.0, 0.0)" rotation="Vector(0.0, 0.03490, 1.74532)" scale="Vector(0.20000, 0.20000, 0.20000)" use_min="False" use_max="False" vector="Vector(0.0, 0.0, 0.0)" loc="-593, 300" />
+		<node type="TEX_COORD" dupli="False" loc="-802, 267" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.0" loc="-102, 295" />
+		<node type="OUTPUT_MATERIAL" loc="95, 288" />
+	</nodes>
+	<links>
+		<link to="4" input="0" from="3" output="0" />
+		<link to="3" input="0" from="0" output="0" />
+		<link to="0" input="0" from="1" output="0" />
+		<link to="1" input="0" from="2" output="4" />
+	</links>
+	<scripts>
+		<script name="TDYinYang.osl" id="0">
+/*<br /> * TDYinYang.osl byThomas Dinges (c)2012<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * original script from -<br /> * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page2<br /> *<br /> * Based on OpenGL Code by Inigo Quilez<br /> * http://www.iquilezles.org/apps/shadertoy/index.html<br /> *<br /> */<br /><br />#include &lt;stdosl.h&gt;<br /><br />float yinyang(float x, float y, float rot) <br />{<br />    float nx = x;<br />    float ny = y;<br />    x = 1.5*(nx*cos(0.2*rot) - ny*sin(0.2*rot));<br />    y = 1.5*(nx*sin(0.2*rot) + ny*cos(0.2*rot));<br />    float h = x*x + y*y;<br />    float d = abs(y)-h;<br />    float a = d-0.23;<br />    float b = h-1.00;<br />    float c = sign(a*b*(y+x + (y-x)*sign(d)));<br /><br />    c = mix( c, 0.0, smoothstep(0.98,1.00,h) );<br />    c = mix( c, 1.0, smoothstep(1.00,1.02,h) );<br />    return c;<br />}<br /><br />shader node_yinyang(<br />    point Vector = P,<br />    float Scale = 1.0,<br />    float Rotation = 1.0,<br />    output color Color = (0.0),<br />    output float Fac = 0.0)<br />{<br />    point p= Scale*Vector;<br />    <br />    Fac = yinyang(float(p[0]),float(p[1]), Rotation);<br />    Color = color(Fac);<br />}<br /><br />
+		</script>
+	</scripts>
+</material>
