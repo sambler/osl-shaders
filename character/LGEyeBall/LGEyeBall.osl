@@ -134,7 +134,7 @@ shader LGEyeBall (
             freq *= 2;
             f2 *= 2;
         }
-        Ciris *= (1-clamp(turb/2zz,0,1));
+        Ciris *= (1-clamp(turb/2,0,1));
     }
 
     /* OK, now calculate a surface texture color (Ct) based on where we are
