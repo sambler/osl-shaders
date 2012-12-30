@@ -10,7 +10,7 @@
 #include <stdosl.h>
 
 shader TDphong_ramp_bsdf(
-    normal Normal = N,
+    vector Normal = N,
     float Exponent = 2.0,
     output closure color BSDF = 0)
 {
