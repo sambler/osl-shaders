@@ -1,0 +1,26 @@
+/*
+ * ChHardMix.osl by Charlie (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: public domain
+ *
+ * original script from -
+ * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page5
+ *
+ */
+
+shader hardmix(
+    float Factor = 1,
+    color Color = 1,
+    color Color2 = 1,
+    output color Output = 0 )
+{
+    float hardmix(float Value, float Value2 ){
+        return mix(Value, Value2, Factor) > 0.5 ? 1.0 : 0.0;
+    }
+
+    Output[0] = hardmix(Color[0],Color2[0]);
+    Output[1] = hardmix(Color[1],Color2[1]);
+    Output[2] = hardmix(Color[2],Color2[2]);
+}
+
