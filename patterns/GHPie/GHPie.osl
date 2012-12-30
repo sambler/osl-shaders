@@ -14,19 +14,20 @@
 
 #include "stdosl.h"
 
-color pie(point p, int Divides, float Angle)
+color pie(point p, int Divides, float Angle, float Noise)
 {
     float angle_new;
-    angle_new = atan2(p[0],p[1]) + Angle*3.1415926/180.0;
-    return color(0.5 - 0.5*sin(angle_new * Divides - 0.5));
+    angle_new = atan2(p[0],p[1]) + Angle * M_PI/180.0;
+    return color(0.5 - 0.5 * sin(angle_new * Divides - Noise - 0.5));
 }
 
 shader node_magic_texture(
     point Vector = P,
     int Divides = 2,
     float Angle = 5.0,
+    float Noise = 0.0,
     output color Color = color(0.0, 0.0, 0.0))
 {
-    Color = pie(Vector, Divides, Angle);
+    Color = pie(Vector, Divides, Angle, Noise);
 }
 
