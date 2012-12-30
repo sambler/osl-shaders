@@ -1,0 +1,118 @@
+/*
+ * MAChainmail.osl by Michel J. Anders (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: cc-by-sa
+ *
+ * original script from -
+ * http://blenderthings.blogspot.com.au/2012/12/a-chainmail-osl-shader-in-blender-cycles.html
+ *
+ */
+
+#include "stdosl.h"
+
+int between(float v, float a, float b){ return v >= a && v <= b; }
+
+float arc(float r, float a, float b) { return sqrt(0.5-abs(0.5-((r-a)/(b-a)))); }
+
+float rmap(float a, float b, float ra[3] )
+{
+    if ( between(ra[0], a, b) ) { return ra[0]; }
+    if ( between(ra[1], a, b) ) { return ra[1]; }
+    if ( between(ra[2], a, b) ) { return ra[2]; }
+    return -1;
+}
+
+float basepattern(float r1, float r2, float r3, int fx, int fy, float Rm, float Rp)
+{
+    float x0y0[3] = {r3, r1, r2};
+    float x0y1[3] = {r2, r3, r1};
+    float x1y0[3] = {r1, r3, r2};
+    float x1y1[3] = {r2, r1, r3};
+
+    float r = -1;
+    if ( fx ){
+    if ( fy ) {
+        r = rmap(Rm, Rp, x1y1);
+    } else {
+        r = rmap(Rm, Rp, x1y0);
+    }
+
+    } else {
+        if ( fy ) {
+            r = rmap(Rm, Rp, x0y1);
+        } else {
+            r = rmap(Rm, Rp, x0y0);
+        }
+    }
+    return r;
+}
+
+shader chainmail4in1 (
+        vector Vector = P,
+        float Scale = 1,
+        float Radius = 0.47,
+        float Width = 0.08,
+        output float Fac = 0,
+        output float Disp = 0 )
+{
+    point p = Vector * Scale ;
+    float x = mod(p[0],1);
+    float y = mod(p[1],1);
+
+    float Rm = Radius - Width;
+    float Rp = Radius + Width;
+
+    float r=-1,r1,r2,r3,cr1,cr2,cr3;
+
+    int fx = 0, fy = 0 , flip = y > x, flipt = y > ( 1 - x );
+    if ( x > 0.5 ){ x = 1 - x ; fx = 1; }
+    if ( y > 0.5 ){ y = 1 - y ; fy = 1; }
+
+    r1 = hypot(x-0.5,y-0.5);
+    r2 = hypot(x-0.5,y+0.5);
+    r3 = hypot(x+0.5,y-0.5);
+
+    float xc = mod(p[0]+0.5,1);
+    float yc = mod(p[1]+0.5,1);
+
+    int fxc = 0, fyc = 0, flipc = y > x;
+
+    if ( xc > 0.5 ){ xc = 1 - xc ; fxc = 1; }
+    if ( yc > 0.5 ){ yc = 1 - yc ; fyc = 1; }
+
+    cr1 = hypot(xc-0.5,yc-0.5);
+    cr2 = hypot(xc-0.5,yc+0.5);
+    cr3 = hypot(xc+0.5,yc-0.5);
+
+    if ( flip ^ flipt ){
+        // base pattern
+        r = basepattern(r1,r2,r3,fx,fy,Rm,Rp);
+        if ( r> -1){
+            Fac = 1;
+            Disp = arc(r,Rm,Rp);
+        } else {
+            // connecting rings
+            r = basepattern(cr1,cr2,cr3,fxc,fyc,Rm,Rp);
+            if ( r> -1){
+                Fac = 1;
+                Disp = arc(r,Rm,Rp);
+            }
+        }
+    } else {
+        // connecting rings
+        r = basepattern(cr1,cr2,cr3,fxc,fyc,Rm,Rp);
+        if ( r> -1){
+            Fac = 1;
+            Disp = arc(r,Rm,Rp);
+        } else {
+            // base patterm
+            r = basepattern(r1,r2,r3,fx,fy,Rm,Rp);
+            if ( r> -1){
+                Fac = 1;
+                Disp = arc(r,Rm,Rp);
+            }
+        }
+    }
+}
+

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="MIX_SHADER" fac="0.5" loc="77, 355" />
+		<node type="BSDF_TRANSPARENT" color="rgba(1.0, 1.0, 1.0, 1.0)" loc="-135, 305" />
+		<node type="MIX_SHADER" fac="0.69999" loc="-138, 195" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.0" loc="-361, 168" />
+		<node type="BSDF_GLOSSY" distribution="BECKMANN" color="rgba(0.74659, 0.74659, 0.74659, 1.0)" roughness="0.20000" loc="-361, 33" />
+		<node type="OUTPUT_MATERIAL" loc="303, 318" />
+		<node type="MATH" operation="MULTIPLY" use_clamp="False" value1="0.5" value2="1.20000" loc="54, 78" />
+		<node type="REROUTE" loc="-196, 360" />
+		<node type="REROUTE" loc="-309, -206" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" scale="20.0" radius="0.46999" width="0.10000" loc="-636, 88" />
+		<node type="VALTORGB" interpolation="LINEAR" fac="0.5" stops="2" stop1="0.0|rgba(0.44345, 0.41650, 0.49000, 1.0)" stop2="1.0|rgba(0.57119, 0.62999, 0.56699, 1.0)" loc="-672, 368" />
+		<node type="TEX_NOISE" scale="69.76799" detail="2.0" distortion="0.0" loc="-895, 366" />
+		<node type="VECT_MATH" operation="ADD" vector1="Vector(0.5, 0.5, 0.5)" vector2="Vector(0.5, 0.5, 0.5)" loc="-813, 132" />
+		<node type="MIX_RGB" blend_type="MULTIPLY" use_clamp="False" fac="0.97000" color1="rgba(0.5, 0.5, 0.5, 1.0)" color2="rgba(0.0, 0.0, 0.0, 1.0)" loc="-964, 42" />
+		<node type="TEX_COORD" dupli="False" loc="-1167, 332" />
+		<node type="TEX_MUSGRAVE" musgrave="FBM" scale="1.42400" detail="2.0" dimension="2.0" lacunarity="1.0" offset="0.0" gain="1.0" loc="-1181, 75" />
+	</nodes>
+	<links>
+		<link to="11" input="0" from="14" output="2" />
+		<link to="10" input="0" from="11" output="1" />
+		<link to="5" input="0" from="0" output="0" />
+		<link to="0" input="1" from="1" output="0" />
+		<link to="0" input="2" from="2" output="0" />
+		<link to="2" input="1" from="3" output="0" />
+		<link to="2" input="2" from="4" output="0" />
+		<link to="3" input="0" from="10" output="0" />
+		<link to="6" input="0" from="8" output="0" />
+		<link to="5" input="2" from="6" output="0" />
+		<link to="8" input="0" from="9" output="1" />
+		<link to="0" input="0" from="7" output="0" />
+		<link to="7" input="0" from="9" output="0" />
+		<link to="13" input="1" from="15" output="0" />
+		<link to="12" input="1" from="13" output="0" />
+		<link to="12" input="0" from="14" output="2" />
+		<link to="9" input="0" from="12" output="0" />
+	</links>
+	<scripts>
+		<script name="MAChainmail.osl" id="0">
+/*<br /> * MAChainmail.osl by Michel J. Anders (c)2012<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: cc-by-sa<br /> *<br /> * original script from -<br /> * http://blenderthings.blogspot.com.au/2012/12/a-chainmail-osl-shader-in-blender-cycles.html<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />int between(float v, float a, float b){ return v &gt;= a &amp;&amp; v &lt;= b; }<br /><br />float arc(float r, float a, float b) { return sqrt(0.5-abs(0.5-((r-a)/(b-a)))); }<br /><br />float rmap(float a, float b, float ra[3] )<br />{<br />    if ( between(ra[0], a, b) ) { return ra[0]; }<br />    if ( between(ra[1], a, b) ) { return ra[1]; }<br />    if ( between(ra[2], a, b) ) { return ra[2]; }<br />    return -1;<br />}<br /><br />float basepattern(float r1, float r2, float r3, int fx, int fy, float Rm, float Rp)<br />{<br />    float x0y0[3] = {r3, r1, r2};<br />    float x0y1[3] = {r2, r3, r1};<br />    float x1y0[3] = {r1, r3, r2};<br />    float x1y1[3] = {r2, r1, r3};<br /><br />    float r = -1;<br />    if ( fx ){<br />    if ( fy ) {<br />        r = rmap(Rm, Rp, x1y1);<br />    } else {<br />        r = rmap(Rm, Rp, x1y0);<br />    }<br /><br />    } else {<br />        if ( fy ) {<br />            r = rmap(Rm, Rp, x0y1);<br />        } else {<br />            r = rmap(Rm, Rp, x0y0);<br />        }<br />    }<br />    return r;<br />}<br /><br />shader chainmail4in1 (<br />        vector Vector = P,<br />        float Scale = 1,<br />        float Radius = 0.47,<br />        float Width = 0.08,<br />        output float Fac = 0,<br />        output float Disp = 0 )<br />{<br />    point p = Vector * Scale ;<br />    float x = mod(p[0],1);<br />    float y = mod(p[1],1);<br /><br />    float Rm = Radius - Width;<br />    float Rp = Radius + Width;<br /><br />    float r=-1,r1,r2,r3,cr1,cr2,cr3;<br /><br />    int fx = 0, fy = 0 , flip = y &gt; x, flipt = y &gt; ( 1 - x );<br />    if ( x &gt; 0.5 ){ x = 1 - x ; fx = 1; }<br />    if ( y &gt; 0.5 ){ y = 1 - y ; fy = 1; }<br /><br />    r1 = hypot(x-0.5,y-0.5);<br />    r2 = hypot(x-0.5,y+0.5);<br />    r3 = hypot(x+0.5,y-0.5);<br /><br />    float xc = mod(p[0]+0.5,1);<br />    float yc = mod(p[1]+0.5,1);<br /><br />    int fxc = 0, fyc = 0, flipc = y &gt; x;<br /><br />    if ( xc &gt; 0.5 ){ xc = 1 - xc ; fxc = 1; }<br />    if ( yc &gt; 0.5 ){ yc = 1 - yc ; fyc = 1; }<br /><br />    cr1 = hypot(xc-0.5,yc-0.5);<br />    cr2 = hypot(xc-0.5,yc+0.5);<br />    cr3 = hypot(xc+0.5,yc-0.5);<br /><br />    if ( flip ^ flipt ){<br />        // base pattern<br />        r = basepattern(r1,r2,r3,fx,fy,Rm,Rp);<br />        if ( r&gt; -1){<br />            Fac = 1;<br />            Disp = arc(r,Rm,Rp);<br />        } else {<br />            // connecting rings<br />            r = basepattern(cr1,cr2,cr3,fxc,fyc,Rm,Rp);<br />            if ( r&gt; -1){<br />                Fac = 1;<br />                Disp = arc(r,Rm,Rp);<br />            }<br />        }<br />    } else {<br />        // connecting rings<br />        r = basepattern(cr1,cr2,cr3,fxc,fyc,Rm,Rp);<br />        if ( r&gt; -1){<br />            Fac = 1;<br />            Disp = arc(r,Rm,Rp);<br />        } else {<br />            // base patterm<br />            r = basepattern(r1,r2,r3,fx,fy,Rm,Rp);<br />            if ( r&gt; -1){<br />                Fac = 1;<br />                Disp = arc(r,Rm,Rp);<br />            }<br />        }<br />    }<br />}<br /><br />
+		</script>
+	</scripts>
+</material>
