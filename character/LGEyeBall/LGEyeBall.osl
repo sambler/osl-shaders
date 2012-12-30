@@ -1,0 +1,158 @@
+/*
+ * LGEyeBall.osl by Shane Ambler
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from -
+ * http://www.renderman.org/RMR/RMRShaders.html
+ *
+ * previously -
+ * eyeball.sl -- RenderMan compatible shader for an eyeball.
+ *
+ * DESCRIPTION:
+ *   Makes a plastic-like surface which looks like an eyeball.  It's meant
+ *   for use on a sphere.  The center of the pupil is at the "north pole",
+ *   i.e. where the t parameter is 1.  The colors of the pupil, iris, white
+ *   part (eyeball), and blood vessels can be set individually.  Fractal
+ *   functions are used for the veining and the iris mottling.
+ * 
+ * PARAMETERS:
+ *   DiffuseAmt, SpecularAmt, roughness, SpecularColor - work just like the plastic shader
+ *   IrisColor - color of the iris
+ *   EyeBallColor - color of the white part of the eyeball
+ *   BloodColor - color of the blood vessels
+ *   PupilColor - color of the pupil (opening)
+ *   PupilSize - size of pupil (in "t" space)
+ *   IrisSize - size of iris (in "t" space), must be larger than pupilsize
+ *   BloodShotAmt - controls how BloodShotAmt the eye is (0=no blood, 1=very ugly)
+ *   VeinFreq, VeinLevel - control the formation of the blood vessels
+ *   Index - set between 0 and 1, lets you use this shader to generate
+ *           non-identical eyeballs.
+ *
+ * ANTIALIASING: basic antialiasing of the boundaries between tissue types
+ *               is performed.
+ *
+ * AUTHOR: written by Larry Gritz
+ *
+ * HISTORY:
+ *      Nov 1991 - crude written of "eye" by lg for Herman's eyes for
+ *                 "Graphic Violence".  Original version hard coded in C.
+ *      Dec 1993 - "eye" modified by lg to clean up a bit.
+ *      10 Jan 1994 - recoded by lg in correct shading language.
+ *      28 Jun 94 (lg) - revamped to add veins and iris mottling, renamed
+ *                       "eyeball"
+ *       7 Jan 95 (wave) - changed name to LGEyeBall for namespace reasons...
+ *       8 Jan 95 (wave) - changed Ciris line to fix bug Larry figured out and changed defaults
+ *       27 Feb 95 (wave) - changed PO line to fix bug Larry figured out to actually *use* index
+ *
+ * last modified  8 Jan 95 by Michael B. Johnson (wave)
+ * 21/12/2012 converted to blender osl by Shane Ambler
+ *
+ */
+
+#include "stdosl.h"
+
+shader LGEyeBall (
+        float DiffuseAmt = 0.9,
+        float SpecularAmt = 0.8,
+        float roughness = 0.1,
+        color SpecularColor = color(1.0),
+        color IrisColor = color (0.135289, 0.084323, 0.372417),
+        color IrisOuterColor = color (0.403882, 0.343944, 0.68276),
+        color EyeBallColor = color(1.0,1.0,1.0),
+        color BloodColor = color(0.8,0.05,0.05),
+        color PupilColor = color(0.0),
+        float PupilSize = 0.2,
+        float IrisSize = 1.0,
+        float BloodShotAmt = 1.0,
+        float VeinFreq = 8.0,
+        float VeinLevel = 4.0,
+        float Index = 0.0,
+        output closure color BSDF = diffuse(N) )
+{
+#define snoise(P) (2*noise(P)-1)
+#define MINFILTERWIDTH 1.0e-7
+#define PUPILSIZE (PupilSize * .1)
+#define IRISSIZE (IrisSize * .1)
+
+    color Ct;
+    point Nf;
+    point PP, PO;
+    float i, turb, newturb, freq, f2;
+    float displayed, newdisp;
+    color Cball, Ciris;
+    float irisstat, pupilstat;
+    float bloody, tt;
+    float ks, rough;
+    float twidth, cutoff;
+
+    /* Calculate an appropriate filter width for antialiasing */
+    twidth = max (abs(Dx(P[1])) + abs(Dy(P[1])), MINFILTERWIDTH);
+    PO = transform ("object", P) + Index;
+
+    /* Figure out where we are in the eyeball.  Use the following variables:
+     * irisstat: 0 inside the iris/white boundary, 1 outside
+     * pupilstat: 0 inside the pupil/iris boundary, 1 outside
+     * bloody: how potentially bloody it is (fade as we get away from iris)
+     */
+    tt = 1-PO[1];
+    irisstat = smoothstep (IRISSIZE, IRISSIZE+twidth, tt);
+    pupilstat = smoothstep (PUPILSIZE, PUPILSIZE+twidth, tt);
+    bloody = BloodShotAmt * (smoothstep (-IRISSIZE, 2.5*IRISSIZE, tt));
+
+    /* If we're somewhere in the white part and it's potentially bloody,
+    * then calculate the veining pattern.  Otherwise, just use the color
+    * of the whites.  The veining pattern is essentially summed zero sets
+    * of turbulence functions.  Some stretching is done to get it to look
+    * just right.
+    */
+    if (irisstat * bloody > 0.001) {
+        turb = bloody;
+        freq = VeinFreq;
+        displayed = 0;
+        for (i = 1;  (i <= VeinLevel) && (turb > 0.1);  i += 1) {
+            newturb = 1 - abs (snoise(PO*freq + point(0,0,20*freq)));
+            newdisp = pow (smoothstep (.85, 1, newturb), 10);
+            displayed += (1-displayed) * newdisp * smoothstep (.1, .85, turb * turb);
+            turb *= newturb;
+            freq *= 2;
+        }
+        Cball = mix (EyeBallColor, BloodColor, smoothstep(0,.75,displayed));
+    }
+    else
+        Cball = EyeBallColor;
+
+    Ciris = mix (IrisColor, IrisOuterColor, smoothstep (IRISSIZE*.8, IRISSIZE, tt));
+    /* If we're somewhere in the iris, calculate the iris pattern, which is
+     * just a stretched turbulence function.
+     */
+    if (irisstat < 0.9999 && pupilstat > 0.0001) {
+        turb = 0;
+        freq = 1;
+        f2 = 30;
+        for (i = 1;  i <= 4;  i += 1) {
+            turb += snoise (PO*f2 + point(0,0,20*f2)) / freq;
+            freq *= 2;
+            f2 *= 2;
+        }
+        Ciris *= (1-clamp(turb/2zz,0,1));
+    }
+
+    /* OK, now calculate a surface texture color (Ct) based on where we are
+     * and what patterns we calculated.
+     */
+    Ct = mix (Ciris, Cball, irisstat);
+    Ct = mix (PupilColor, Ct, pupilstat);
+
+    /* Make the eye a little glossier on the iris and pupil */
+    ks = SpecularAmt * (1+2*(1-irisstat));
+    rough = roughness * (1-0.75*(1-irisstat));
+
+    /* Now shade like plastic, but using our calculated surface color and
+     * our modified values for roughness and SpecularAmt.
+     */
+
+    Nf = normalize(N);
+    BSDF = Ct * DiffuseAmt * diffuse(Nf);
+    BSDF += SpecularColor * ks * ward(Nf,-normalize(I),rough,rough);
+}
+
