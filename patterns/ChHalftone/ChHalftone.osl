@@ -1,0 +1,37 @@
+/*
+ * ChHalftone.osl by Charlie (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from -
+ * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page8
+ *
+ */
+
+#include "stdosl.h"
+
+shader halftone(
+        point Vector = P,
+        float Height = 0.5,
+        float Frequency = 16,
+        float Scale = 16,
+        output float Intensity = 0 )
+{
+    float x=Vector[0];
+    float y=Vector[1];
+
+    x*= Scale * Frequency;
+    y*= Scale * Frequency;
+
+    x= mod(x,1.0); if (x<0) x= 1.0+x;
+    y= mod(y,1.0); if (y<0) y= 1.0+y;
+
+    /* generate texture origin based on 0,0 -1 to 1 */
+    x= x*2-1;
+    y= y*2-1;
+
+    float r= sqrt(x*x+y*y);
+    
+    if (r > Height) Intensity= 0;
+    else Intensity= 1;
+}
+

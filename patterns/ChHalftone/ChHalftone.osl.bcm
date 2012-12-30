@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="TEX_IMAGE" image="file://Color Map.jpg" source="FILE" color_space="COLOR" projection="FLAT" loc="-517, 322" />
+		<node type="BRIGHTCONTRAST" color="rgba(1.0, 1.0, 1.0, 1.0)" bright="0.69999" contrast="0.40000" loc="-346, 291" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" height="0.5" frequency="12.0" scale="12.0" loc="-172, 351" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.0" loc="10, 344" />
+		<node type="OUTPUT_MATERIAL" loc="208, 321" />
+		<node type="TEX_COORD" dupli="False" loc="-711, 321" />
+	</nodes>
+	<links>
+		<link to="4" input="0" from="3" output="0" />
+		<link to="3" input="0" from="2" output="0" />
+		<link to="1" input="0" from="0" output="0" />
+		<link to="0" input="0" from="5" output="2" />
+		<link to="2" input="1" from="1" output="0" />
+	</links>
+	<scripts>
+		<script name="ChHalftone.osl" id="0">
+/*<br /> * ChHalftone.osl by Charlie (c)2012<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * original script from -<br /> * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page8<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader halftone(<br />        point Vector = P,<br />        float Height = 0.5,<br />        float Frequency = 16,<br />        float Scale = 16,<br />        output float Intensity = 0 )<br />{<br />    float x=Vector[0];<br />    float y=Vector[1];<br /><br />    x*= Scale * Frequency;<br />    y*= Scale * Frequency;<br /><br />    x= mod(x,1.0); if (x&lt;0) x= 1.0+x;<br />    y= mod(y,1.0); if (y&lt;0) y= 1.0+y;<br /><br />    /* generate texture origin based on 0,0 -1 to 1 */<br />    x= x*2-1;<br />    y= y*2-1;<br /><br />    float r= sqrt(x*x+y*y);<br />    <br />    if (r &gt; Height) Intensity= 0;<br />    else Intensity= 1;<br />}<br /><br />
+		</script>
+	</scripts>
+</material>
