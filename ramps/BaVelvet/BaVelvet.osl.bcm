@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="OUTPUT_MATERIAL" loc="300, 300" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" color="rgba(0.03970, 0.00304, 0.0, 1.0)" specular="rgba(0.28999, 0.01040, 0.0, 1.0)" roughness="3.0" loc="99, 305" />
+	</nodes>
+	<links>
+		<link to="0" input="0" from="1" output="0" />
+	</links>
+	<scripts>
+		<script name="BaVelvet.osl" id="0">
+/*<br /> * BaVelvet.osl by Bao2 (c)2012<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * original script from -<br /> * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page7<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader node_velvet(<br />    normal Normal = N,<br />    color Color = color(0.0397, 0.00304, 0),<br />    color Specular = color(0.29, 0.0104, 0),<br />    float Roughness = 0.5,<br />    output closure color BSDF = diffuse(Normal)<br />)<br />{<br />    BSDF = (Color * diffuse(Normal)) +<br />         (Specular * ashikhmin_velvet(Normal, Roughness));<br />}<br /><br />
+		</script>
+	</scripts>
+</material>

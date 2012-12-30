@@ -1,0 +1,23 @@
+/*
+ * BaVelvet.osl by Bao2 (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from -
+ * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page7
+ *
+ */
+
+#include "stdosl.h"
+
+shader node_velvet(
+    normal Normal = N,
+    color Color = color(0.0397, 0.00304, 0),
+    color Specular = color(0.29, 0.0104, 0),
+    float Roughness = 0.5,
+    output closure color BSDF = diffuse(Normal)
+)
+{
+    BSDF = (Color * diffuse(Normal)) +
+         (Specular * ashikhmin_velvet(Normal, Roughness));
+}
+
