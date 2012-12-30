@@ -15,7 +15,7 @@
 	</links>
 	<scripts>
 		<script name="TDwireframe.osl" id="0">
-/*<br />    Wireframe texture by Thomas Dinges (c)2012<br />    http://www.openshading.com/osl/example-shaders/<br />*/<br /><br />#include &quot;stdosl.h&quot;<br />#include &quot;oslutil.h&quot;<br /><br />shader TDwireframe(<br />    float Line_Width = 2.0,<br />    int Raster = 1,<br />    output float Factor = 0.0)<br />{<br />    //Factor = wireframe(&quot;triangles&quot;, Line_Width, Raster);<br />    /*  currently blender always provides triangles at this point in the render <br />        as in fully triangulated mesh that the render engine works with<br />        at some stage the polygons option will provide original poly edges instead */<br />    Factor = wireframe(&quot;polygons&quot;, Line_Width, Raster);<br />}<br /><br />
+/*<br /> * TDWireframe.osl by Thomas Dinges (c)2012<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * original script from -<br /> * http://www.openshading.com/osl/example-shaders/<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br />#include &quot;oslutil.h&quot;<br /><br />shader TDwireframe(<br />    float Line_Width = 2.0,<br />    int Raster = 1,<br />    output float Factor = 0.0)<br />{<br />    //Factor = wireframe(&quot;triangles&quot;, Line_Width, Raster);<br />    /*  currently blender always provides triangles at this point in the render <br />        as in fully triangulated mesh that the render engine works with<br />        at some stage the polygons option will provide original poly edges instead */<br />    Factor = wireframe(&quot;polygons&quot;, Line_Width, Raster);<br />}<br /><br />
 		</script>
 	</scripts>
 </material>

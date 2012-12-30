@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
 	<nodes>
+		<node type="FRAME" label="Render Frame 181" loc="775, -162" />
 		<node type="VALTORGB" interpolation="LINEAR" fac="0.5" stops="2" stop1="0.0|rgba(0.0, 0.0, 0.0, 1.0)" stop2="1.0|rgba(1.0, 1.0, 1.0, 1.0)" loc="8, 456" />
 		<node type="TEX_NOISE" scale="5.0" detail="2.0" distortion="0.0" loc="-195, 467" />
 		<node type="MATH" operation="GREATER_THAN" use_clamp="False" value1="0.5" value2="0.0" loc="-129, -8" />
@@ -22,34 +23,34 @@
 		<node type="OUTPUT_MATERIAL" loc="811, 307" />
 	</nodes>
 	<links>
-		<link to="18" input="0" from="9" output="0" />
-		<link to="0" input="0" from="1" output="1" />
-		<link to="5" input="0" from="0" output="0" />
-		<link to="6" input="0" from="5" output="0" />
-		<link to="5" input="1" from="4" output="0" />
-		<link to="4" input="0" from="15" output="0" />
+		<link to="19" input="0" from="10" output="0" />
+		<link to="1" input="0" from="2" output="1" />
+		<link to="6" input="0" from="1" output="0" />
+		<link to="7" input="0" from="6" output="0" />
+		<link to="6" input="1" from="5" output="0" />
+		<link to="5" input="0" from="16" output="0" />
+		<link to="14" input="0" from="15" output="0" />
 		<link to="13" input="0" from="14" output="0" />
-		<link to="12" input="0" from="13" output="0" />
-		<link to="3" input="0" from="12" output="0" />
-		<link to="2" input="0" from="12" output="0" />
-		<link to="3" input="1" from="2" output="0" />
+		<link to="4" input="0" from="13" output="0" />
+		<link to="3" input="0" from="13" output="0" />
 		<link to="4" input="1" from="3" output="0" />
+		<link to="5" input="1" from="4" output="0" />
+		<link to="10" input="2" from="12" output="0" />
+		<link to="10" input="1" from="9" output="0" />
 		<link to="9" input="2" from="11" output="0" />
 		<link to="9" input="1" from="8" output="0" />
-		<link to="8" input="2" from="10" output="0" />
-		<link to="8" input="1" from="7" output="0" />
-		<link to="18" input="2" from="5" output="0" />
-		<link to="17" input="0" from="16" output="2" />
-		<link to="9" input="0" from="6" output="0" />
-		<link to="14" input="0" from="17" output="0" />
-		<link to="15" input="0" from="17" output="0" />
+		<link to="19" input="2" from="6" output="0" />
+		<link to="18" input="0" from="17" output="2" />
+		<link to="10" input="0" from="7" output="0" />
+		<link to="15" input="0" from="18" output="0" />
+		<link to="16" input="0" from="18" output="0" />
 	</links>
 	<scripts>
 		<script name="MAFingerprint.osl" id="0">
-/*<br />    fingerprint pattern by Michel J. Anders (c)2012<br />    license: cc-by-sa<br />    http://blenderthings.blogspot.com.au/2012/12/a-fingerprint-osl-shader-for-blender.html<br />*/<br /><br />#include &quot;stdosl.h&quot;<br />#include &quot;node_texture.h&quot;<br /><br />shader MAFingerprint(<br />        point Vector = P,<br />        float Scale = 1.0,<br />        int Ridges = 5,<br />        int Seed = 42,<br />        output float Fac = 0.0 )<br />{<br />    float da;<br />    point pa;<br />    float d;<br /><br />    vector up   = vector(0,0,1);<br />    vector tdir = 0;<br /><br />    int pi;<br /><br />    for(pi=0; pi&lt; Ridges; pi++){<br />        pa = Scale * point(<br />        cellnoise(point(pi,pi,pi)),<br />        cellnoise(point(pi,pi+Seed,pi)),<br />        cellnoise(point(pi,pi,pi+Seed)));<br />        da = pa[2];<br />        vector v = pa - Vector;<br />        float d = length(v);<br />        v[2]=0;<br />        v = normalize(v);<br />        tdir += cross(v,up)*da*d;<br />    }<br />    Fac = sqrt(dot(tdir,tdir));<br />}<br /><br />
+/*<br /> * MAFingerprint.osl by Michel J. Anders (c)2012<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: cc-by-sa<br /> *<br /> * original script from -<br /> * http://blenderthings.blogspot.com.au/2012/12/a-fingerprint-osl-shader-for-blender.html<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br />#include &quot;node_texture.h&quot;<br /><br />shader MAFingerprint(<br />        vector Vector = P,<br />        float Scale = 1.0,<br />        int Ridges = 5,<br />        int Seed = 42,<br />        output float Fac = 0.0 )<br />{<br />    float da;<br />    point pa;<br />    float d;<br /><br />    vector up   = vector(0,0,1);<br />    vector tdir = 0;<br /><br />    int pi;<br /><br />    for(pi=0; pi&lt; Ridges; pi++){<br />        pa = Scale * point(<br />        cellnoise(point(pi,pi,pi)),<br />        cellnoise(point(pi,pi+Seed,pi)),<br />        cellnoise(point(pi,pi,pi+Seed)));<br />        da = pa[2];<br />        vector v = pa - Vector;<br />        float d = length(v);<br />        v[2]=0;<br />        v = normalize(v);<br />        tdir += cross(v,up)*da*d;<br />    }<br />    Fac = sqrt(dot(tdir,tdir));<br />}<br /><br />
 		</script>
 		<script name="MAEllipseMask.osl" id="1">
-/*<br />    ellipse mask by Michel J. Anders (c)2012<br />    license: cc-by-sa<br />    http://blenderthings.blogspot.com.au/2012/12/a-fingerprint-osl-shader-for-blender.html<br />*/<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader MAEllipseMask(<br />        point Vector = P,<br />        point Center = 0.5,<br />        float Radius = 0.5,<br />        float Ellipse = 1.0,<br />        float Rotation = 0.0,<br />        float Blur = 0.0,<br />        output float Fac = 0.0 )<br />{<br />    point p = rotate(Vector,radians(Rotation),Center,Center+vector(0,0,1));<br />    vector d = p - Center;<br />    d[0] *= Ellipse;<br />    float r2 = d[0]*d[0]+d[1]*d[1];<br />    if (r2 &lt;= Radius*Radius) {<br />        Fac = 1-Blur*sqrt(r2/(Radius*Radius));<br />    }<br />}<br /><br />
+/*<br /> * MAEllipseMask.osl by Michel J. Anders (c)2012<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: cc-by-sa<br /> *<br /> * original script from -<br /> * http://blenderthings.blogspot.com.au/2012/12/a-fingerprint-osl-shader-for-blender.html<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader MAEllipseMask(<br />        vector Vector = P,<br />        vector Center = 0.5,<br />        float Radius = 0.5,<br />        float Ellipse = 1.0,<br />        float Rotation = 0.0,<br />        float Blur = 0.0,<br />        output float Fac = 0.0 )<br />{<br />    point p = rotate(Vector,radians(Rotation),Center,Center+vector(0,0,1));<br />    vector d = p - Center;<br />    d[0] *= Ellipse;<br />    float r2 = d[0]*d[0]+d[1]*d[1];<br />    if (r2 &lt;= Radius*Radius) {<br />        Fac = 1-Blur*sqrt(r2/(Radius*Radius));<br />    }<br />}<br /><br />
 		</script>
 	</scripts>
 </material>

@@ -11,7 +11,7 @@
 	</links>
 	<scripts>
 		<script name="MAlight_vec.osl" id="0">
-/*<br />    light vector shader by Michel J. Anders (c)2012<br />    license: cc-by-sa<br />    http://blenderthings.blogspot.co.uk/2012/11/getting-light-vector-in-osl-for-blender.html<br />*/<br /><br />/* not working as expected - request for lamp appears to be failing */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader MAlightvec(<br />output color Color = 1)<br />{<br />    vector L;<br />    getattribute(&quot;Lamp&quot;,&quot;object:location&quot;,L);<br />    P=transform(&quot;object&quot;,&quot;world&quot;,P);<br />    float cost=abs(dot(normalize(L-P),N));<br />    Color = color(cost,1-cost,.2);<br />}<br /><br />
+/*<br /> * MALight_vec.osl by Michel J. Anders (c)2012<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: cc-by-sa<br /> *<br /> * original script from -<br /> * http://blenderthings.blogspot.co.uk/2012/11/getting-light-vector-in-osl-for-blender.html<br /> *<br /> */<br /><br />/* not working as expected - request for lamp appears to be failing */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader MAlightvec(<br />        output color Color = 1)<br />{<br />    vector L;<br />    getattribute(&quot;Lamp&quot;,&quot;object:location&quot;,L);<br />    P=transform(&quot;object&quot;,&quot;world&quot;,P);<br />    float cost=abs(dot(normalize(L-P),N));<br />    Color = color(cost,1-cost,.2);<br />}<br /><br />
 		</script>
 	</scripts>
 </material>

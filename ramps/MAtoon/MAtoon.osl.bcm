@@ -5,7 +5,7 @@
 		<node type="MIX_SHADER" fac="0.18000" loc="60, 310" />
 		<node type="BSDF_DIFFUSE" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.0" loc="-196, 300" />
 		<node type="BSDF_GLOSSY" distribution="SHARP" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.20000" loc="-199, 154" />
-		<node type="SCRIPT" mode="INTERNAL" script="0" color="rgba(0.31456, 0.41073, 1.0, 1.0)" angle="50.0" loc="-451, 288" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" shading="rgba(0.43707, 0.48253, 1.0, 1.0)" angle="50.0" loc="-451, 282" />
 	</nodes>
 	<links>
 		<link to="1" input="1" from="2" output="0" />
@@ -15,7 +15,7 @@
 	</links>
 	<scripts>
 		<script name="MAtoon.osl" id="0">
-/*<br />    toon shader by Michel J. Anders (c)2012<br />    license: cc-by-sa<br />    http://blenderthings.blogspot.co.uk/2012/11/a-toon-osl-shader-for-blender.html<br />*/<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader MAtoon(<br />    color Color = 1,<br />    float Angle = 50,<br />    output color Col = 0)<br />{<br />    float angle = cos(radians(Angle));<br />    if(abs(dot(-I,N)) &gt; angle) Col = Color;<br />}<br /><br />
+/*<br /> * MAToon.osl by Michel J. Anders (c)2012<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: cc-by-sa<br /> *<br /> * original script from -<br /> * http://blenderthings.blogspot.co.uk/2012/11/a-toon-osl-shader-for-blender.html<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader MAtoon(<br />    color Shading = 1,<br />    float Angle = 50,<br />    output color Color = 0)<br />{<br />    float angle = cos(radians(Angle));<br />    if(abs(dot(-I,N)) &gt; angle) Color = Shading;<br />}<br /><br />
 		</script>
 	</scripts>
 </material>

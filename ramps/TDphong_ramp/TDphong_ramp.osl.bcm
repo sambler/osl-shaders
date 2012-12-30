@@ -2,14 +2,14 @@
 <material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
 	<nodes>
 		<node type="OUTPUT_MATERIAL" loc="-172, 333" />
-		<node type="SCRIPT" mode="INTERNAL" script="0" exponent="1.20000" normal="Vector(0.0, 0.0, 0.0)" loc="-385, 342" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" normal="Vector(0.0, 0.0, 0.0)" exponent="1.20000" loc="-395, 341" />
 	</nodes>
 	<links>
 		<link to="0" input="0" from="1" output="0" />
 	</links>
 	<scripts>
 		<script name="TDphong_ramp.osl" id="0">
-/*<br />    phong ramp texture by Thomas Dinges (c)2012<br />    http://www.openshading.com/osl/example-shaders/<br />*/<br /><br />#include &lt;stdosl.h&gt;<br /><br />shader TDphong_ramp_bsdf(<br />    float Exponent = 2.0,<br />    normal Normal = N,<br />    output closure color BSDF = 0)<br />{<br />    color Color[8];<br />    <br />    for(int i = 0; i &lt; 8; i++)<br />        Color[i] = transformc(&quot;hsv&quot;, &quot;rgb&quot;, color(i/7.0, 1.0, 1.0));<br />    <br />    BSDF = phong_ramp(N, Exponent, Color);<br />}<br /><br />
+/*<br /> * TDPhong_ramp.osl by Thomas Dinges (c)2012<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * original script from -<br /> * http://www.openshading.com/osl/example-shaders/<br /> *<br /> */<br /><br />#include &lt;stdosl.h&gt;<br /><br />shader TDphong_ramp_bsdf(<br />    vector Normal = N,<br />    float Exponent = 2.0,<br />    output closure color BSDF = 0)<br />{<br />    color Color[8];<br />    <br />    for(int i = 0; i &lt; 8; i++)<br />        Color[i] = transformc(&quot;hsv&quot;, &quot;rgb&quot;, color(i/7.0, 1.0, 1.0));<br />    <br />    BSDF = phong_ramp(N, Exponent, Color);<br />}<br /><br />
 		</script>
 	</scripts>
 </material>

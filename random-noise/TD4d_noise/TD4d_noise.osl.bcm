@@ -23,7 +23,7 @@
 	</links>
 	<scripts>
 		<script name="TD4d_noise.osl" id="0">
-/*<br />    4D noise texture by Thomas Dinges (c)2012<br />    http://www.openshading.com/osl/example-shaders/<br />*/<br /><br />#include &lt;stdosl.h&gt;<br /><br />shader TD4D_noise(<br />    float Time = 1.0,<br />    output color Perlin = (0.8),<br />    output color UPerlin = (0.8))<br />{   <br />    /* Perlin*/<br />    Perlin= noise(&quot;perlin&quot;, P, Time);<br />   <br />    /* UPerlin */<br />    UPerlin= noise(&quot;uperlin&quot;, P, Time);<br />}<br /><br />
+/*<br /> * TD4d_noise.osl by Thomas Dinges (c)2012<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * original script from -<br /> * http://www.openshading.com/osl/example-shaders/<br /> *<br /> */<br /><br />#include &lt;stdosl.h&gt;<br /><br />shader TD4D_noise(<br />    float Time = 1.0,<br />    output color Perlin = (0.8),<br />    output color UPerlin = (0.8))<br />{   <br />    /* Perlin*/<br />    Perlin= noise(&quot;perlin&quot;, P, Time);<br />   <br />    /* UPerlin */<br />    UPerlin= noise(&quot;uperlin&quot;, P, Time);<br />}<br /><br />
 		</script>
 	</scripts>
 </material>

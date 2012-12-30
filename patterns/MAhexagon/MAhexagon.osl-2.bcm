@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
 	<nodes>
-		<node type="MAPPING" translation="Vector(0.0, 0.0, 0.0)" rotation="Vector(0.0, 0.0, 0.0)" scale="Vector(80.0, 80.0, 80.0)" use_min="False" use_max="False" vector="Vector(0.0, 0.0, 0.0)" loc="-765, 418" />
-		<node type="SCRIPT" mode="INTERNAL" script="0" diffuse_color1="rgba(0.20000, 0.80000, 0.20000, 1.0)" diffuse_color2="rgba(0.80000, 0.20000, 0.20000, 1.0)" diffuse_color3="rgba(0.20000, 0.20000, 0.80000, 1.0)" coordinates="Vector(0.0, 0.0, 0.0)" loc="-454, 343" />
 		<node type="VALTORGB" interpolation="B_SPLINE" fac="0.5" stops="3" stop1="0.80454|rgba(1.0, 1.0, 1.0, 1.0)" stop2="0.90227|rgba(0.16354, 0.16354, 0.16354, 1.0)" stop3="1.0|rgba(0.0, 0.0, 0.0, 1.0)" loc="-158, 314" />
 		<node type="VALTORGB" interpolation="CARDINAL" fac="0.5" stops="2" stop1="0.81363|rgba(0.0, 0.0, 0.0, 1.0)" stop2="0.90909|rgba(1.0, 1.0, 1.0, 1.0)" loc="-157, 555" />
-		<node type="MATH" operation="MULTIPLY" use_clamp="False" value1="0.5" value2="0.60000" loc="-112, 49" />
 		<node type="BSDF_GLOSSY" distribution="BECKMANN" color="rgba(0.88280, 0.88280, 0.88280, 1.0)" roughness="0.09999" loc="104, 233" />
 		<node type="BSDF_TRANSPARENT" color="rgba(1.0, 1.0, 1.0, 1.0)" loc="112, 317" />
 		<node type="TEX_COORD" dupli="False" loc="-962, 354" />
 		<node type="MIX_SHADER" fac="0.09999" loc="350, 349" />
 		<node type="OUTPUT_MATERIAL" loc="552, 199" />
+		<node type="MAPPING" translation="Vector(0.0, 0.0, 0.0)" rotation="Vector(0.0, 0.0, 0.0)" scale="Vector(80.0, 80.0, 80.0)" use_min="False" use_max="False" vector="Vector(0.0, 0.0, 0.0)" loc="-765, 418" />
+		<node type="MATH" operation="MULTIPLY" use_clamp="False" value1="0.5" value2="0.60000" loc="-112, 49" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" diffuse_color1="rgba(0.20000, 0.80000, 0.20000, 1.0)" diffuse_color2="rgba(0.80000, 0.20000, 0.20000, 1.0)" diffuse_color3="rgba(0.20000, 0.20000, 0.80000, 1.0)" loc="-473, 376" />
 	</nodes>
 	<links>
-		<link to="9" input="0" from="8" output="0" />
-		<link to="8" input="2" from="5" output="0" />
-		<link to="0" input="0" from="7" output="2" />
-		<link to="4" input="0" from="1" output="2" />
-		<link to="9" input="2" from="4" output="0" />
-		<link to="1" input="3" from="0" output="0" />
-		<link to="6" input="0" from="2" output="0" />
-		<link to="8" input="1" from="6" output="0" />
-		<link to="2" input="0" from="1" output="2" />
-		<link to="8" input="0" from="3" output="0" />
-		<link to="3" input="0" from="1" output="2" />
+		<link to="6" input="0" from="5" output="0" />
+		<link to="5" input="2" from="2" output="0" />
+		<link to="7" input="0" from="4" output="2" />
+		<link to="6" input="2" from="8" output="0" />
+		<link to="3" input="0" from="0" output="0" />
+		<link to="5" input="1" from="3" output="0" />
+		<link to="5" input="0" from="1" output="0" />
+		<link to="9" input="0" from="7" output="0" />
+		<link to="1" input="0" from="9" output="2" />
+		<link to="0" input="0" from="9" output="2" />
+		<link to="8" input="0" from="9" output="2" />
 	</links>
 	<scripts>
 		<script name="MAhexagon.osl" id="0">
-/*<br />    hexagon shader by Michel J. Anders (c)2012<br />    license: cc-by-sa<br />    http://blenderthings.blogspot.co.uk/2012/11/a-hexagon-osl-shader.html<br />*/<br /><br />#include &quot;stdosl.h&quot;<br /><br />#define A 0.86602540378443864676372317075294 // sqrt(3)/2<br />#define A2 (2*A)<br />#define A4 (4*A)<br />#define SY (1/A)<br />  <br />shader MAhexagon(  <br />    color Diffuse_Color1 = color(0.2, 0.8, 0.2),<br />    color Diffuse_Color2 = color(0.8, 0.2, 0.2),<br />    color Diffuse_Color3 = color(0.2, 0.2, 0.8),<br />    vector Coordinates = 0,<br />    output color Color = 0,<br />    output int Index = 1,<br />    output float Distance = 0)<br />{  <br />    // calculate the color<br />    <br />    color colors[3] = {Diffuse_Color1,<br />                       Diffuse_Color2,<br />                       Diffuse_Color3};<br />    <br />    // we warp the grid so that two adjacent equilateral triangles<br />    // are mapped to two triangles that fit in a square <br />    float syc = Coordinates[1] * SY;<br />    float sxc = Coordinates[0] + 0.5 * syc;<br />    <br />    int ind[18] = {1,1,3,3,3,1, 2,2,2,3,3,3, 1,2,2,2,1,1};<br />    <br />    int iy = int(mod(syc,3.0));<br />    int ix = int(mod(sxc,3.0));<br />    ix = iy * 6 + ix * 2 + ( mod(sxc,1.0) &gt; mod(syc,1.0) );<br />    Index = ind[ix];<br />    Color = colors[Index-1];<br />    <br />    // calculate the distance to the center of the hexagon<br />    <br />    float sx = mod(Coordinates[0],3);<br />    float sy = mod(Coordinates[1]+0.75,A4);<br />    <br />    // map everthing to a single quadrant<br />    if ( sx &gt; 1.5 ) sx = 3 - sx;<br />    if ( sy &gt; A2 ) sy = A4 - sy;<br />    <br />    // the distance were interested in is the distance to<br />    // the *closest* center point<br />    float d1 = distance(vector(sx,sy,0),vector(1.5,A2,0));<br />    float d2 = distance(vector(sx,sy,0),vector(0,A,0));<br />    float d6 = distance(vector(sx,sy,0),vector(1.5,0,0));<br />    <br />    Distance = min(min(d1,d2), d6);<br />    <br />}<br /><br />
+/*<br /> * MAHexagon.osl by Michel J. Anders (c)2012<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: cc-by-sa<br /> *<br /> * original script from -<br /> * http://blenderthings.blogspot.co.uk/2012/11/a-hexagon-osl-shader.html<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />#define A 0.86602540378443864676372317075294 // sqrt(3)/2<br />#define A2 (2*A)<br />#define A4 (4*A)<br />#define SY (1/A)<br /><br />shader MAhexagon(<br />        vector Vector = 0,<br />        color Diffuse_Color1 = color(0.2, 0.8, 0.2),<br />        color Diffuse_Color2 = color(0.8, 0.2, 0.2),<br />        color Diffuse_Color3 = color(0.2, 0.2, 0.8),<br />        output color Color = 0,<br />        output int Index = 1,<br />        output float Distance = 0)<br />{<br />    // calculate the color<br /><br />    color colors[3] = {Diffuse_Color1,<br />                       Diffuse_Color2,<br />                       Diffuse_Color3};<br /><br />    // we warp the grid so that two adjacent equilateral triangles<br />    // are mapped to two triangles that fit in a square<br />    float syc = Vector[1] * SY;<br />    float sxc = Vector[0] + 0.5 * syc;<br /><br />    int ind[18] = {1,1,3,3,3,1, 2,2,2,3,3,3, 1,2,2,2,1,1};<br /><br />    int iy = int(mod(syc,3.0));<br />    int ix = int(mod(sxc,3.0));<br />    ix = iy * 6 + ix * 2 + ( mod(sxc,1.0) &gt; mod(syc,1.0) );<br />    Index = ind[ix];<br />    Color = colors[Index-1];<br /><br />    // calculate the distance to the center of the hexagon<br /><br />    float sx = mod(Vector[0],3);<br />    float sy = mod(Vector[1]+0.75,A4);<br /><br />    // map everthing to a single quadrant<br />    if ( sx &gt; 1.5 ) sx = 3 - sx;<br />    if ( sy &gt; A2 ) sy = A4 - sy;<br /><br />    // the distance were interested in is the distance to<br />    // the *closest* center point<br />    float d1 = distance(vector(sx,sy,0),vector(1.5,A2,0));<br />    float d2 = distance(vector(sx,sy,0),vector(0,A,0));<br />    float d6 = distance(vector(sx,sy,0),vector(1.5,0,0));<br /><br />    Distance = min(min(d1,d2), d6);<br /><br />}<br /><br />
 		</script>
 	</scripts>
 </material>
