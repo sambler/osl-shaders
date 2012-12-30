@@ -1,0 +1,32 @@
+/*
+ * GHPie.osl by Gottfried Hoffman (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: GPL
+ *
+ * original script from -
+ * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness
+ * based on code from Robert Wenzlaff
+ * available at
+ * http://www-users.cs.umn.edu/~mein/blender/plugins/texture/pie/index.html
+ *
+ */
+
+#include "stdosl.h"
+
+color pie(point p, int Divides, float Angle)
+{
+    float angle_new;
+    angle_new = atan2(p[0],p[1]) + Angle*3.1415926/180.0;
+    return color(0.5 - 0.5*sin(angle_new * Divides - 0.5));
+}
+
+shader node_magic_texture(
+    point Vector = P,
+    int Divides = 2,
+    float Angle = 5.0,
+    output color Color = color(0.0, 0.0, 0.0))
+{
+    Color = pie(Vector, Divides, Angle);
+}
+

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="BSDF_DIFFUSE" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.0" loc="-6, 305" />
+		<node type="OUTPUT_MATERIAL" loc="200, 301" />
+		<node type="VALTORGB" interpolation="EASE" fac="0.5" stops="7" stop1="0.0|rgba(1.0, 0.0, 0.0, 1.0)" stop2="0.16818|rgba(1.0, 0.21223, 0.0, 1.0)" stop3="0.32727|rgba(1.0, 1.0, 0.0, 1.0)" stop4="0.5|rgba(0.0, 1.0, 0.0, 1.0)" stop5="0.66818|rgba(0.0, 0.0, 1.0, 1.0)" stop6="0.83636|rgba(0.07036, 0.0, 0.22322, 1.0)" stop7="1.0|rgba(0.27467, 0.0, 1.0, 1.0)" loc="-319, 344" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" divides="3" angle="5.0" loc="-563, 311" />
+	</nodes>
+	<links>
+		<link to="1" input="0" from="0" output="0" />
+		<link to="0" input="0" from="2" output="0" />
+		<link to="2" input="0" from="3" output="0" />
+	</links>
+	<scripts>
+		<script name="GHPie.osl" id="0">
+/*<br /> * GHPie.osl by Gottfried Hoffman (c)2012<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: GPL<br /> *<br /> * original script from -<br /> * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness<br /> * based on code from Robert Wenzlaff<br /> * available at<br /> * http://www-users.cs.umn.edu/~mein/blender/plugins/texture/pie/index.html<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />color pie(point p, int Divides, float Angle)<br />{<br />    float angle_new;<br />    angle_new = atan2(p[0],p[1]) + Angle*3.1415926/180.0;<br />    return color(0.5 - 0.5*sin(angle_new * Divides - 0.5));<br />}<br /><br />shader node_magic_texture(<br />    point Vector = P,<br />    int Divides = 2,<br />    float Angle = 5.0,<br />    output color Color = color(0.0, 0.0, 0.0))<br />{<br />    Color = pie(Vector, Divides, Angle);<br />}<br /><br />
+		</script>
+	</scripts>
+</material>
