@@ -1,0 +1,47 @@
+/*
+ * TDYinYang.osl byThomas Dinges (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from -
+ * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page2
+ *
+ * Based on OpenGL Code by Inigo Quilez
+ * http://www.iquilezles.org/apps/shadertoy/index.html
+ *
+ */
+
+#include <stdosl.h>
+
+float heart(float x, float y) 
+{
+    float s = mod(1.0, 2.0 )/2.0;
+    s = 0.9 + 0.1*(1.0-exp(-5.0*s)*sin(50.0*s));
+    x *= s;
+    y *= s;
+    float a = atan2(x,y)/3.141593;
+    float r = sqrt(x*x+y*y);
+
+    float h = abs(a);
+    float d = (13.0*h - 22.0*h*h + 10.0*h*h*h)/(6.0-5.0*h);
+
+    return smoothstep(d-0.02,d,r);
+}
+
+shader TDHeart(
+    point Vector = P,
+    float Scale = 1.0,
+    color Heart = color(0.8, 0.0, 0.0),
+    color Background = color (0.2, 0.2, 0.2),
+    output color Color = (0.0),
+    output float Fac = 0.0)
+{
+    point p= Scale*Vector;
+    
+    Fac = heart(float(p[0]),float(p[1]));
+    
+    if (Fac == 0.0)
+        Color = Heart;
+    else
+        Color = Background;
+}
+

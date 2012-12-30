@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="MAPPING" translation="Vector(0.0, 0.0, 0.0)" rotation="Vector(0.05235, 0.0, 0.0)" scale="Vector(1.0, 1.0, 1.0)" use_min="False" use_max="False" vector="Vector(0.0, 0.0, 0.0)" loc="-534, 319" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" scale="0.19999" heart="rgba(0.80000, 0.0, 0.0, 1.0)" background="rgba(0.00359, 0.0, 0.50580, 1.0)" loc="-236, 299" />
+		<node type="TEX_COORD" dupli="False" loc="-754, 198" />
+		<node type="BSDF_GLASS" distribution="BECKMANN" color="rgba(0.00359, 0.0, 0.50580, 1.0)" roughness="0.19999" ior="1.33000" loc="-60, 163" />
+		<node type="MIX_SHADER" fac="0.5" loc="150, 323" />
+		<node type="OUTPUT_MATERIAL" loc="343, 315" />
+		<node type="EMISSION" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" strength="2.0" loc="-48, 378" />
+		<node type="RGB" color="rgba(0.00359, 0.0, 0.50580, 1.0)" loc="-469, 22" />
+	</nodes>
+	<links>
+		<link to="0" input="0" from="2" output="4" />
+		<link to="1" input="0" from="0" output="0" />
+		<link to="4" input="1" from="6" output="0" />
+		<link to="6" input="0" from="1" output="0" />
+		<link to="5" input="0" from="4" output="0" />
+		<link to="4" input="0" from="1" output="1" />
+		<link to="4" input="2" from="3" output="0" />
+		<link to="1" input="3" from="7" output="0" />
+		<link to="3" input="0" from="7" output="0" />
+	</links>
+	<scripts>
+		<script name="TDHeart.osl" id="0">
+/*<br /> * TDYinYang.osl byThomas Dinges (c)2012<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * original script from -<br /> * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page2<br /> *<br /> * Based on OpenGL Code by Inigo Quilez<br /> * http://www.iquilezles.org/apps/shadertoy/index.html<br /> *<br /> */<br /><br />#include &lt;stdosl.h&gt;<br /><br />float heart(float x, float y) <br />{<br />    float s = mod(1.0, 2.0 )/2.0;<br />    s = 0.9 + 0.1*(1.0-exp(-5.0*s)*sin(50.0*s));<br />    x *= s;<br />    y *= s;<br />    float a = atan2(x,y)/3.141593;<br />    float r = sqrt(x*x+y*y);<br /><br />    float h = abs(a);<br />    float d = (13.0*h - 22.0*h*h + 10.0*h*h*h)/(6.0-5.0*h);<br /><br />    return smoothstep(d-0.02,d,r);<br />}<br /><br />shader TDHeart(<br />    point Vector = P,<br />    float Scale = 1.0,<br />    color Heart = color(0.8, 0.0, 0.0),<br />    color Background = color (0.2, 0.2, 0.2),<br />    output color Color = (0.0),<br />    output float Fac = 0.0)<br />{<br />    point p= Scale*Vector;<br />    <br />    Fac = heart(float(p[0]),float(p[1]));<br />    <br />    if (Fac == 0.0)<br />        Color = Heart;<br />    else<br />        Color = Background;<br />}<br /><br />
+		</script>
+	</scripts>
+</material>
