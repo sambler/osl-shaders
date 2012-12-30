@@ -1,0 +1,71 @@
+/*
+ * ChSinus.osl by Charlie (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: public domain
+ *
+ * original script from -
+ * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page5
+ *
+ */
+
+#include "stdosl.h"
+
+shader sinus(
+    vector Vector = P,
+    int Type = 0,
+    float Scale = 16,
+    float Shift = 0,
+    output float Intensity = 0,
+    output float X = 0,
+    output float Y = 0 )
+{
+    X = Vector[0];
+    Y = Vector[1];
+
+    void calc_sinus() {
+
+        Intensity = 0;
+
+        X *= Scale;
+        Y *= Scale;
+
+        X = sin(X);
+        Y = sin(Y);
+
+        if (Type == 1){
+            X= abs(X);
+            Y= abs(Y);
+        }
+        else if (Type == 2){
+            X= abs(X);
+        }
+        else if (Type == 3){
+            Y= abs(Y);
+        }
+
+        if (Shift > 0.0) {
+            X+= Shift;
+            Y-= Shift;
+        }
+        else if (Shift < 0.0) {
+            X-= Shift;
+            Y+= Shift;
+        }
+
+        X = clamp(X, -1.0, 1.0);
+        Y = clamp(Y, -1.0, 1.0);
+
+
+        X = (X+1.0)/2.0;
+        Y = (Y+1.0)/2.0;
+
+        Intensity = (X+Y)/2.0;
+
+
+    }
+
+    calc_sinus();
+
+}
+

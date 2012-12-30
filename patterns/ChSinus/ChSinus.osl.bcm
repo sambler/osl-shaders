@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="BSDF_DIFFUSE" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.0" loc="15, 353" />
+		<node type="OUTPUT_MATERIAL" loc="219, 342" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" type="0" scale="20.0" shift="0.0" loc="-488, 354" />
+		<node type="VALTORGB" interpolation="EASE" fac="0.5" stops="7" stop1="0.0|rgba(1.0, 0.0, 0.0, 1.0)" stop2="0.16818|rgba(1.0, 0.21223, 0.0, 1.0)" stop3="0.32727|rgba(1.0, 1.0, 0.0, 1.0)" stop4="0.5|rgba(0.0, 1.0, 0.0, 1.0)" stop5="0.66818|rgba(0.0, 0.0, 1.0, 1.0)" stop6="0.83636|rgba(0.07036, 0.0, 0.22322, 1.0)" stop7="1.0|rgba(0.27467, 0.0, 1.0, 1.0)" loc="-285, 350" />
+		<node type="TEX_COORD" dupli="False" loc="-688, 324" />
+	</nodes>
+	<links>
+		<link to="1" input="0" from="0" output="0" />
+		<link to="2" input="0" from="4" output="2" />
+		<link to="3" input="0" from="2" output="0" />
+		<link to="0" input="0" from="3" output="0" />
+	</links>
+	<scripts>
+		<script name="ChSinus.osl" id="0">
+/*<br /> * ChSinus.osl by Charlie (c)2012<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: public domain<br /> *<br /> * original script from -<br /> * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page5<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader sinus(<br />    vector Vector = P,<br />    int Type = 0,<br />    float Scale = 16,<br />    float Shift = 0,<br />    output float Intensity = 0,<br />    output float X = 0,<br />    output float Y = 0 )<br />{<br />    X = Vector[0];<br />    Y = Vector[1];<br /><br />    void calc_sinus() {<br /><br />        Intensity = 0;<br /><br />        X *= Scale;<br />        Y *= Scale;<br /><br />        X = sin(X);<br />        Y = sin(Y);<br /><br />        if (Type == 1){<br />            X= abs(X);<br />            Y= abs(Y);<br />        }<br />        else if (Type == 2){<br />            X= abs(X);<br />        }<br />        else if (Type == 3){<br />            Y= abs(Y);<br />        }<br /><br />        if (Shift &gt; 0.0) {<br />            X+= Shift;<br />            Y-= Shift;<br />        }<br />        else if (Shift &lt; 0.0) {<br />            X-= Shift;<br />            Y+= Shift;<br />        }<br /><br />        X = clamp(X, -1.0, 1.0);<br />        Y = clamp(Y, -1.0, 1.0);<br /><br /><br />        X = (X+1.0)/2.0;<br />        Y = (Y+1.0)/2.0;<br /><br />        Intensity = (X+Y)/2.0;<br /><br /><br />    }<br /><br />    calc_sinus();<br /><br />}<br /><br />
+		</script>
+	</scripts>
+</material>
