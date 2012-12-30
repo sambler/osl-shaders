@@ -1,0 +1,110 @@
+/*
+ * BaGlass.osl by Bao2 (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from -
+ * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page7
+ *
+ */
+
+/*
+A Glass shader that exposes several useful values:
+
+Sharp_Beckmann_GGX can be 0, 1 or 2 to choose the mode
+
+Reflections:
+Strength: 1.0 would be the same as default cycles glass. Try higher values to give more reflection.
+FromBack: When a ray enters the glass from behind we can calculate only refractions and it renders less noisy
+and faster but darker. So to not calculate reflections in this case put this to 0.
+
+Refractions: 
+Strength: 1.0 would be the cycles default glass. 
+
+To be physically correct reflection strength + refraction strength must be 2.0. So you can put 1.0 and 1.0 (default cycles shader). Or if you change first one to 1.3 then the second must be 0.7 so the sum continues to be 2.0.
+
+IOR can be set to a value < 1.0 too (useful if you are creating a glass with a liquid inside and you don't want to change the direction of the normals in the liquid-glass interface and it needs a IOR < 1.0.
+
+Notes: 
+- The fresnel function now is inlined but rendertime is the same,
+    that means that the compiler already was doing that inlining.
+- When Strength_Reflection is 0.0 it avoids to call the reflection functions,
+    making so the shader almost 200% faster.
+- This shader gives the same result than cycles shader when you uses Strengths = 1.0
+- The code is just a reordering of the original glass shader by Brecht and 
+    some thing from the OSL shader by Imageworks.
+
+*/
+
+#include "stdosl.h"
+
+#define MIN(x, y)          ((x) < (y) ? (x) : (y))
+#define MAX(x, y)          ((x) > (y) ? (x) : (y))
+
+shader BaGlass(
+    int Sharp_Beckmann_GGX = 1,      /* 0:Sharp 1:Beckmann 2:GGX */
+    color Reflection_Color = color(0.8, 0.8, 0.8),
+    float Reflection_Strength = 1.0, /* Strength of the reflection (0: No reflections) */ 
+    float Reflection_Roughness = 0.05,
+    int Reflection_FromBack = 1,     /* 1:Calculate reflection for ray coming from backfaces  0:Don't */
+    color Refraction_Color = color(0.8, 0.8, 0.8),
+    float Refraction_Strength = 1.0, /* Strength of the refraction (0: No refractions) */ 
+    float Refraction_Roughness = 0.05,
+    float IOR = 1.52,
+    normal Normal = N,
+    output closure color BSDF = holdout() )
+{
+    float eta = backfacing() ? 1.0/IOR : IOR;
+
+    /* compute fresnel reflectance without explicitly computing the refracted direction */
+    float A, B;
+    float c = fabs(dot(I, Normal));
+    float g = eta * eta - 1 + c * c;
+    float Fr = 1.0;  /* TIR (no refracted component) */
+
+    /* clamp Sharp_Beckmann_GGX between 0 and 2 
+        we only seem to have float clamps so do this with macros */
+    int SharpStyle = MAX(MIN(Sharp_Beckmann_GGX,2),0);
+    /* also clamp Reflection_FromBack */
+    int BackReflect = MAX(MIN(Reflection_FromBack,1),0);
+    if (!BackReflect) SharpStyle = 0;
+
+    if (g > 0) {
+        g = sqrt(g);
+        A = (g - c) / (g + c);
+        B = (c * (g + c) - 1) / (c * (g - c) + 1);
+        Fr = 0.5 * A * A * (1 + B * B);
+    }
+
+    if ( (!backfacing() && (Reflection_Strength > 0.001)) ||
+       (backfacing() && BackReflect && (Reflection_Strength > 0.001)) )
+    {
+        if (SharpStyle == 0)
+        {
+            BSDF = Reflection_Color *  Fr * Reflection_Strength * reflection(Normal) +
+                Refraction_Color * (1.0 - Fr) * Refraction_Strength * refraction(Normal, eta);
+        }
+        else if (SharpStyle == 1)
+        {
+            BSDF = Reflection_Color * Fr * Reflection_Strength *
+                microfacet_beckmann(Normal, Reflection_Roughness) +
+                Refraction_Color * (1.0 - Fr) * Refraction_Strength *
+                microfacet_beckmann_refraction(Normal, Refraction_Roughness, eta);
+        }
+        else if (SharpStyle == 2)
+        {
+            BSDF = Reflection_Color * Fr * Reflection_Strength *
+                microfacet_ggx(Normal, Reflection_Roughness) +
+                Refraction_Color * (1.0 - Fr) * Refraction_Strength *
+                microfacet_ggx_refraction(Normal, Refraction_Roughness, eta);
+        }
+    }
+    else 
+    {
+        if (SharpStyle == 0)
+        {
+            BSDF = Refraction_Color * (1.0 - Fr) * Refraction_Strength *
+                refraction(Normal, eta);
+        }
+    }
+}
+
