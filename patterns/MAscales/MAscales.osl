@@ -15,7 +15,7 @@ shader MAscales(
         vector Vector = 0,
         color Diffuse_Color1 = color(0.2, 0.8, 0.2),
         color Diffuse_Color2 = color(0.8, 0.2, 0.2),
-        float n = 0,
+        float Shape = 0,
         output color Color = 0,
         output int Index = 1,
         output float Distance = 0,
@@ -49,15 +49,15 @@ shader MAscales(
         return sqrt(r2);
     }
     
-    float d1 = dist(p,p0,n);
+    float d1 = dist(p,p0,Shape*10);
     if ( d1<=0.5 ){
         Color = Diffuse_Color1;
         Index = 0 ;
         Distance = d1;
         Vindex = cell + p0;
     } else {
-        float d2 = dist(p,p2,n);
-        float d3 = dist(p,p3,n);
+        float d2 = dist(p,p2,Shape*10);
+        float d3 = dist(p,p3,Shape*10);
         if ( d2 <= 0.5 ) {
             Color = Diffuse_Color2;
             Index = 1;
@@ -71,7 +71,7 @@ shader MAscales(
         } else {
             Color = Diffuse_Color1;
             Index = 0;
-            Distance = dist(p,p1,n);
+            Distance = dist(p,p1,Shape*10);
             Vindex = cell + p1;
        }
     }
