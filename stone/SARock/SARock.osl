@@ -1,0 +1,167 @@
+/*
+ * SARock.osl by Shane Ambler (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: BSD
+ *
+ * based on the cycles node tree by Rasmus Seerup at
+ * http://materialw.wordpress.com/materials/rock-material/
+ *
+ */
+
+#include "stdosl.h"
+#include "node_texture.h"
+
+/* noise from node_noise_texture.osl from blender source tree - removed fac and colour*/
+float rock_noise(point p, string basis, float distortion, float detail)
+{
+    point r;
+    int hard = 0;
+
+    if (distortion != 0.0) {
+        r[0] = noise_basis(p + point(13.5), basis) * distortion;
+        r[1] = noise_basis(p, basis) * distortion;
+        r[2] = noise_basis(p - point(13.5), basis) * distortion;
+
+        p += r;
+    }
+
+    return noise_turbulence(p, basis, detail, hard);
+}
+
+float SpreadTexture (
+        vector inVec,
+        string inBasis,
+        float inIntensity,
+        float inConcentration,
+        float inScale,
+        float inDetail,
+        float inDistortion )
+{
+    float outFac;
+    outFac = rock_noise(inVec * inScale, inBasis, inDistortion, inDetail);
+    outFac = ((floor(outFac-inConcentration + 0.5) + inConcentration) * outFac) * inIntensity;
+    
+    return outFac;
+}
+
+shader SARock(
+        vector Vector = P,
+        int   NoiseBasis = 0,
+        float Scale = 2.295,
+        float Detail = 1.193,
+        float Distortion = 0.0,
+        float s1Intensity = 0.4,
+        float s1Concentration = 3.0084,
+        color s1ColorOne = color(0.0189),
+        color s1ColorTwo = color(0.289,0.22,0.125),
+        float s2Intensity = 0.3,
+        float s2Concentration = 3.0284,
+        color s2Color = color(0.633,0.55,0.321),
+        float s3Intensity = 0.8,
+        float s3Concentration = 2.9488,
+        color s3Color = color(0.26,0.149,0.0595),
+        float s4Intensity = 0.1,
+        float s4Concentration = 2.04,
+        color s4Color = color(0.659,0.744,1.0),
+        float s5Intensity = 0.15,
+        float s5Concentration = 2.16,
+        color s5Color = color(1.0),
+        float s6Intensity = 0.8,
+        float s6Concentration = 2.06,
+        color s6Color = color(0.0),
+        output color Color = color(1),
+        output float Bump = 0 )
+{
+    string Basis = "Perlin";
+    float Fac = 0;
+    
+    if (NoiseBasis == 1)
+        Basis = "Voronoi F1";
+    else if (NoiseBasis == 2)
+        Basis = "Voronoi F2";
+    else if (NoiseBasis == 3)
+        Basis = "Voronoi F3";
+    else if (NoiseBasis == 4)
+        Basis = "Voronoi F4";
+    else if (NoiseBasis == 5)
+        Basis = "Voronoi F2-F1";
+    else if (NoiseBasis == 6)
+        Basis = "Voronoi Crackle";
+    else if (NoiseBasis == 7)
+        Basis = "Cell Noise";
+    else /* default */
+        Basis = "Perlin";
+
+    /* stage 1 */
+    Fac = SpreadTexture(Vector, Basis, 
+            s1Intensity, s1Concentration, 
+            Scale, Detail, Distortion);
+    Color = mix(s1ColorOne,s1ColorTwo,Fac);
+    Bump = Fac / 10;
+
+    /* stage 1.5 */
+    Fac = SpreadTexture(Vector, Basis, 
+            0.4, 2.06, 
+            Scale + 29.905, Detail + 2.007, Distortion + 1.4);
+    Color = mix(Color,s1ColorTwo,Fac);
+    Bump = Bump + (Fac / 10);
+
+    /* stage 2 */
+    Fac = SpreadTexture(Vector, Basis, 
+            s2Intensity, s2Concentration, 
+            Scale + 7.745, Detail + 0.867, Distortion);
+    Color = mix(Color,s2Color,Fac);
+    Bump = Bump + (Fac / 10);
+
+    /* stage 2.5*/
+    Fac = SpreadTexture(Vector, Basis, 
+            0.4, 2.06, 
+            Scale + 28.805, Detail + 1.807, Distortion + 1.4);
+    Color = mix(Color,s2Color,Fac);
+    Bump = Bump + (Fac / 10);
+
+    /* stage 3 */
+    Fac = SpreadTexture(Vector, Basis, 
+            s3Intensity, s3Concentration, 
+            Scale + 3.985, Detail + 0.807, Distortion);
+    Color = mix(Color,s3Color,Fac);
+    Bump = Bump + (Fac / 10);
+
+    /* stage 3.5*/
+    Fac = SpreadTexture(Vector, Basis, 
+            0.4, 2.06, 
+            Scale + 28.405, Detail + 1.807, Distortion + 1.4);
+    Color = mix(Color,s3Color,Fac);
+    Bump = Bump + (Fac / 10);
+
+    /* stage 4 */
+    Fac = SpreadTexture(Vector, Basis, 
+            s4Intensity, s4Concentration, 
+            Scale + 6.617, Detail + 2.349, Distortion + 3.0);
+    Color = mix(Color,s4Color,Fac);
+    Bump = Bump + (Fac / 10);
+
+    /* stage 4.5*/
+    Fac = SpreadTexture(Vector, Basis, 
+            0.2, 2.06, 
+            Scale + 27.805, Detail + 1.807, Distortion + 1.0);
+    Color = mix(Color,s4Color,Fac);
+    Bump = Bump + (Fac / 10);
+
+    /* stage 5 */
+    Fac = SpreadTexture(Vector, Basis, 
+            s5Intensity, s5Concentration, 
+            Scale + 3.265, Detail + 0.635, Distortion + 1.392);
+    Color = mix(Color,s5Color,Fac);
+    Bump = Bump + (Fac / 10);
+
+    /* stage 6 */
+    Fac = SpreadTexture(Vector, Basis, 
+            s6Intensity, s6Concentration, 
+            Scale + 27.705, Detail + 1.807, Distortion + 1.0);
+    Color = mix(Color,s6Color,Fac);
+    Bump = Bump + (Fac / 10);
+
+}
+
