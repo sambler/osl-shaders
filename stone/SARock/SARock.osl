@@ -9,6 +9,12 @@
  *
  */
 
+/* 
+    WARNING - this script highlights an osl bug that was fixed early January 2013
+            you DO NOT want to try compiling this script if your osl libraries
+            were compiled before 4th January 2013
+ */
+
 #include "stdosl.h"
 #include "node_texture.h"
 
