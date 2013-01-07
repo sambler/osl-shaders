@@ -1,0 +1,97 @@
+/*
+ * SAApple.osl by Shane Ambler (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: BSD
+ *
+ * based on the cycles node tree by Rasmus Seerup at
+ * http://materialw.wordpress.com/materials/apple-material/
+ *
+ */
+
+#include "stdosl.h"
+#include "node_texture.h"
+
+float apple_noise(point p, string basis, float distortion, float detail)
+{
+	point r;
+
+	if (distortion != 0.0) {
+		r[0] = noise_basis(p + point(13.5), basis) * distortion;
+		r[1] = noise_basis(p, basis) * distortion;
+		r[2] = noise_basis(p - point(13.5), basis) * distortion;
+		
+		p += r;
+	}
+
+	return noise_turbulence(p, basis, detail, 0);
+}
+
+float apple_voronoi (point p, float Scale)
+{
+    float da[4];
+	point pa[4];
+    
+    voronoi(p * Scale, "Distance Squared", 1.0, da, pa);
+
+	return fabs(da[0]);
+}
+
+closure color closure_mix(closure color Closure1, closure color Closure2, float Fac)
+{
+	float t = clamp(Fac, 0.0, 1.0);
+	return (1.0 - t) * Closure1 + t * Closure2;
+}
+
+shader SAApple(
+        color PrimaryColor = color(0.05, 0.22, 0.0),
+        color SecondaryColor = color(0.254, 0.238, 0.0),
+        float Glossy = 0.03,
+        float Roughness = 0.13,
+        float DotDensity = 35.848,
+        float DotSize = 0.2,
+        float DotCenterFade = 80.0,
+        float DotCenterIntensity = 0.6,
+        color DotCenterColor = color(1.0, 0.888, 0.468),
+        float DotOuterIntensity = 0.05,
+        float DotOuterFading = 1.0,
+        color DotOuterColor = color(1.0),
+        float TipIntensity = 0.6,
+        color SmallDotColor = color(0.546, 0.491, 0.258),
+        float DisplaceStrength = 0.23,
+        output closure color BSDF = diffuse(N),
+        output float Displacement = 0.0 )
+{
+    string Basis = "Perlin";
+    point mappingPoint = transform("object",P);
+    color baseColor;
+    float mixFactor;
+    
+    /* Base colour */
+    mixFactor = apple_noise(mappingPoint * 1.4, Basis, 1.0, 2.0);
+    baseColor = mix(PrimaryColor, SecondaryColor , mixFactor);
+
+    /* small dots */
+    mixFactor = pow(apple_voronoi(P ,200.0), 0.05);
+    baseColor = mix(SmallDotColor, baseColor, mixFactor);
+
+    /* big dots */
+    mixFactor = (1.0-apple_voronoi(P, DotDensity));
+    float mixModulator = mixFactor * floor(min(mixFactor + (DotSize - 0.5), 1.0) + 0.5);
+    float centreFac = pow(mixModulator, DotCenterFade) * DotCenterIntensity;
+    float backFac = pow(mixModulator, 1.0) * DotOuterIntensity;
+    baseColor = mix(baseColor, DotOuterColor, backFac);
+    baseColor = mix(baseColor, DotCenterColor, centreFac);
+
+    /* top and bottom shade */
+    point nMap = transform("world","object",N);
+    mixFactor = pow(max(nMap[2],0.0) + max(0.0 - nMap[2], 0.0),2.0) * TipIntensity;
+    baseColor = mix(baseColor,mix(PrimaryColor,SmallDotColor,
+                    apple_noise(mappingPoint * 5.0, Basis, 0.0, 2.0)), mixFactor);
+
+    /* add glossy */
+    BSDF = closure_mix(baseColor * diffuse(N), microfacet_beckmann(N, Roughness), Glossy);
+    Displacement = apple_noise(mappingPoint * 5.0, Basis, 0.0, 2.0) * DisplaceStrength;
+}
+
+
