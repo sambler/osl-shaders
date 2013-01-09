@@ -3,35 +3,126 @@
  * from https://github.com/sambler/osl-shaders
  *
  * original script from -
- * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page8
+ * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page9
  *
  */
 
 #include "stdosl.h"
 
-shader halftone(
-        point Vector = P,
-        float Height = 0.5,
-        float Frequency = 16,
-        float Scale = 16,
-        output float Intensity = 0 )
-{
-    float x=Vector[0];
-    float y=Vector[1];
+/**
+Pattern selects the dot type
+Axis is a switch to set the Axis to the centre of the pattern area. (Shifts the texture)
+Scale and Frequency do the same thing but it is useful to have the two inputs so one can be driven. 
+Size is equivalent to the width of the halftone dot.
+SizeMultiplier adds additional control, so one can be driven.
 
-    x*= Scale * Frequency;
-    y*= Scale * Frequency;
+Halftone returns the halftone.
+Texture returns the texture used to generate the halftone.
+X & Y return the texture coordinates.
 
-    x= mod(x,1.0); if (x<0) x= 1.0+x;
-    y= mod(y,1.0); if (y<0) y= 1.0+y;
+*/
 
-    /* generate texture origin based on 0,0 -1 to 1 */
-    x= x*2-1;
-    y= y*2-1;
+shader halftone_texture(  
 
-    float r= sqrt(x*x+y*y);
+    int Pattern = 0,
+    int Axis = 0,
+    int PingPong = 0,
+    point Point = P,
+    float Size = 0.5,  
+    float SizeMultiplier = M_SQRT2,  
+    float Frequency = 16,
+    float Scale = 16,
+    output float Y = 0,
+    output float X = 0,
+    output float Texture = 0,
+    output float Halftone = 0
     
-    if (r > Height) Intensity= 0;
-    else Intensity= 1;
+)  
+{  
+    
+    void centre_axis(){
+        /* generate texture origin based on 0,0 -1 to 1 */
+        X= X*2-1;
+        Y= Y*2-1;
+    }
+    
+    float ping_pong(float in){
+        /* reverses coordinates every other pattern */
+        int i= 0;
+        i= (int)ceil(in);
+        if (in > 1.0) {
+            if ( i % 2 == 0 ) { 
+                in= mod(in,1);
+                in= 1-in;
+            } 
+            else {
+                in= mod(in,1);
+            }
+        }
+        
+        return in;
+    }    
+    
+    X= Point[0] * Scale * Frequency;
+    Y= Point[1] * Scale * Frequency;
+        
+    if (PingPong == 1){
+        X= ping_pong(X);
+        Y= ping_pong(Y);
+    } else if (PingPong == 2){
+        X= ping_pong(X);
+    } else if (PingPong == 3){
+        Y= ping_pong(Y);
+    }
+    
+    X= mod(X,1); 
+    Y= mod(Y,1); 
+
+    if (Axis == 0){
+        centre_axis();
+    }
+    
+    if (Pattern == 0)
+    {
+        Texture= X*X+Y*Y; /* circle */
+    }
+    else if (Pattern == 1)
+    {
+        Texture= max(abs(X),abs(Y)); /* square */
+    } 
+    else if (Pattern == 2)
+    {
+        Texture= (abs(X)+abs(Y))/2; /* diamond */
+    } 
+    else if (Pattern == 3)
+    {
+        Texture= (atan2(abs(Y),X) / (2*M_PI))*2; /* cone */
+    }     
+    else if (Pattern == 4)
+    {
+        Texture= (X+Y)/2; /* triangle */
+    }          
+    else if (Pattern == 5)
+    {
+        Texture= (X+1)/2; /* linear x */
+    } 
+    else if (Pattern == 6)
+    {
+        Texture= (Y+1)/2; /* linear y */
+    }       
+    else if (Pattern == 7)
+    {
+        Texture= atan(abs(X))+atan(abs(Y));; /* cross */
+    }     
+    else {
+        
+        Texture= (atan2(Y,X) / (2*M_PI) + 0.5); /* test */
+    }
+        
+    /* compare R to the dot size */
+    if (Texture > Size*SizeMultiplier) Halftone= 0;
+    else Halftone= 1;      
+
 }
+
 

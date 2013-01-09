@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
 	<nodes>
-		<node type="TEX_IMAGE" image="file://Color Map.jpg" source="FILE" color_space="COLOR" projection="FLAT" loc="-517, 322" />
-		<node type="BRIGHTCONTRAST" color="rgba(1.0, 1.0, 1.0, 1.0)" bright="0.69999" contrast="0.40000" loc="-346, 291" />
-		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" height="0.5" frequency="12.0" scale="12.0" loc="-172, 351" />
-		<node type="BSDF_DIFFUSE" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.0" loc="10, 344" />
-		<node type="OUTPUT_MATERIAL" loc="208, 321" />
-		<node type="TEX_COORD" dupli="False" loc="-711, 321" />
+		<node type="OUTPUT_MATERIAL" loc="312, 321" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.0" loc="87, 340" />
+		<node type="TEX_COORD" dupli="False" loc="-753, 321" />
+		<node type="TEX_IMAGE" image="file:///home/shane/Projects3D/BlenderLib/OSL-Shaders/patterns/ChHalftone/textures/Color Map.jpg" source="FILE" color_space="COLOR" projection="FLAT" loc="-556, 322" />
+		<node type="BRIGHTCONTRAST" color="rgba(1.0, 1.0, 1.0, 1.0)" bright="0.69999" contrast="0.40000" loc="-364, 314" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" frequency="12.0" scale="12.0" pattern="0" axis="0" pingpong="0" point="Vector(0.0, 0.0, 0.0)" size="0.5" sizemultiplier="0.51421" loc="-161, 405" />
 	</nodes>
 	<links>
+		<link to="0" input="0" from="1" output="0" />
 		<link to="4" input="0" from="3" output="0" />
-		<link to="3" input="0" from="2" output="0" />
-		<link to="1" input="0" from="0" output="0" />
-		<link to="0" input="0" from="5" output="2" />
-		<link to="2" input="1" from="1" output="0" />
+		<link to="3" input="0" from="2" output="2" />
+		<link to="5" input="6" from="4" output="0" />
+		<link to="1" input="0" from="5" output="3" />
 	</links>
 	<scripts>
 		<script name="ChHalftone.osl" id="0">
-/*<br /> * ChHalftone.osl by Charlie (c)2012<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * original script from -<br /> * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page8<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader halftone(<br />        point Vector = P,<br />        float Height = 0.5,<br />        float Frequency = 16,<br />        float Scale = 16,<br />        output float Intensity = 0 )<br />{<br />    float x=Vector[0];<br />    float y=Vector[1];<br /><br />    x*= Scale * Frequency;<br />    y*= Scale * Frequency;<br /><br />    x= mod(x,1.0); if (x&lt;0) x= 1.0+x;<br />    y= mod(y,1.0); if (y&lt;0) y= 1.0+y;<br /><br />    /* generate texture origin based on 0,0 -1 to 1 */<br />    x= x*2-1;<br />    y= y*2-1;<br /><br />    float r= sqrt(x*x+y*y);<br />    <br />    if (r &gt; Height) Intensity= 0;<br />    else Intensity= 1;<br />}<br /><br />
+/*<br /> * ChHalftone.osl by Charlie (c)2012<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * original script from -<br /> * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page9<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />/**<br />Pattern selects the dot type<br />Axis is a switch to set the Axis to the centre of the pattern area. (Shifts the texture)<br />Scale and Frequency do the same thing but it is useful to have the two inputs so one can be driven. <br />Size is equivalent to the width of the halftone dot.<br />SizeMultiplier adds additional control, so one can be driven.<br /><br />Halftone returns the halftone.<br />Texture returns the texture used to generate the halftone.<br />X &amp; Y return the texture coordinates.<br /><br />*/<br /><br />shader halftone_texture(  <br /><br />    int Pattern = 0,<br />    int Axis = 0,<br />    int PingPong = 0,<br />    point Point = P,<br />    float Size = 0.5,  <br />    float SizeMultiplier = M_SQRT2,  <br />    float Frequency = 16,<br />    float Scale = 16,<br />    output float Y = 0,<br />    output float X = 0,<br />    output float Texture = 0,<br />    output float Halftone = 0<br />    <br />)  <br />{  <br />    <br />    void centre_axis(){<br />        /* generate texture origin based on 0,0 -1 to 1 */<br />        X= X*2-1;<br />        Y= Y*2-1;<br />    }<br />    <br />    float ping_pong(float in){<br />        /* reverses coordinates every other pattern */<br />        int i= 0;<br />        i= (int)ceil(in);<br />        if (in &gt; 1.0) {<br />            if ( i % 2 == 0 ) { <br />                in= mod(in,1);<br />                in= 1-in;<br />            } <br />            else {<br />                in= mod(in,1);<br />            }<br />        }<br />        <br />        return in;<br />    }    <br />    <br />    X= Point[0] * Scale * Frequency;<br />    Y= Point[1] * Scale * Frequency;<br />        <br />    if (PingPong == 1){<br />        X= ping_pong(X);<br />        Y= ping_pong(Y);<br />    } else if (PingPong == 2){<br />        X= ping_pong(X);<br />    } else if (PingPong == 3){<br />        Y= ping_pong(Y);<br />    }<br />    <br />    X= mod(X,1); <br />    Y= mod(Y,1); <br /><br />    if (Axis == 0){<br />        centre_axis();<br />    }<br />    <br />    if (Pattern == 0)<br />    {<br />        Texture= X*X+Y*Y; /* circle */<br />    }<br />    else if (Pattern == 1)<br />    {<br />        Texture= max(abs(X),abs(Y)); /* square */<br />    } <br />    else if (Pattern == 2)<br />    {<br />        Texture= (abs(X)+abs(Y))/2; /* diamond */<br />    } <br />    else if (Pattern == 3)<br />    {<br />        Texture= (atan2(abs(Y),X) / (2*M_PI))*2; /* cone */<br />    }     <br />    else if (Pattern == 4)<br />    {<br />        Texture= (X+Y)/2; /* triangle */<br />    }          <br />    else if (Pattern == 5)<br />    {<br />        Texture= (X+1)/2; /* linear x */<br />    } <br />    else if (Pattern == 6)<br />    {<br />        Texture= (Y+1)/2; /* linear y */<br />    }       <br />    else if (Pattern == 7)<br />    {<br />        Texture= atan(abs(X))+atan(abs(Y));; /* cross */<br />    }     <br />    else {<br />        <br />        Texture= (atan2(Y,X) / (2*M_PI) + 0.5); /* test */<br />    }<br />        <br />    /* compare R to the dot size */<br />    if (Texture &gt; Size*SizeMultiplier) Halftone= 0;<br />    else Halftone= 1;      <br /><br />}<br /><br /><br />
 		</script>
 	</scripts>
 </material>
