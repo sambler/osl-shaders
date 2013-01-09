@@ -1,0 +1,45 @@
+/*
+ * MASineWave.osl by Meta-Androcto (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * simplified by Shane Ambler
+ * removed unnecessary calculations
+ * removed intermediate variables that were not needed
+ *
+ */
+
+#include "stdosl.h"
+
+shader sine_pattern(
+        float Hue = 1.0,
+        float Intensity = 1.0,
+        float Rayon = 1.0,
+        float Rotation = 1.0,
+        float Movement = 1.0,
+        int Stripes = 35,
+        point Vector = P,
+        output color Color = color(0.8),
+        output float Fac = 0.0 )
+{
+    // Boucle spirale
+    for( float i = -Stripes;  i < Stripes ; ++i )
+    {
+        // Trajectoire spirale
+        point Pos = Vector;
+
+        Pos[0] *= cos(i + Movement) + sin( (Pos[1] + i) * Rotation ) * Rayon/2;
+        Pos[0] += Pos[0] + Pos[1];
+
+        Fac += abs(Intensity / Pos[0] / 1000.0);
+    }
+    float ar = sin ( 1 /(2.5*M_PI) * Hue + (M_PI_2) );
+
+    // Couleurs arc-en-ciel
+    color C;
+    C[0] = sin ( 1 /(2.5*M_PI) * Hue + (M_PI_2) ) + abs(Hue/M_PI);
+    C[1] = 1;
+    C[2] = 1;
+
+    Color = color("hsv", C[0], C[1], (Fac*C[2]));
+}
+

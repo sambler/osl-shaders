@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(1.0, 0.37299, 0.0)" sample_lamp="True">
+	<nodes>
+		<node type="SCRIPT" mode="INTERNAL" script="0" hue="0.0" intensity="21.71999" rayon="19.23800" rotation="1.0" movement="1.0" stripes="106" vector="Vector(0.0, 0.0, 0.0)" loc="-275, 493" />
+		<node type="OUTPUT_MATERIAL" loc="794, 420" />
+		<node type="MIX_SHADER" fac="0.0" loc="556, 427" />
+		<node type="VALTORGB" interpolation="LINEAR" fac="0.5" stops="9" stop1="0.0|rgba(0.00507, 0.00507, 0.00507, 1.0)" stop2="0.18166|rgba(0.03636, 0.00803, 0.00629, 1.0)" stop3="0.36335|rgba(0.78697, 0.12003, 0.08691, 1.0)" stop4="0.46305|rgba(0.23657, 0.81665, 0.0, 1.0)" stop5="0.5625|rgba(0.0, 0.54808, 0.49287, 1.0)" stop6="0.67953|rgba(1.0, 0.0, 0.00963, 1.0)" stop7="0.77271|rgba(0.03872, 0.65842, 0.85750, 1.0)" stop8="0.91817|rgba(0.06755, 0.5, 0.0, 1.0)" stop9="1.0|rgba(0.34430, 0.46788, 1.0, 1.0)" loc="-26, 368" />
+		<node type="BSDF_DIFFUSE" color="rgba(1.0, 0.37299, 0.0, 1.0)" roughness="0.0" loc="276, 388" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.0, 0.01682, 0.02215, 1.0)" roughness="0.09999" loc="275, 251" />
+		<node type="MATH" operation="MULTIPLY" use_clamp="False" value1="0.5" value2="0.89999" loc="173, 573" />
+		<node type="TEX_VORONOI" coloring="INTENSITY" scale="5.0" loc="-554, 538" />
+		<node type="MAPPING" translation="Vector(1.20000, 1.0, 1.0)" rotation="Vector(0.0, 0.0, 0.0)" scale="Vector(0.59999, 0.60000, 0.60000)" use_min="False" use_max="False" vector="Vector(0.0, 0.0, 0.0)" loc="-618, 368" />
+		<node type="TEX_COORD" dupli="False" loc="-855, 319" />
+	</nodes>
+	<links>
+		<link to="2" input="1" from="4" output="0" />
+		<link to="8" input="0" from="9" output="3" />
+		<link to="4" input="0" from="3" output="0" />
+		<link to="0" input="6" from="8" output="0" />
+		<link to="3" input="0" from="0" output="1" />
+		<link to="0" input="3" from="7" output="1" />
+		<link to="6" input="0" from="0" output="1" />
+		<link to="2" input="0" from="6" output="0" />
+		<link to="1" input="0" from="2" output="0" />
+		<link to="2" input="2" from="5" output="0" />
+	</links>
+	<scripts>
+		<script name="MASineWave.osl" id="0">
+/*<br /> * MASineWave.osl by Meta-Androcto (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * simplified by Shane Ambler<br /> * removed unnecessary calculations<br /> * removed intermediate variables that were not needed<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader sine_pattern(<br />        float Hue = 1.0,<br />        float Intensity = 1.0,<br />        float Rayon = 1.0,<br />        float Rotation = 1.0,<br />        float Movement = 1.0,<br />        int Stripes = 35,<br />        point Vector = P,<br />        output color Color = color(0.8),<br />        output float Fac = 0.0 )<br />{<br />    // Boucle spirale<br />    for( float i = -Stripes;  i &lt; Stripes ; ++i )<br />    {<br />        // Trajectoire spirale<br />        point Pos = Vector;<br /><br />        Pos[0] *= cos(i + Movement) + sin( (Pos[1] + i) * Rotation ) * Rayon/2;<br />        Pos[0] += Pos[0] + Pos[1];<br /><br />        Fac += abs(Intensity / Pos[0] / 1000.0);<br />    }<br />    float ar = sin ( 1 /(2.5*M_PI) * Hue + (M_PI_2) );<br /><br />    // Couleurs arc-en-ciel<br />    color C;<br />    C[0] = sin ( 1 /(2.5*M_PI) * Hue + (M_PI_2) ) + abs(Hue/M_PI);<br />    C[1] = 1;<br />    C[2] = 1;<br /><br />    Color = color(&quot;hsv&quot;, C[0], C[1], (Fac*C[2]));<br />}<br /><br />
+		</script>
+	</scripts>
+</material>

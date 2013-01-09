@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(1.0, 0.37299, 0.0)" sample_lamp="True">
+	<nodes>
+		<node type="TEX_COORD" dupli="False" loc="-988, 222" />
+		<node type="MAPPING" translation="Vector(1.0, 1.0, 1.0)" rotation="Vector(0.0, 0.0, 0.0)" scale="Vector(2.0, 2.0, 2.0)" use_min="False" use_max="False" vector="Vector(0.0, 0.0, 0.0)" loc="-780, 254" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" hue="0.0" intensity="0.59999" rayon="0.69999" rotation="1.40000" movement="0.79999" stripes="35" vector="Vector(0.0, 0.0, 0.0)" loc="-419, 334" />
+		<node type="BSDF_DIFFUSE" color="rgba(1.0, 0.37299, 0.0, 1.0)" roughness="0.0" loc="-136, 317" />
+		<node type="OUTPUT_MATERIAL" loc="69, 310" />
+	</nodes>
+	<links>
+		<link to="4" input="0" from="3" output="0" />
+		<link to="1" input="0" from="0" output="3" />
+		<link to="3" input="0" from="2" output="0" />
+		<link to="2" input="6" from="1" output="0" />
+	</links>
+	<scripts>
+		<script name="MASineWave.osl" id="0">
+/*<br /> * MASineWave.osl by Meta-Androcto (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * simplified by Shane Ambler<br /> * removed unnecessary calculations<br /> * removed intermediate variables that were not needed<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader sine_pattern(<br />        float Hue = 1.0,<br />        float Intensity = 1.0,<br />        float Rayon = 1.0,<br />        float Rotation = 1.0,<br />        float Movement = 1.0,<br />        int Stripes = 35,<br />        point Vector = P,<br />        output color Color = color(0.8),<br />        output float Fac = 0.0 )<br />{<br />    // Boucle spirale<br />    for( float i = -Stripes;  i &lt; Stripes ; ++i )<br />    {<br />        // Trajectoire spirale<br />        point Pos = Vector;<br /><br />        Pos[0] *= cos(i + Movement) + sin( (Pos[1] + i) * Rotation ) * Rayon/2;<br />        Pos[0] += Pos[0] + Pos[1];<br /><br />        Fac += abs(Intensity / Pos[0] / 1000.0);<br />    }<br />    float ar = sin ( 1 /(2.5*M_PI) * Hue + (M_PI_2) );<br /><br />    // Couleurs arc-en-ciel<br />    color C;<br />    C[0] = sin ( 1 /(2.5*M_PI) * Hue + (M_PI_2) ) + abs(Hue/M_PI);<br />    C[1] = 1;<br />    C[2] = 1;<br /><br />    Color = color(&quot;hsv&quot;, C[0], C[1], (Fac*C[2]));<br />}<br /><br />
+		</script>
+	</scripts>
+</material>
