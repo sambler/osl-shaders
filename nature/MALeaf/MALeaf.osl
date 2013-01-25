@@ -1,0 +1,86 @@
+/*
+ * MALeaf.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: cc-by-sa
+ *
+ * original script from -
+ * http://blenderthings.blogspot.com.au/2013/01/a-osl-leaf-shape-shader-for-cycles.html
+ *
+ */
+
+#include "stdosl.h"
+#include "MAEquations.h"
+
+shader leaf(
+        point Vector = P,
+        float BaseAngle = 107.0,
+        float BaseCurve = 0.7,
+        float TipAngle = 44.0,
+        float TipCurve = 1.2,
+        output float Leaf = 0 )
+{
+    // calculate the four control point of the cubic spline
+    float x1,y1,x2,y2;
+    sincos(radians(BaseAngle),y1,x1);
+    sincos(radians(TipAngle),y2,x2);
+    point P0 = point(0, 0, 0);
+    point P1 = point(x1, y1, 0)*BaseCurve;
+    point P2 = point(1-x2*TipCurve, y2*TipCurve, 0);
+    point P3 = point(1, 0, 0);
+
+    // to determin the y value(s) of the spline at the x position we
+    // are located, we want to solve spline(t) - x = 0
+    // we therefore gather all factors and solve the cubic equation
+    float tfactor[4] = { P0[0]-Vector[0],
+                        3*P0[0]+3*P1[0],
+                        3*P0[0]-6*P1[0]+3*P2[0],
+                        P0[0]+3*P1[0]-3*P2[0]+P3[0] };
+    float t[3];
+    int nrealroots;
+    cubic(tfactor, t, nrealroots);
+
+    // at this point, the array t holds up to 3 real roots
+    // remove any real root that is not in range [0,1]
+    int i=0;
+    while(i < nrealroots){
+        if ((t[i] < 0) || (t[i] > 1)) {
+            int j=i;
+            while(j < (nrealroots-1)){
+                t[j]=t[j+1];
+                j++;
+            }
+            nrealroots--;
+        }
+        i++;
+    }
+
+    // note that a cubic funtion can have 3 real roots,
+    // but in this case we ignore such very warped curves
+    // TODO: w. 3 real roots w could set leaf = 1, if y < y0 OR y between y1,y2
+    // TODO: seration, possible by determining the closest
+    //   distance (if inside leaf) to the spline and
+    //       determining if w are within some periodic funtion f(t)
+
+    // we generate the shape mirrored about the x-axis
+    float y = Vector[1];
+    if(y<0) y = -y;
+
+    if(nrealroots > 0){
+        point Sy0 = cubicspline(t[0],P0,P1,P2,P3);
+        if(nrealroots > 1){
+            // if we have 2 roots we calculate and order the y values
+            // and check whether the current y values is between them
+            point Sy1 = cubicspline(t[1],P0,P1,P2,P3);
+            if ( Sy1[1] < Sy0[1] ){
+                if( (y > Sy1[1]) && (y < Sy0[1]) ) Leaf = 1;
+            }else{
+                if( (y > Sy0[1]) && (y < Sy1[1]) ) Leaf = 1;
+            }
+        }else{
+            // with a single value we check if we are below the y value
+            if( y < Sy0[1] ) Leaf = 1;
+        }
+    }
+}
+

@@ -1,0 +1,92 @@
+/*
+ * MALeafVeins.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: cc-by-sa
+ *
+ * original script from -
+ * http://blenderthings.blogspot.com.au/2013/01/osl-leaf-veins-shader-for-cycles.html
+ *
+ */
+
+#include "stdosl.h"
+#include "MAEquations.h"
+
+shader arcuateveins(
+        point Vector = P,
+        
+        float BaseAngle = 107.0,
+        float BaseCurve = 0.7,
+        float TipAngle = 44.0,
+        float TipCurve = 1.2,
+        
+        int Veins = 7,
+        int Seed = 42,
+        float Variance = 0,
+        float InnerWidth = 0.05,
+        float NWidth = 0.25, // size of the reticulated area
+
+        float Curve  = 0.5, // distribution of endpoints on edge
+        float Curve2 = 0.5, // distribution of controlpoints
+        float Spacing = 0.5, // distribution of starting points
+        float Up = 0.5,
+
+        output float Vein = 0,
+        output float Net = 0,
+        output float Fac = 0 )
+{
+
+ float delta = 1.0/((float)Veins+1);
+ float delta2= delta/2;
+ float delta4= delta/4;
+
+ // calculate the four control points of the cubic spline that defines the leaf edge
+ float x1,y1,x2,y2;
+ sincos(radians(BaseAngle),y1,x1);
+ sincos(radians(TipAngle),y2,x2);
+ point P0 = point(0, 0, 0);
+ point P1 = point(x1, y1, 0)*BaseCurve;
+ point P2 = point(1-x2*TipCurve, y2*TipCurve, 0);
+ point P3 = point(1, 0, 0);
+
+ point P0q = point(P0[0],P0[1]*Up,P0[2]);
+ point P1q = point(P1[0],P1[1]*Up,P1[2]);
+ point P2q = point(P2[0],P2[1]*Up,P2[2]);
+ point P3q = point(P3[0],P3[1]*Up,P3[2]);
+
+ int i;
+ for(i=0;i < Veins;i++){
+
+    // determine the starting points of the veins
+    float x = (i*delta+delta2*Variance*cellnoise(i+10+Seed))*Spacing;
+    float dx = (delta4*Variance*cellnoise(i+17+Seed))*Spacing;
+    point P0up   = point(delta2+x+dx,0,0);
+    point P0down = point(delta2+x,0,0);
+    // determine the endpoints on the leaf edge
+    float t=(i*delta+delta2)*Curve+1-Curve;
+    point P2up   = cubicspline(t,P0,P1,P2,P3);
+    point P2down = point(P2up[0],-P2up[1],P2up[2]);
+    // the veins are quadratic splines, so need one additional control point
+    t=(i*delta+delta2)*Curve2+1-Curve2;
+    point P1up   = cubicspline(t,P0q,P1q,P2q,P3q);
+    point P1down = point(P1up[0],-P1up[1],P1up[2]);
+
+    float r;
+    int f = splinedist(P0up, P1up, P2up, Vector, r, t);
+    if ( f && (r < NWidth ) ) Net = 1 ;
+    if ( f && (r < InnerWidth * ( 1- t) * (1-Vector[0]) ) ) { 
+        Vein = 1; Fac = sqrt(1-r/InnerWidth); break; 
+    }
+    f = splinedist(P0down, P1down, P2down, Vector, r , t);
+    if ( f && (r < NWidth ) ) Net = 1 ;
+    if ( f && (r < InnerWidth * ( 1- t) * (1-Vector[0]) ) ) {
+        Vein = 1; Fac = sqrt(1-r/InnerWidth); break; 
+    }
+ }
+
+ // the central vein
+ float d = distance(point(0,0,0),point(1,0,0),Vector);
+ if ( d < NWidth ) Net = 1 ;
+ if (d < (InnerWidth * (1-Vector[0])) ) { Vein = 1; Fac = sqrt(1-d/InnerWidth);}
+}
+

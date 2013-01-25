@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" baseangle="107.0" basecurve="0.79999" tipangle="43.0" tipcurve="1.20000" loc="-476, 962" />
+		<node type="REROUTE" loc="-267, 277" />
+		<node type="SCRIPT" mode="INTERNAL" script="1" vector="Vector(0.0, 0.0, 0.0)" baseangle="107.0" basecurve="0.69999" tipangle="43.0" tipcurve="1.20000" veins="7" seed="42" variance="0.0" innerwidth="0.05000" nwidth="0.25" curve="0.5" curve2="0.5" spacing="0.5" up="0.5" loc="-480, 736" />
+		<node type="MATH" operation="MULTIPLY" use_clamp="False" value1="0.5" value2="0.20000" loc="-218, 512" />
+		<node type="MATH" operation="ADD" use_clamp="False" value1="0.5" value2="0.12999" loc="-52, 636" />
+		<node type="MATH" operation="MULTIPLY" use_clamp="False" value1="0.5" value2="0.14999" loc="-220, 677" />
+		<node type="TEX_VORONOI" coloring="CELLS" scale="30.0" loc="-839, 155" />
+		<node type="TEX_NOISE" scale="20.0" detail="2.0" distortion="0.0" loc="-843, 329" />
+		<node type="REROUTE" loc="-877, 208" />
+		<node type="MATH" operation="MULTIPLY" use_clamp="False" value1="0.5" value2="0.5" loc="-650, 288" />
+		<node type="VALTORGB" interpolation="B_SPLINE" fac="0.5" stops="2" stop1="0.13636|rgba(0.06500, 0.13646, 0.03646, 1.0)" stop2="0.21363|rgba(0.36345, 0.49456, 0.18606, 1.0)" loc="-487, 240" />
+		<node type="BSDF_TRANSLUCENT" color="rgba(0.12431, 0.63736, 0.16978, 1.0)" loc="50, 185" />
+		<node type="MIX_SHADER" fac="0.30000" loc="261, 309" />
+		<node type="MIX_SHADER" fac="0.5" loc="499, 319" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.04706, 0.54999, 0.07344, 1.0)" roughness="0.09999" loc="-185, 335" />
+		<node type="BSDF_GLOSSY" distribution="BECKMANN" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.10000" loc="-184, 196" />
+		<node type="MIX_SHADER" fac="0.20000" loc="54, 327" />
+		<node type="MIX_SHADER" fac="0.40000" loc="19, -19" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.63736, 0.02739, 0.04079, 1.0)" roughness="0.09999" loc="-185, 21" />
+		<node type="BSDF_GLOSSY" distribution="BECKMANN" color="rgba(0.46969, 0.63996, 0.23814, 1.0)" roughness="0.10000" loc="-185, -116" />
+		<node type="BSDF_TRANSPARENT" color="rgba(1.0, 1.0, 1.0, 1.0)" loc="495, 418" />
+		<node type="MIX_SHADER" fac="0.5" loc="685, 482" />
+		<node type="OUTPUT_MATERIAL" loc="893, 580" />
+		<node type="REROUTE" loc="99, 683" />
+		<node type="REROUTE" loc="-640, 739" />
+		<node type="MAPPING" translation="Vector(-0.40000, -0.44999, 1.78813)" rotation="Vector(0.0, 0.0, 0.0)" scale="Vector(1.20000, 1.20000, 1.0)" use_min="False" use_max="False" vector="Vector(0.0, 0.0, 0.0)" loc="-1162, 459" />
+		<node type="MATH" operation="MULTIPLY" use_clamp="False" value1="0.5" value2="50.0" loc="-1511, 170" />
+		<node type="MATH" operation="SUBTRACT" use_clamp="False" value1="0.5" value2="0.5" loc="-1660, 168" />
+		<node type="SCRIPT" mode="INTERNAL" script="2" vector="Vector(0.0, 0.0, 0.0)" angle="0.0" loc="-1347, 299" />
+		<node type="TEX_COORD" dupli="False" loc="-1643, 398" />
+		<node type="OBJECT_INFO" loc="-1848, 153" />
+	</nodes>
+	<links>
+		<link to="22" input="0" from="21" output="0" />
+		<link to="21" input="1" from="20" output="0" />
+		<link to="12" input="1" from="16" output="0" />
+		<link to="16" input="1" from="14" output="0" />
+		<link to="16" input="2" from="15" output="0" />
+		<link to="21" input="0" from="0" output="0" />
+		<link to="27" input="0" from="30" output="3" />
+		<link to="26" input="0" from="27" output="0" />
+		<link to="28" input="1" from="26" output="0" />
+		<link to="28" input="0" from="29" output="2" />
+		<link to="25" input="0" from="28" output="0" />
+		<link to="14" input="0" from="10" output="0" />
+		<link to="6" input="0" from="8" output="0" />
+		<link to="10" input="0" from="9" output="0" />
+		<link to="9" input="1" from="6" output="1" />
+		<link to="9" input="0" from="7" output="1" />
+		<link to="3" input="0" from="1" output="0" />
+		<link to="4" input="1" from="3" output="0" />
+		<link to="4" input="0" from="5" output="0" />
+		<link to="21" input="2" from="13" output="0" />
+		<link to="8" input="0" from="25" output="0" />
+		<link to="7" input="0" from="8" output="0" />
+		<link to="13" input="1" from="12" output="0" />
+		<link to="12" input="2" from="11" output="0" />
+		<link to="17" input="1" from="18" output="0" />
+		<link to="17" input="2" from="19" output="0" />
+		<link to="13" input="2" from="17" output="0" />
+		<link to="22" input="2" from="4" output="0" />
+		<link to="13" input="0" from="23" output="0" />
+		<link to="1" input="0" from="9" output="0" />
+		<link to="23" input="0" from="2" output="0" />
+		<link to="5" input="0" from="2" output="2" />
+		<link to="0" input="0" from="24" output="0" />
+		<link to="2" input="0" from="24" output="0" />
+		<link to="24" input="0" from="25" output="0" />
+	</links>
+	<scripts>
+		<script name="MALeaf.osl" id="0">
+/*<br /> * MALeaf.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: cc-by-sa<br /> *<br /> * original script from -<br /> * http://blenderthings.blogspot.com.au/2013/01/a-osl-leaf-shape-shader-for-cycles.html<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br />#include &quot;MAEquations.h&quot;<br /><br />shader leaf(<br />        point Vector = P,<br />        float BaseAngle = 107.0,<br />        float BaseCurve = 0.7,<br />        float TipAngle = 44.0,<br />        float TipCurve = 1.2,<br />        output float Leaf = 0 )<br />{<br />    // calculate the four control point of the cubic spline<br />    float x1,y1,x2,y2;<br />    sincos(radians(BaseAngle),y1,x1);<br />    sincos(radians(TipAngle),y2,x2);<br />    point P0 = point(0, 0, 0);<br />    point P1 = point(x1, y1, 0)*BaseCurve;<br />    point P2 = point(1-x2*TipCurve, y2*TipCurve, 0);<br />    point P3 = point(1, 0, 0);<br /><br />    // to determin the y value(s) of the spline at the x position we<br />    // are located, we want to solve spline(t) - x = 0<br />    // we therefore gather all factors and solve the cubic equation<br />    float tfactor[4] = { P0[0]-Vector[0],<br />                        3*P0[0]+3*P1[0],<br />                        3*P0[0]-6*P1[0]+3*P2[0],<br />                        P0[0]+3*P1[0]-3*P2[0]+P3[0] };<br />    float t[3];<br />    int nrealroots;<br />    cubic(tfactor, t, nrealroots);<br /><br />    // at this point, the array t holds up to 3 real roots<br />    // remove any real root that is not in range [0,1]<br />    int i=0;<br />    while(i &lt; nrealroots){<br />        if ((t[i] &lt; 0) || (t[i] &gt; 1)) {<br />            int j=i;<br />            while(j &lt; (nrealroots-1)){<br />                t[j]=t[j+1];<br />                j++;<br />            }<br />            nrealroots--;<br />        }<br />        i++;<br />    }<br /><br />    // note that a cubic funtion can have 3 real roots,<br />    // but in this case we ignore such very warped curves<br />    // TODO: w. 3 real roots w could set leaf = 1, if y &lt; y0 OR y between y1,y2<br />    // TODO: seration, possible by determining the closest<br />    //   distance (if inside leaf) to the spline and<br />    //       determining if w are within some periodic funtion f(t)<br /><br />    // we generate the shape mirrored about the x-axis<br />    float y = Vector[1];<br />    if(y&lt;0) y = -y;<br /><br />    if(nrealroots &gt; 0){<br />        point Sy0 = cubicspline(t[0],P0,P1,P2,P3);<br />        if(nrealroots &gt; 1){<br />            // if we have 2 roots we calculate and order the y values<br />            // and check whether the current y values is between them<br />            point Sy1 = cubicspline(t[1],P0,P1,P2,P3);<br />            if ( Sy1[1] &lt; Sy0[1] ){<br />                if( (y &gt; Sy1[1]) &amp;&amp; (y &lt; Sy0[1]) ) Leaf = 1;<br />            }else{<br />                if( (y &gt; Sy0[1]) &amp;&amp; (y &lt; Sy1[1]) ) Leaf = 1;<br />            }<br />        }else{<br />            // with a single value we check if we are below the y value<br />            if( y &lt; Sy0[1] ) Leaf = 1;<br />        }<br />    }<br />}<br /><br />
+		</script>
+		<script name="MALeafVeins.osl" id="1">
+/*<br /> * MALeafVeins.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: cc-by-sa<br /> *<br /> * original script from -<br /> * http://blenderthings.blogspot.com.au/2013/01/osl-leaf-veins-shader-for-cycles.html<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br />#include &quot;MAEquations.h&quot;<br /><br />shader arcuateveins(<br />        point Vector = P,<br />        <br />        float BaseAngle = 107.0,<br />        float BaseCurve = 0.7,<br />        float TipAngle = 44.0,<br />        float TipCurve = 1.2,<br />        <br />        int Veins = 7,<br />        int Seed = 42,<br />        float Variance = 0,<br />        float InnerWidth = 0.05,<br />        float NWidth = 0.25, // size of the reticulated area<br /><br />        float Curve  = 0.5, // distribution of endpoints on edge<br />        float Curve2 = 0.5, // distribution of controlpoints<br />        float Spacing = 0.5, // distribution of starting points<br />        float Up = 0.5,<br /><br />        output float Vein = 0,<br />        output float Net = 0,<br />        output float Fac = 0 )<br />{<br /><br /> float delta = 1.0/((float)Veins+1);<br /> float delta2= delta/2;<br /> float delta4= delta/4;<br /><br /> // calculate the four control points of the cubic spline that defines the leaf edge<br /> float x1,y1,x2,y2;<br /> sincos(radians(BaseAngle),y1,x1);<br /> sincos(radians(TipAngle),y2,x2);<br /> point P0 = point(0, 0, 0);<br /> point P1 = point(x1, y1, 0)*BaseCurve;<br /> point P2 = point(1-x2*TipCurve, y2*TipCurve, 0);<br /> point P3 = point(1, 0, 0);<br /><br /> point P0q = point(P0[0],P0[1]*Up,P0[2]);<br /> point P1q = point(P1[0],P1[1]*Up,P1[2]);<br /> point P2q = point(P2[0],P2[1]*Up,P2[2]);<br /> point P3q = point(P3[0],P3[1]*Up,P3[2]);<br /><br /> int i;<br /> for(i=0;i &lt; Veins;i++){<br /><br />    // determine the starting points of the veins<br />    float x = (i*delta+delta2*Variance*cellnoise(i+10+Seed))*Spacing;<br />    float dx = (delta4*Variance*cellnoise(i+17+Seed))*Spacing;<br />    point P0up   = point(delta2+x+dx,0,0);<br />    point P0down = point(delta2+x,0,0);<br />    // determine the endpoints on the leaf edge<br />    float t=(i*delta+delta2)*Curve+1-Curve;<br />    point P2up   = cubicspline(t,P0,P1,P2,P3);<br />    point P2down = point(P2up[0],-P2up[1],P2up[2]);<br />    // the veins are quadratic splines, so need one additional control point<br />    t=(i*delta+delta2)*Curve2+1-Curve2;<br />    point P1up   = cubicspline(t,P0q,P1q,P2q,P3q);<br />    point P1down = point(P1up[0],-P1up[1],P1up[2]);<br /><br />    float r;<br />    int f = splinedist(P0up, P1up, P2up, Vector, r, t);<br />    if ( f &amp;&amp; (r &lt; NWidth ) ) Net = 1 ;<br />    if ( f &amp;&amp; (r &lt; InnerWidth * ( 1- t) * (1-Vector[0]) ) ) { <br />        Vein = 1; Fac = sqrt(1-r/InnerWidth); break; <br />    }<br />    f = splinedist(P0down, P1down, P2down, Vector, r , t);<br />    if ( f &amp;&amp; (r &lt; NWidth ) ) Net = 1 ;<br />    if ( f &amp;&amp; (r &lt; InnerWidth * ( 1- t) * (1-Vector[0]) ) ) {<br />        Vein = 1; Fac = sqrt(1-r/InnerWidth); break; <br />    }<br /> }<br /><br /> // the central vein<br /> float d = distance(point(0,0,0),point(1,0,0),Vector);<br /> if ( d &lt; NWidth ) Net = 1 ;<br /> if (d &lt; (InnerWidth * (1-Vector[0])) ) { Vein = 1; Fac = sqrt(1-d/InnerWidth);}<br />}<br /><br />
+		</script>
+		<script name="MARotateZ.osl" id="2">
+/*<br /> * MARotateZ.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: cc-by-sa<br /> *<br /> * original script from -<br /> * http://blenderthings.blogspot.com.au/2013/01/a-osl-leaf-shape-shader-for-cycles.html<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader rotate_z(<br />        point Vector = P, <br />        float Angle = 0,<br />        output point VecOut = P )<br />{<br />    VecOut = rotate(Vector,radians(Angle),point(0,0,0),point(0,0,1));<br />}<br /><br />
+		</script>
+	</scripts>
+</material>

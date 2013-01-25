@@ -1,0 +1,21 @@
+/*
+ * MARotateZ.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: cc-by-sa
+ *
+ * original script from -
+ * http://blenderthings.blogspot.com.au/2013/01/a-osl-leaf-shape-shader-for-cycles.html
+ *
+ */
+
+#include "stdosl.h"
+
+shader rotate_z(
+        point Vector = P, 
+        float Angle = 0,
+        output point VecOut = P )
+{
+    VecOut = rotate(Vector,radians(Angle),point(0,0,0),point(0,0,1));
+}
+
