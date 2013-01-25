@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="BSDF_DIFFUSE" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.0" loc="276, 295" />
+		<node type="OUTPUT_MATERIAL" loc="506, 292" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" intensity="0.5" frequency="100.0" width="0.30000" loc="67, 276" />
+	</nodes>
+	<links>
+		<link to="1" input="0" from="0" output="0" />
+		<link to="0" input="0" from="2" output="0" />
+	</links>
+	<scripts>
+		<script name="LGStarField.osl" id="0">
+/*<br /> * LGStarField.osl by Thomas Dinges<br /> * from https://github.com/sambler/osl-shaders<br /> * <br /> * original script from -<br /> * http://www.renderman.org/RMR/RMRShaders.html<br /> *<br /> * LGStarfield.sl -- Surface shader for a star field.<br /> *<br /> * DESCRIPTION:<br /> *   Makes a star field.  Best when used as a surface shader for the inside<br /> *   of a large sphere.<br /> * <br /> * PARAMETERS:<br /> *   frequency          frequency of the stars<br /> *   intensity          how bright are the stars?<br /> *   Width            how wide is the point spread function?  i.e. larger<br /> *                      values make &quot;wider&quot; stars, but the look less round.<br /> *<br /> * AUTHOR: written by Larry Gritz, 1992<br /> *<br /> * HISTORY:<br /> *      28 Dec 1992 -- written by lg for the &quot;Timbre Trees&quot; video (saucer)<br /> *      12 Jan 1994 -- recoded by lg in correct shading language.<br /> *<br /> * modified  12 Jan 1994 by Larry Gritz<br /> * converted to OSL bu Thomas Dinges Dec 2012<br /> *<br /> */<br /><br />shader LGStarField(<br />        float Intensity = 0.5,<br />        float Frequency = 100.0,<br />        float Width = 0.2,<br />        output float Fac = 1.0 )<br />{<br />  point PP;<br />  float val;<br /><br />  PP = Frequency * P;<br /><br />  /* Use a noise value, but only keep the &quot;tips&quot; of the blotches */<br />  val = smoothstep (1 - Width, 1, noise(PP));<br /><br />  /* scale it by the intensity and sharpen it by squaring */<br />  Fac = Intensity * val*val;<br />}<br /><br />
+		</script>
+	</scripts>
+</material>
