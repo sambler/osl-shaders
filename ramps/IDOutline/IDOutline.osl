@@ -1,0 +1,36 @@
+/*
+ * IDOutline.osl by Charlie
+ * from https://github.com/sambler/osl-shaders
+ *
+ * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page9
+ * based on work by 
+ * Ivan DeWolf
+ *
+ */
+
+#include "stdosl.h"
+
+/* {roughly based on}
+ * IDoutline written by Ivan DeWolf
+ * it's the valdez algorithm. short and sweet.
+ * width sets the line width.
+ */
+shader outline(
+    normal Normal = N,
+    normal Incidental = I,
+    float Width = 0.5,
+    float Blend = 0.2,
+    color MainColor = color(0.0,0.0,0.6),
+    color EdgeColor = color(1.0,0.0,0.0),
+    output color Color = 0,
+    output float MixAmt = 0.0 )
+{
+    float wdth = clamp(Width,0.0,1.0); 
+    float smth = clamp(Blend,0.0,1.0); 
+    vector Nn = normalize(-Normal);
+    vector In = normalize(Incidental);
+    Nn *= 1-wdth;
+    MixAmt = smoothstep(-smth,0,dot(Nn,In));
+    Color = mix(MainColor,EdgeColor,MixAmt); 
+}
+
