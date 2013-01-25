@@ -1,0 +1,112 @@
+/*
+ * LGRustyMetal.osl by Charlie (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * rustymetal.sl -- metal with specks of rust
+ *
+ *  {converted/hacked to OSL from http://www.renderman.org/RMR/Shaders/LGShaders/LGRustyMetal.sl}
+ *
+ * DESCRIPTION:
+ *   A rough metal surface with controllable rust spots.  The rust pattern
+ *   is basically thresholded turbulence (summed abs(snoise)).  Where it's
+ *   RustAmt, shade like rust colored matte, and also make it bumpy (like
+ *   the corrosion is kind of grainy).  Where there is no rust, shade like
+ *   regular metal.  All computations are done in shader space.
+ *
+ * PARAMETERS
+ *   metalKa, Diffuse, Roughness - control the appearance of the metal.
+ *   rustKa, RustDiffuse, RustColor - control the appearance of the rust.
+ *   Scale - overall scaling factor of the rust pattern.
+ *   RustAmt - 0=no rust, larger for more rust, 1=completely rusty
+ *   RustBump - controls the "bumpiness" of the rusty areas.
+ *
+ * ANTIALIASING:
+ *   The fractal sum used to determine the rust pattern chooses a number of
+ *   octaves to sum based on the shader sampling rate.  This helps to keep
+ *   aliasing under control.
+ *
+ * AUTHOR: Larry Gritz, gritz AT seas DOT gwu DOT edu 
+ *         The George Washington University
+ *
+ * HISTORY:
+ *   19 Jan 1995 - gritz - created
+ *
+ *   modified 19 Jan 95 
+ *   converted to OSL by Charlie - Dec 2012
+ *   Renamed input variables by Shane Ambler 21/1/2013
+ *
+ */
+
+#include "stdosl.h"
+
+/* Signed noise varies from -1 to 1 (like Perlin uses) */
+#define snoise(x) (2*noise(x)-1)
+
+/* Maximum number of octaves */
+#define MAXOCTAVES 8
+
+
+surface
+LGRustyMetal (
+        point Vector = P,
+        float Diffuse = 1.0, 
+        float Roughness = 0.1,
+        float Scale = 1.0,
+        float RustAmt = 0.2,
+        color RustColor = color (0.437, 0.084, 0.0),
+        float RustDiffuse = 1.0,
+        float RustBump = 0.035,
+        output closure color BSDF = diffuse(N) )
+{
+  point V;                     /* normal and view vector used for shading */
+  point Nrust;                 /* perturbed normal for the rusty areas */
+  point PP;                    /* shade space point */
+  float i, sum = 0, a = 1;     /* Loop control for fractal sum */
+  float alimit;                /* Limit sum to do simple antialiasing */
+  float rustiness;             /* Result: how rusty is this point? */
+  closure color Cmetal = 0; 
+  closure color Crust = 0; /* Computed colors of metal & rust */
+
+  /* Sum several octaves of abs(snoise), i.e. turbulence.  Limit the
+   * number of octaves by the estimated change in PP between adjacent
+   * shading samples.
+   */
+  PP = Scale * Vector;
+  alimit = sqrt (area(PP));
+  for (i = 0;  i < MAXOCTAVES  &&  a > alimit;  i += 1) {
+      sum += a * abs(snoise(PP));
+      PP *= 2;
+      a /= 2;
+    }
+  /* If it's rusty, also add a high frequency bumpiness to the normal */
+  Nrust = calculatenormal (P + RustBump * snoise(PP) * normalize(N));
+
+  /* Scale the rust appropriately, modulate it by another noise 
+   * computation, then sharpen it by squaring its value.
+   */
+  rustiness = step (1-RustAmt, clamp (sum,0,1));
+  rustiness *= clamp (abs(snoise(PP)), 0, .08) / 0.08;
+  rustiness *= rustiness;
+
+  /* If we have any rust, calculate the color of the rust, taking into
+   * account the perturbed normal and shading like matte.
+   */
+  if (rustiness > 0) {
+      Crust = RustColor *RustDiffuse * diffuse(Nrust);
+    }
+  /* If we have any metal, calculate the color of the metal, using the
+   * original (smooth) normal and the usual metal illumination model.
+   */
+  if (rustiness < 1) {
+
+      Cmetal = Diffuse * microfacet_beckmann(N,Roughness);
+    }
+
+  /* Now blend the metal and rust colors depending on the computed value
+   * of the rustiness.
+   */
+    
+    BSDF = Crust*rustiness + Cmetal*(1-rustiness);
+    
+}
+
