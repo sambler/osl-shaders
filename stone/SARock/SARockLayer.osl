@@ -1,0 +1,90 @@
+/*
+ * SARockLayer.osl by Shane Ambler (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: BSD
+ *
+ * This is a part of SARock.osl extracted to simplify the compiling
+ * in exchange for a more complex node tree.
+ * The full SARock script links 10 of these together.
+ * This method does offer an increased level of customisation.
+ *
+ */
+
+#include "stdosl.h"
+#include "node_texture.h"
+
+/* noise from node_noise_texture.osl from blender source tree - removed fac and colour*/
+float rock_noise(point p, string basis, float distortion, float detail)
+{
+    point r;
+    int hard = 0;
+
+    if (distortion != 0.0) {
+        r[0] = noise_basis(p + point(13.5), basis) * distortion;
+        r[1] = noise_basis(p, basis) * distortion;
+        r[2] = noise_basis(p - point(13.5), basis) * distortion;
+
+        p += r;
+    }
+
+    return noise_turbulence(p, basis, detail, hard);
+}
+
+float SpreadTexture (
+        vector inVec,
+        string inBasis,
+        float inIntensity,
+        float inConcentration,
+        float inScale,
+        float inDetail,
+        float inDistortion )
+{
+    float outFac;
+    outFac = rock_noise(inVec * inScale, inBasis, inDistortion, inDetail);
+    outFac = ((floor(outFac-inConcentration + 0.5) + inConcentration) * outFac) * inIntensity;
+    
+    return outFac;
+}
+
+shader SARock(
+        vector Vector = P,
+        int   NoiseBasis = 0,
+        float Scale = 2.295,
+        float Detail = 1.193,
+        float Distortion = 0.0,
+        float Intensity = 0.4,
+        float Concentration = 3.0084,
+        color ColorOne = color(0.0189),
+        color ColorTwo = color(0.289,0.22,0.125),
+        float InBump = 0,
+        output color Color = color(1),
+        output float Bump = 0 )
+{
+    string Basis = "Perlin";
+    float Fac = 0;
+    
+    if (NoiseBasis == 1)
+        Basis = "Voronoi F1";
+    else if (NoiseBasis == 2)
+        Basis = "Voronoi F2";
+    else if (NoiseBasis == 3)
+        Basis = "Voronoi F3";
+    else if (NoiseBasis == 4)
+        Basis = "Voronoi F4";
+    else if (NoiseBasis == 5)
+        Basis = "Voronoi F2-F1";
+    else if (NoiseBasis == 6)
+        Basis = "Voronoi Crackle";
+    else if (NoiseBasis == 7)
+        Basis = "Cell Noise";
+    else /* default */
+        Basis = "Perlin";
+
+    Fac = SpreadTexture(Vector, Basis, 
+            Intensity, Concentration, 
+            Scale, Detail, Distortion);
+    Color = mix(ColorOne,ColorTwo,Fac);
+    Bump = InBump + (Fac / 10);
+}
+
