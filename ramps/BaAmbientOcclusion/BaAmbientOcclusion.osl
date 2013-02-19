@@ -1,0 +1,132 @@
+/*
+ * BaAmbientOcclusion.osl by Bao2 (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from -
+ * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page10
+ *
+ */
+
+/* Original code from Brecht:
+   http://projects.blender.org/scm/viewvc.php?view=rev&root=bf-blender&revision=51952
+   
+   Mode: 0: Concave (AO) 
+         1: Convex (Wear) 
+         2: Both
+         
+   InvertEffect: Swaps Effect and No_Effect colors
+   
+   Samples: 1 or above (set 0 or negative to turn off the effect)
+   
+   Output Color: Mix between the two colors driven by Fac
+   Output Fac: Exposed because it can be useful to have it too
+*/
+
+#include "stdosl.h"
+
+void rng_seed(output int rng, int seed)
+{
+  int chash = seed;
+  if (chash == 0) chash = 1;
+  rng = chash * 891694213;
+}
+
+float rng_uniform(output int rng)
+{
+  float res = rng / float(2137483647) * 0.5 + 0.5;
+  rng *= 891694213;
+  return res;
+}
+
+void to_unit_disk(float x, float y, output float x_out, output float y_out)
+{
+  float r, phi;
+  float a = 2.0 * x - 1.0;
+  float b = 2.0 * y - 1.0;
+    
+  if(a > -b) {
+    if(a > b) {
+      r = a;
+      phi = M_PI_4 *(b/a);
+    }
+    else {
+      r = b;
+      phi = M_PI_4 *(2.0 - a/b);
+    }
+  }
+  else {
+    if(a < b) {
+      r = -a;
+      phi = M_PI_4 *(4.0 + b/a);
+    }
+    else {
+      r = -b;
+      if(b != 0.0) phi = M_PI_4 *(6.0 - a/b);
+      else phi = 0.0;
+    }
+  }
+  x_out = r * cos(phi);
+  y_out = r * sin(phi);
+}
+
+void make_orthonormals(vector N, output vector a, output vector b)
+{
+  if(N[0] != N[1] || N[0] != N[2]) a = cross(vector(1, 1, 1), N);
+  else a = cross(vector(-1, 1, 1), N);
+  
+  a = normalize(a);
+  b = cross(N, a);
+}
+
+vector sample_cos_hemisphere(vector N, float randu, float randv)
+{
+  vector T, B;
+    
+  make_orthonormals(N, T, B);
+  to_unit_disk(randu, randv, randu, randv);
+  float costheta = sqrt(max(1.0 - randu * randu - randv * randv, 0.0));
+
+  return randu * T + randv * B + costheta * N;
+}
+
+shader BaAmbientOcclusion(
+  color Effect = color(0),
+  color No_Effect = color(1),
+  int Mode = 0, /* 0: Concave (AO) 1:Convex (Wear) 2:Both */
+  int InvertEffect = 0,
+  float Distance = 0.2,
+  int Samples = 1,
+  output color Color = 0,
+  output float Fac = 0 )
+{
+  int i, rng;
+  float f, randu, randv, ray_t, hits = 0;
+  vector ray_P, ray_R;
+
+  f = fmod(cellnoise(P*123456.0), 1.0);
+  rng_seed(rng, int(f * 2137483647));
+  
+  for(i = 0; i < Samples; i++) {
+    randu = rng_uniform(rng);
+    randv = rng_uniform(rng);
+    
+    ray_P = P;
+    ray_R = sample_cos_hemisphere(-N, randu, randv);
+    ray_t = Distance;
+        
+    if (!Mode) {
+      if(trace(ray_P, -ray_R, "maxdist", ray_t)) hits += 1.0;
+    }
+    else if (Mode == 1) {
+      if(trace(ray_P, ray_R, "maxdist", ray_t)) hits += 1.0;
+    }
+    else {
+      if(trace(ray_P, -ray_R, "maxdist", ray_t)) hits += 1.0;
+      if(trace(ray_P, ray_R, "maxdist", ray_t)) hits += 1.0;
+    }
+  }
+  Fac = 1.0 - (hits/Samples);
+  if(InvertEffect) Color = mix(No_Effect, Effect, Fac);
+  else Color = mix(Effect, No_Effect, Fac);
+}
+
