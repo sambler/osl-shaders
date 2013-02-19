@@ -1,0 +1,33 @@
+/*
+ * BaiRobotMix.osl by Bao2 (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from -
+ * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page12
+ *
+ * Mix two colors/closures depending they face or not the light.
+ * Open the Light_Position combo and enter there manually the
+ * position of the light in the scene (select the light and look
+ * in the 3DView N panel the Location)
+*/
+
+#include "stdosl.h"
+
+shader BaiRobotMix(  
+  color Color1 = color(0, 1, 0),
+  color Color2 = color(1, 0, 0),
+  closure color Closure1 = holdout(),
+  closure color Closure2 = holdout(),
+  vector Light_Position = point(0),
+  output color Color = color(0),
+  output closure color Closure = holdout()
+)
+{
+  P = transform("object","world",P);
+  float cosine_t = clamp(dot( normalize(Light_Position - P), N ), 0, 1.0);
+  
+  Color = mix(Color1, Color2, cosine_t);
+  Closure = (1 - cosine_t) * Closure1 + cosine_t * Closure2;
+}
+
+
