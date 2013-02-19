@@ -1,0 +1,32 @@
+/*
+ * ChGlobals.osl by Charlie (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from -
+ * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page11
+ *
+ */
+
+#include "stdosl.h"
+
+surface globals(
+
+    output point Point_P = P,
+    output vector Vector_I = I,
+    output normal Normal_N = N,
+    output normal Normal_Ng = Ng,
+    output float Float_u = u ,
+    output float Float_v = v ,
+    output vector Vector_dPdu = dPdu,
+    output vector Vector_dPdv = dPdv,
+    output point Point_Ps = Ps,
+    output float Float_time = time ,
+    output float Float_dtime = dtime ,
+    output vector Vector_dPdtime = dPdtime ,
+    output closure color Closure_Ci = Ci
+
+)
+{
+  /* no code */
+}
+

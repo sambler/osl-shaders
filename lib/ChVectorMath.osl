@@ -1,0 +1,70 @@
+/*
+ * ChVectorMath.osl by Charlie (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from -
+ * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page11
+ *
+ */
+
+#include "stdosl.h"
+
+vector faceforward (vector N, vector I, vector Nref)
+{
+    return (dot(I,Nref) > 0) ? -N : N;
+}
+
+shader vectormath (
+        vector Ain = vector(1,0,0),
+        vector Bin = vector(0,1,0),
+        vector Ref = P,
+
+        int negA = 0,
+        int negB = 0,
+        int negC = 0,
+        int SwapAB = 0,
+
+        output vector Reflect = vector(0.5),
+        output vector Cross = vector(0.5),
+        output vector Dot = vector(0.5),
+        output vector FaceForward = vector(0.5),
+
+        output vector NormalisedA = vector(0.5),
+        output float LengthA = 0.5,
+
+        output vector NormalisedB = vector(0.5),
+        output float LengthB = 0.5
+)
+{
+
+   vector A,B,C;
+
+   if (SwapAB) {
+       A = Ain;
+       B = Bin;
+   }
+   else {
+       B = Ain;
+       A = Bin;
+    }
+
+   C = Ref;
+
+   A = negA ? -A : A ;
+   B = negB ? -B : B ;
+   C = negC ? -C : C ;
+
+
+   LengthA = length(A);
+   NormalisedA = normalize(A);
+
+   LengthB = length(B);
+   NormalisedB = normalize(B);
+
+   Reflect = reflect(NormalisedA,NormalisedB);
+   Cross = cross(A,B);
+   Dot = dot(A,B);
+   FaceForward = faceforward(NormalisedA,B,C);
+
+}
+
