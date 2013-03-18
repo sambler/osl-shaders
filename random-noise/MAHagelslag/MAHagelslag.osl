@@ -68,7 +68,6 @@ shader MAHagelslag(
                 float r = minimum_distance(p1,p2,p);
                 if ( r < Radius ) {
                     Fac = 1 - r/Radius;
-                    return;
                 }
             }
         }
