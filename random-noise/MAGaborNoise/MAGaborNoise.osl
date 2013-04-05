@@ -1,0 +1,30 @@
+/*
+ * MAGaborNoise.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: cc-by-sa
+ *
+ * original script from -
+ * http://blenderthings.blogspot.com.au/2013/01/gabor-noise-for-cycles-osl.html
+ *
+ */
+
+#include "stdosl.h"
+
+shader MAGaborNoise(
+    vector Vector = P,
+    int Anisotropic = 0,
+    vector Direction = vector(1,0,0),
+    int Filter = 1,
+    float Bandwidth = 1.0,
+    float Impulses = 16,
+    output float Noise = 0 )
+{
+ Noise = noise("gabor",Vector,
+ "anisotropic", Anisotropic,
+ "direction", Direction,
+ "do_filter", Filter,
+ "bandwidth", Bandwidth,
+ "impulses", Impulses);
+}
+
