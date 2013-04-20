@@ -1,0 +1,26 @@
+/*
+ * FLToon.osl by flokkievids (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from - http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page12
+ *
+ */
+
+#include "stdosl.h"
+
+shader bi_toon_shader(
+        float Size = 0.1,
+        float Smooth = 0.8,
+        float Intensity = 0.7,
+        color Color = color(0.5),
+        output color Toon = color(0) )
+{
+    float t = clamp(Intensity, 0.0, 1.0);
+    float rslt = N[0]*I[0]+N[1]*I[1]+N[2]*I[2];
+    float ang = acos(rslt);
+    if (ang < Size){rslt = 1.0;}
+    else if (ang >= (Size+Smooth)){rslt = 0.0;}
+    else{rslt = 1.0 - ((ang - Size)/Smooth);}
+    Toon = (rslt * Color) * Intensity;
+}
+

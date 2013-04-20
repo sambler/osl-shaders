@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="SCRIPT" mode="INTERNAL" script="0" size="0.10000" smooth="0.80000" intensity="0.69999" color="rgba(0.5, 0.5, 0.5, 1.0)" width="140" loc="-12, 323" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.0" width="150" loc="203, 336" />
+		<node type="OUTPUT_MATERIAL" width="120" loc="395, 328" />
+	</nodes>
+	<links>
+		<link to="1" input="0" from="0" output="0" />
+		<link to="2" input="0" from="1" output="0" />
+	</links>
+	<scripts>
+		<script name="FLToon.osl" id="0">
+/*<br /> * FLToon.osl by flokkievids (c)2012<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * original script from - http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page12<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader bi_toon_shader(<br />        float Size = 0.1,<br />        float Smooth = 0.8,<br />        float Intensity = 0.7,<br />        color Color = color(0.5),<br />        output color Toon = color(0) )<br />{    <br />    float t = clamp(Intensity, 0.0, 1.0);<br />    float rslt = N[0]*I[0]+N[1]*I[1]+N[2]*I[2];<br />    float ang = acos(rslt);<br />    if (ang &lt; Size){rslt = 1.0;}<br />    else if (ang &gt;= (Size+Smooth)){rslt = 0.0;}<br />    else{rslt = 1.0 - ((ang - Size)/Smooth);}<br />    Toon = (rslt * Color) * Intensity;<br />}<br /><br />
+		</script>
+	</scripts>
+</material>
