@@ -1,0 +1,317 @@
+/*
+ * ChPatterns.osl by Charlie (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from -
+ * http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page12
+ *
+ */
+
+/**
+Pattern_texture_halftone_v2 by Charlie
+
+Pattern selects the dot type
+Axis is a switch to set the Axis to the centre of the pattern area. (Shifts the texture)
+Scale and Frequency do the same thing but it is useful to have the two inputs so one can be driven.
+Size is equivalent to the width of the halftone dot.
+SizeMultiplier adds additional control, so one can be driven.
+
+Halftone returns the halftone.
+Texture returns the texture used to generate the halftone.
+X & Y return the texture coordinates.
+
+Pattern -- changes the base pattern
+MixMode -- alters the x/y mixing
+Offset -- shifts the x/y coords
+Axis -- shifts origin
+AxisAngle -- rotates texture cell
+Noise -- warps texture, use size to turn it on and off
+PingPong -- flips the cell according to the Modulos setting, which is best kept at 2
+Count -- spiral arms on spiral pattern only
+Range -- restricts texture to x no grayscale
+Spline -- repeats the texture, use SplineSharpness to change the mapping
+HaftoneSize -- sets the threshold for the halftone
+SizeMultiplier -- use this to drive the halftone size
+Frequency -- no of cells
+ScaleX & ScaleY -- sets frequency of x/y respectively
+HalftoneSmooth -- controls the change from black to white
+RowShift -- shifts x/y alternate rows based on modulos setting
+
+*/
+
+#include "stdosl.h"
+#include "node_texture.h"
+
+shader ChPatterns(
+    vector Vector = P,
+    int Pattern = 0,
+    int MixModeX = 0,
+    int MixModeY = 0,
+    float OffsetX = 0,
+    float OffsetY = 0,
+    int Axis = 0,
+    float AxisAngle = 0,
+    int NoiseType = 0,
+    float NoiseSize = 0,
+    int PingPong = 0,
+    int Count = 0,
+    int Range = 0,
+    float Spline = 0,
+    float SplineSharpness = 0.33,
+    float HaftoneSize = 0.5,
+    float SizeMultiplier = M_SQRT2,
+    float Frequency = 8,
+    float ScaleX = 1,
+    float ScaleY = 1,
+    float HalftoneSmooth = .02,
+    int RowModulos = 2,
+    float RowShift = 0,
+    float RowShiftY = 0,
+    output float Y = 0,
+    output float X = 0,
+    output float Texture = 0,
+    output float Halftone = 0)
+{
+
+    float mixmode(int mode, float a, float b)
+    {
+
+        if (!mode) {
+            return a;
+        }
+        else
+        {
+            if (mode == 1) {
+                return max(a,b);
+            }
+            else if (mode == 2) {
+                return min(a,b);
+            }
+            else if (mode == 3) {
+                return b;
+            }
+            else if (mode == 4) {
+                return max(a,b)-min(a,b);
+            }
+            else if (mode == 5){
+                return sqrt(a*b);
+            }
+            else if (mode == 6){
+                return cos(a);
+            }
+        }
+
+    }
+
+    void calc_coordinate_modulation(output float X, output float Y,  float NoiseSize, int NoiseType)
+    {
+
+        string nType = "perlin";
+
+        if (NoiseType == 1) {
+            nType = "cell";
+        }
+        else if (NoiseType == 2){
+            nType = "uperlin";
+        }
+        else if (NoiseType ==3){
+            float da[4];
+            point pa[4];
+
+            voronoi(Vector * NoiseSize, "Distance Squared", 1.0, da, pa);
+
+            X += fabs(da[0]);
+            Y += fabs(da[1]);
+            return;
+         }
+        float nX = NoiseSize * X;
+        float nY = NoiseSize * Y;
+
+        X+= noise(nType,nX,nY);
+        Y+= noise(nType,nX,nY);
+
+        /* transform coordinates with noise functions */
+
+    }
+
+    void calc_origin_rotation(output float X, output float Y, float angle)
+    {
+        /* XXX hmm must be an equivalent function defined elsewhere? */
+        float temp, costheta, sintheta;
+
+        costheta= cos(angle);
+        sintheta= sin(angle);
+
+        temp= X * costheta - Y * sintheta ;
+        Y= X * sintheta + Y * costheta ;
+        X= temp;
+
+    }
+
+    float posterise(float v, float range)
+    {
+        /* force value into range */
+        if( range > 1 ) {
+            return min(floor(v * range) / (range), 1.0);
+        }
+        else if(range == 1) {
+             return (v > 0.5) ? 1 : 0;
+        }
+        else  {
+            return v;
+        }
+    }
+
+
+    float calc_tile_coords(float n)
+    {
+        /* force x,y into 0-1 blocks */
+        if (n < 0.0) {
+            return 1.0-mod(abs(n),1.0);
+             } else {
+
+            return mod(n, 1.0);
+        }
+    }
+
+    void centre_axis()
+    {
+        /* generate texture origin based on 0,0 -1 to 1 */
+        X= X*2-1;
+        Y= Y*2-1;
+    }
+
+    float ping_pong(float in)
+    {
+        /* reverses coordinates every other pattern */
+        int i= 0;
+        i= (int)ceil(in);
+        if (in > 1.0) {
+            if ( i % 2 == 0 ) {
+                in= mod(in,1);
+                in= 1-in;
+            }
+            else {
+                in= mod(in,1);
+            }
+        }
+
+        return in;
+    }
+
+    /* set coords X Y */
+
+
+
+    X= Vector[0] * ScaleX * Frequency;
+    Y= Vector[1] * ScaleY * Frequency;
+
+    if (NoiseSize > 0.000001) calc_coordinate_modulation(X,Y,NoiseSize,NoiseType);
+
+    /* remember odd even rows */
+    float oddX = (int)floor(X) % RowModulos == 0 ? 1 : 0;
+    float oddY = (int)floor(Y) % RowModulos == 0 ? 1 : 0;
+
+
+    if (oddY && RowShift)
+        X += RowShift;
+
+    if (oddX && RowShiftY)
+        Y += RowShiftY;
+
+    X += OffsetX;
+    Y += OffsetY;
+
+    X = calc_tile_coords(X);
+    Y = calc_tile_coords(Y);
+
+
+
+    /* inverse or ping pong alternate rows */
+    if (oddX == 1 && ( PingPong == 1 || PingPong == 2)  )
+            X= 1.0-X;
+
+    if (oddY ==1 && ( PingPong == 1 || PingPong == 3) )
+            Y= 1.0-Y;
+
+    if (Axis == 0)
+        centre_axis();
+
+    if (AxisAngle)
+        calc_origin_rotation(X,Y,AxisAngle*M_PI_2);
+
+    X= mixmode(MixModeX,X,Y);
+    Y= mixmode(MixModeY,Y,X);
+
+    if (Pattern == 1){
+        Texture= max(abs(X),abs(Y)); /* square */
+    }
+    else if (Pattern == 2){
+        Texture= (abs(X)+abs(Y))/2; /* diamond */
+    }
+    else if (Pattern == 3){
+        Texture= (atan2(abs(Y),X) / (2*M_PI))*2; /* cone */
+    }
+    else if (Pattern == 4){
+        Texture= (X+Y)/2; /* triangle */
+    }
+    else if (Pattern == 5){
+        Texture= (X+1)/2; /* linear x */
+    }
+    else if (Pattern == 6){
+        Texture= (Y+1)/2; /* linear y */
+    }
+    else if (Pattern == 7){
+        Texture= atan(abs(X))+atan(abs(Y));; /* cross */
+    }
+    else if (Pattern == 8 || Pattern == 9){
+
+        float angleshift= Frequency/360;
+        float t, r;
+
+        if (Pattern == 8 ){                                        //spiral
+            float t= (atan2(Y,X)+M_2PI)/M_PI;                      //angle
+            float r= log(sqrt(X*X+Y*Y)*Frequency*Frequency+1.0);   //scale
+            t*= Count*0.5;                                         //arms
+            Texture= fmod(t+r+angleshift,1.0);                     //spiral
+        }
+        else{                                                      //archimedes (even)
+            t= (atan2(Y,X)+M_2PI)/M_PI;                            //angle
+            r= sqrt(X*X+Y*Y)*Frequency;                            //scale
+            t*= Count*0.5;                                         //arms
+            Texture= fmod(t+r+angleshift,1.0);                     //archimedes
+        }
+    }
+    else if (Pattern == 10){
+
+        Texture= (atan2(Y,X) / (2*M_PI) + 0.5); /* test */
+    }
+    else{
+        Texture= X*X+Y*Y; /* circle */
+    }
+
+    if (Spline > 0.01){
+            Texture *= Spline;
+            float sharpness = clamp(SplineSharpness,-1.0,1.0);
+            Texture = mod(Texture,1.0);
+            float points[5]={0.0, sharpness, 1.0, sharpness, 0.0};
+            Texture = spline ("linear", Texture, 5, points);
+    }
+
+    Texture = clamp(Texture,0.0,1.0);
+
+    if (Range > 0)
+        Texture = posterise(Texture, Range);
+
+    /* compare R to the dot size */
+    float Threshold = HaftoneSize*SizeMultiplier;
+
+    if (HalftoneSmooth) {
+        if (Texture > Threshold) Halftone= smoothstep(0,Texture*2,HalftoneSmooth);
+        else Halftone= 1;
+    } else {
+        if (Texture > Threshold) Halftone= 0;
+        else Halftone= 1;
+    }
+}
+
