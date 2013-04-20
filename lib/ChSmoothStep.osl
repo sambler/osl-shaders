@@ -1,0 +1,25 @@
+/*
+ * ChSmoothStep.osl by Charlie (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from - http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page13
+ *
+ *
+ */
+
+#include "stdosl.h"
+
+shader ChSmoothStep(
+
+    float A = 0,
+    float B = 1,
+    float Value = 1.0,
+    output float Out = 0
+
+)
+{
+
+    Out = smoothstep(A,B,Value);
+
+}
+

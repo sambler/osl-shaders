@@ -1,0 +1,36 @@
+/*
+ * ChOutOfRange.osl by Charlie (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from - http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page13
+ *
+ * Useful for debugging - Change colour if a value is outside a set range.
+ *
+ */
+
+#include "stdosl.h"
+
+shader ChOutOfRange(
+
+    float In = 0,
+    color Over = color(0,1,0),
+    float MaxValue = 1.0,
+    color InRange = color(1),
+    float MinValue = 0,
+    color Under = color(1,0,0),
+    output color Color = 0
+
+)
+{
+
+       if (In > MaxValue) {
+            Color = Over;
+       }
+       else if (In < MinValue) {
+            Color = Under;
+       }
+       else {
+            Color = InRange ;
+       }
+}
+
