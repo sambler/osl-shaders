@@ -1,0 +1,127 @@
+/*
+ * SuClover.osl by sungreen (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from - http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page15
+ *
+ */
+
+#include "stdosl.h"
+
+float clover(
+    float x,
+    float y,
+    float fa,
+    float dwl,
+    float dws,
+    color topleaf,
+    color leaf,
+    color endleaf,
+    color shadow,
+    color ground,
+    color Color,
+    float Alpha,
+    float Mask,
+    float Disp )
+{
+    float d = dws + dwl;
+    float r = sqrt(x*x+y*y);
+    float a = atan2(y,x)+fa*M_2PI;
+    float s = 0.5 + 0.5*sin(3*a);
+    float t = 0.15 + 0.35*pow(s,0.3);
+    t += 0.1*pow(0.5+0.5*cos(6*a),0.5);
+    float h = r/t;
+
+    Color = ground;
+    Alpha = 0.0;
+    Mask = 0.0;
+    Disp = 0.0;
+
+    if(h>1) return 0;
+    Mask = 1.0;
+    if(h>1-dws){
+        Color = shadow;
+        Alpha = 0.5;
+        return 0;
+    }
+    if(h>1-d){
+        float f = pow((1-(h+d-1)/dwl),0.5);
+        Alpha = 1.0;
+        Disp = f;
+        Color = mix(topleaf,leaf,f);
+        return 0;
+    }
+    float f = pow(h/(1-d),2);
+    Color = mix(endleaf,leaf,f);
+    Disp = f;
+    Alpha = 1.0;
+    return 0;
+}
+
+shader SuClover(
+        vector Vector = P,
+        int Rows = 3,
+        int Level = 1,
+        float Fill = 0.5,
+        float SpanTopLeaf = 0.2,
+        float SpanShadow = 0.1,
+
+        color ColorTopLeaf = color(0.3,0.5,0.0),
+        color ColorLeaf = color(0.0,1.0,0.0),
+        color ColorEndLeaf = color(0.01,0.01,0.0),
+        color ColorShadow = color(0.0,0.0,0.0),
+        color ColorGround = color(0.01,0.01,0.01),
+
+        output color Color = 0.5,
+        output float Alpha = 0.0,
+        output float Mask = 0.0,
+        output float Height = 0.0,
+        output float Disp = 0.0 )
+{
+    color sColor = ColorGround;
+    float sAlpha = 0.0;
+    float sMask = 0.0;
+    float sDisp = 0.0;
+    Height = clamp(pow((0.25+0.75*P[2]),0.5),0,1)*0.9+0.1;
+
+    for(int i=0; i<Level; i++){
+        float ls = (float)(i+1)/(Level);
+        float ps = noise("cell",point(ls,0,i));
+        float qs = noise("cell",point(0,i,ls));
+        float as = atan2(ps,qs)*ls*M_PI;
+        ps = (Vector[0] + ps) * Rows;
+        qs = (Vector[1] + qs) * Rows;
+
+        float xs = ps*sin(as) - qs*cos(as);
+        float ys = ps*cos(as) + qs*sin(as);
+
+        float xc = floor(xs);
+        float yc = floor(ys);
+
+        float n = noise("cell",point(xc,yc,0))*ls;
+
+        if(n<Fill){
+            float x = (xs - xc - 0.5) * 1.3;
+            float y = (ys - yc - 0.5) * 1.3;
+
+            color tColor = (0.0);
+            float tAlpha = 0.0;
+            float tMask = 0.0;
+            float tDisp = 0.0;
+
+            clover(x,y,n,SpanTopLeaf,SpanShadow,ColorTopLeaf,ColorLeaf,ColorEndLeaf,ColorShadow,ColorGround,tColor,tAlpha,tMask,tDisp);
+            tColor = tColor * ls;
+            if(tMask==1){
+                sColor = mix(sColor,tColor,tAlpha);
+                if(sAlpha<tAlpha) sAlpha = tAlpha;
+                sMask = tMask;
+                if(tAlpha==1) sDisp = tDisp;
+            }
+        }
+    }
+    Color = sColor*Height;
+    Alpha = sAlpha;
+    Mask = sMask;
+    Disp = sDisp;
+}
+
