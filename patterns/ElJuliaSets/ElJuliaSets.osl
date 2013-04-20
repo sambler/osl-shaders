@@ -1,0 +1,74 @@
+/*
+ * ElJuliaSets.osl by elbrujodelatribu (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from - http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page14
+ *
+ */
+
+#include <stdosl.h>
+
+shader node_julia_zn_zoom(
+        vector Vector = P,
+        float Zoom = 10.0,
+        float CenterX = 0.0,
+        float CenterY = 0.0,
+        int MaxIterations = 31,
+        int Exponent = 2,
+        float SeedX = -1.25,
+        float SeedY = 0.0,
+        float Bailout = 2.0,
+        output vector Transformed = P,
+        output float Fac = 0.0)
+{
+    point p = Vector/(2*Zoom);
+    float factor = 0.0;
+    float auxiliar = 0.0;
+    int i = 0;
+    int j = 0;
+    int prevIteration = MaxIterations;
+
+    // Start Mandelbrot fractal
+    p[0] += CenterX;
+    p[1] += CenterY;
+
+    // C = pixel
+    point pa = p;
+    point pb = p;
+    point pc = point(0.0);
+
+    do
+    {
+        // z^j
+        for(j=1; j<Exponent; j++)
+        {
+            pc[0] = pa[0]*pb[0] - pa[1]*pb[1];
+            pc[1] = pa[0]*pb[1] + pa[1]*pb[0];
+            // for next product
+            pb[0] = pc[0];
+            pb[1] = pc[1];
+        }
+        // z^exponent + c
+        pa[0] = pc[0] + SeedX;
+        pa[1] = pc[1] + SeedY;
+        pb[0] = pa[0];
+        pb[1] = pa[1];
+
+        i++;
+        if ((prevIteration == MaxIterations) && (sqrt((pa[0]*pa[0]) + (pa[1]*pa[1])) > Bailout))
+        {
+            prevIteration = i + 1;
+        }
+    } while (i < prevIteration);
+
+    // Colorize
+    //factor = float(i) – (log(log(sqrt((Vector[0]*Vector[0]) + (Vector[1]*Vector[1])))) / log(2.0));
+    factor = float(i);
+    auxiliar = sqrt((pa[0]*pa[0]) + (pa[1]*pa[1]));
+    factor = factor - (log(log(auxiliar))/log(Bailout));
+    factor = factor / float(MaxIterations);
+
+    Fac = factor;
+    Transformed = pa;
+}
+

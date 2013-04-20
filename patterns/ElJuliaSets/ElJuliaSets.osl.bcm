@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="BSDF_DIFFUSE" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.0" width="150" loc="10, 300" />
+		<node type="VALTORGB" interpolation="EASE" fac="0.5" stops="7" stop1="0.0|rgba(1.0, 0.0, 0.0, 1.0)" stop2="0.16818|rgba(1.0, 0.21223, 0.0, 1.0)" stop3="0.32727|rgba(1.0, 1.0, 0.0, 1.0)" stop4="0.5|rgba(0.0, 1.0, 0.0, 1.0)" stop5="0.66818|rgba(0.0, 0.0, 1.0, 1.0)" stop6="0.83636|rgba(0.07036, 0.0, 0.22322, 1.0)" stop7="1.0|rgba(0.27467, 0.0, 1.0, 1.0)" width="240" loc="-263, 301" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" zoom="1.0" centerx="1.0" centery="-0.30000" maxiterations="31" exponent="2" seedx="-1.39999" seedy="0.0" bailout="2.0" width="140" loc="-458, 348" />
+		<node type="OUTPUT_MATERIAL" width="120" loc="203, 294" />
+		<node type="MAPPING" translation="Vector(0.0, 0.0, 0.0)" rotation="Vector(0.0, 0.0, 0.0)" scale="Vector(1.0, 1.0, 1.0)" use_min="False" use_max="False" vector="Vector(0.0, 0.0, 0.0)" width="240" loc="-758, 295" />
+		<node type="TEX_COORD" dupli="False" width="150" loc="-963, 218" />
+	</nodes>
+	<links>
+		<link to="3" input="0" from="0" output="0" />
+		<link to="0" input="0" from="1" output="0" />
+		<link to="1" input="0" from="2" output="1" />
+		<link to="2" input="0" from="4" output="0" />
+		<link to="4" input="0" from="5" output="2" />
+	</links>
+	<scripts>
+		<script name="ElJuliaSets.osl" id="0">
+/*<br /> * ElJuliaSets.osl by elbrujodelatribu (c)2012<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * original script from - http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page14<br /> *<br /> */<br /><br />#include &lt;stdosl.h&gt;<br /><br />shader node_julia_zn_zoom(<br />        vector Vector = P,<br />        float Zoom = 10.0,<br />        float CenterX = 0.0,<br />        float CenterY = 0.0,<br />        int MaxIterations = 31,<br />        int Exponent = 2,<br />        float SeedX = -1.25,<br />        float SeedY = 0.0,<br />        float Bailout = 2.0,<br />        output vector Transformed = P,<br />        output float Fac = 0.0)<br />{<br />    point p = Vector/(2*Zoom);<br />    float factor = 0.0;<br />    float auxiliar = 0.0;<br />    int i = 0;<br />    int j = 0;<br />    int prevIteration = MaxIterations;<br /><br />    // Start Mandelbrot fractal<br />    p[0] += CenterX;<br />    p[1] += CenterY;<br /><br />    // C = pixel<br />    point pa = p;<br />    point pb = p;<br />    point pc = point(0.0);<br /><br />    do<br />    {<br />        // z^j<br />        for(j=1; j&lt;Exponent; j++)<br />        {<br />            pc[0] = pa[0]*pb[0] - pa[1]*pb[1];<br />            pc[1] = pa[0]*pb[1] + pa[1]*pb[0];<br />            // for next product<br />            pb[0] = pc[0];<br />            pb[1] = pc[1];<br />        }<br />        // z^exponent + c<br />        pa[0] = pc[0] + SeedX;<br />        pa[1] = pc[1] + SeedY;<br />        pb[0] = pa[0];<br />        pb[1] = pa[1];<br /><br />        i++;<br />        if ((prevIteration == MaxIterations) &amp;&amp; (sqrt((pa[0]*pa[0]) + (pa[1]*pa[1])) &gt; Bailout))<br />        {<br />            prevIteration = i + 1;<br />        }<br />    } while (i &lt; prevIteration);<br /><br />    // Colorize<br />    //factor = float(i) – (log(log(sqrt((Vector[0]*Vector[0]) + (Vector[1]*Vector[1])))) / log(2.0));<br />    factor = float(i);<br />    auxiliar = sqrt((pa[0]*pa[0]) + (pa[1]*pa[1]));<br />    factor = factor - (log(log(auxiliar))/log(Bailout));<br />    factor = factor / float(MaxIterations);<br /><br />    Fac = factor;<br />    Transformed = pa;<br />}<br /><br />
+		</script>
+	</scripts>
+</material>
