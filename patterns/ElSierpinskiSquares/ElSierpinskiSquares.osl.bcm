@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" zoom="0.10000" maxiterations="50.0" width="140" loc="-571, 269" />
+		<node type="VALTORGB" interpolation="B_SPLINE" fac="0.5" stops="7" stop1="0.05454|rgba(1.0, 0.0, 0.0, 1.0)" stop2="0.09090|rgba(1.0, 0.21223, 0.0, 1.0)" stop3="0.12727|rgba(1.0, 1.0, 0.0, 1.0)" stop4="0.16818|rgba(0.0, 1.0, 0.0, 1.0)" stop5="0.20454|rgba(0.0, 0.0, 1.0, 1.0)" stop6="0.24545|rgba(0.07036, 0.0, 0.22322, 1.0)" stop7="0.27727|rgba(0.27467, 0.0, 1.0, 1.0)" width="240" loc="-373, 278" />
+		<node type="TEX_COORD" dupli="False" width="150" loc="-773, 259" />
+		<node type="BSDF_GLOSSY" distribution="BECKMANN" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.20000" width="150" loc="-98, 283" />
+		<node type="OUTPUT_MATERIAL" width="120" loc="90, 273" />
+	</nodes>
+	<links>
+		<link to="1" input="0" from="0" output="0" />
+		<link to="3" input="0" from="1" output="0" />
+		<link to="4" input="0" from="3" output="0" />
+		<link to="0" input="0" from="2" output="2" />
+	</links>
+	<scripts>
+		<script name="ElSierpinskiSquares.osl" id="0">
+/*<br /> * ElSierpinskiSquares.osl by elbrujodelatribu (c)2012<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * original script from - http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page16<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />float genCheck(vector p, float res)<br />{<br />    return (mod(res * p[0], 1.0) &lt; 0.5 ^ mod(res * p[1], 1.0) &lt; 0.5) ?<br />        0.0 : 1.0;<br />}<br /><br />shader ElSierpinskiSquares(<br />    vector Vector = P,<br />    float Zoom = 1.0,<br />    float MaxIterations = 10.0,<br />    output float Fac = 1.0,<br />    output color ColorOut = 0.8)<br />{<br />    vector p = Vector/(2.0*Zoom);<br />    float diExp = 1.0;<br />    float result = genCheck(p,1.0);<br /><br />    for(float i = 0.7; i &lt;= MaxIterations; i++)<br />    {<br />        result += genCheck(p,diExp) / i;<br /><br />        diExp *= 2.0;<br />    }<br />    result /= MaxIterations / 2.0;<br /><br />    Fac = result;<br />    ColorOut = color(result,result,result);<br />}<br /><br />
+		</script>
+	</scripts>
+</material>
