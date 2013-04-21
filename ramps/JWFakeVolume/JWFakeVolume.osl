@@ -1,0 +1,59 @@
+/*
+ * JWFakeVolume.osl by Josh Wedlake (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from - http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page16
+ *
+ */
+
+/* Fast Fake Halo Volume
+ *
+ * Modified by Josh Wedlake
+ * based on some code by François GASTALDO
+ */
+
+#include "stdosl.h"
+
+shader JWFakeVolume(
+    float Scatter_Angle = 0.1 ,
+    float Fade_Power = 1.0,
+    float Opaque_Distance = 1.0,
+    float Transparent_Distance = 0.1,
+    vector Normalbump = vector (0.0 , 0.0 , 0.0),
+    output float Alpha = 0.0 )
+{
+    vector basevector = vector (  0.0 , 0.0 , 0.0 ) ;
+    vector VectorTrace = Normalbump;
+    if(backfacing())VectorTrace+=I;
+    else VectorTrace-=I;
+
+    if ( Scatter_Angle != 0.0 ){
+        basevector = Scatter_Angle * ( 1.0- 2.0 * noise("cell",(VectorTrace 
+                        +(0.001*noise("perlin", P*10000.0 )))*10000.0 ) );
+        VectorTrace +=  basevector ;
+    }
+    vector DirTrace = normalize(VectorTrace) ;
+
+    // Trace Ray  for AO
+    float Dist = 0.0 ;
+    int Hit=0;
+
+    normal Directional_Normal=Ng;
+    if(!backfacing())Directional_Normal=-Ng;
+
+    if(dot(Directional_Normal,DirTrace)>0.0){
+        int DoTrace = trace (P, DirTrace) ;
+        if ( DoTrace) {
+            //Did the ray hit?
+            int HitTrace = getmessage ("trace", "hit" , Hit ) ;
+            if(Hit!=0){
+                int HitTrace = getmessage ("trace", "hitdist" ,  Dist ) ;
+                Alpha = pow(clamp ( ((Dist-Transparent_Distance)
+                            / Opaque_Distance) , 0.0 , 1.0 ),Fade_Power);
+            }
+            else Alpha=0.0;
+       }
+       else Alpha=0.0;
+    }
+}
+

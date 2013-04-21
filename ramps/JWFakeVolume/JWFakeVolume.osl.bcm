@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="OUTPUT_MATERIAL" width="120" loc="300, 300" />
+		<node type="BSDF_TRANSPARENT" color="rgba(1.0, 1.0, 1.0, 1.0)" width="150" loc="-98, 246" />
+		<node type="MIX_SHADER" fac="0.5" width="150" loc="109, 296" />
+		<node type="MIX_SHADER" fac="0.10000" width="150" loc="-91, 151" />
+		<node type="BSDF_TRANSPARENT" color="rgba(0.40182, 0.40182, 0.40182, 1.0)" width="150" loc="-303, 100" />
+		<node type="EMISSION" color="rgba(0.70193, 0.70193, 0.70193, 1.0)" strength="1.5" width="150" loc="-303, 14" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" scatter_angle="0.00999" fade_power="0.60000" opaque_distance="0.5" transparent_distance="0.10999" normalbump="Vector(0.0, 0.0, 0.0)" width="200" loc="-356, 340" />
+	</nodes>
+	<links>
+		<link to="0" input="0" from="2" output="0" />
+		<link to="2" input="0" from="6" output="0" />
+		<link to="3" input="1" from="4" output="0" />
+		<link to="2" input="1" from="1" output="0" />
+		<link to="2" input="2" from="3" output="0" />
+		<link to="3" input="2" from="5" output="0" />
+	</links>
+	<scripts>
+		<script name="JWFakeVolume.osl" id="0">
+/*<br /> * JWFakeVolume.osl by Josh Wedlake (c)2012<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * original script from - http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page16<br /> *<br /> */<br /><br />/* Fast Fake Halo Volume<br /> *<br /> * Modified by Josh Wedlake<br /> * based on some code by François GASTALDO<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader JWFakeVolume(<br />    float Scatter_Angle = 0.1 ,<br />    float Fade_Power = 1.0,<br />    float Opaque_Distance = 1.0,<br />    float Transparent_Distance = 0.1,<br />    vector Normalbump = vector (0.0 , 0.0 , 0.0),<br />    output float Alpha = 0.0 )<br />{<br />    vector basevector = vector (  0.0 , 0.0 , 0.0 ) ;<br />    vector VectorTrace = Normalbump;<br />    if(backfacing())VectorTrace+=I;<br />    else VectorTrace-=I;<br /><br />    if ( Scatter_Angle != 0.0 ){<br />        basevector = Scatter_Angle * ( 1.0- 2.0 * noise(&quot;cell&quot;,(VectorTrace <br />                        +(0.001*noise(&quot;perlin&quot;, P*10000.0 )))*10000.0 ) );<br />        VectorTrace +=  basevector ;<br />    }<br />    vector DirTrace = normalize(VectorTrace) ;<br /><br />    // Trace Ray  for AO<br />    float Dist = 0.0 ;<br />    int Hit=0;<br /><br />    normal Directional_Normal=Ng;<br />    if(!backfacing())Directional_Normal=-Ng;<br /><br />    if(dot(Directional_Normal,DirTrace)&gt;0.0){<br />        int DoTrace = trace (P, DirTrace) ;<br />        if ( DoTrace) {<br />            //Did the ray hit?<br />            int HitTrace = getmessage (&quot;trace&quot;, &quot;hit&quot; , Hit ) ;<br />            if(Hit!=0){<br />                int HitTrace = getmessage (&quot;trace&quot;, &quot;hitdist&quot; ,  Dist ) ;<br />                Alpha = pow(clamp ( ((Dist-Transparent_Distance)<br />                            / Opaque_Distance) , 0.0 , 1.0 ),Fade_Power);<br />            }<br />            else Alpha=0.0;<br />       }<br />       else Alpha=0.0;<br />    }<br />}<br /><br />
+		</script>
+	</scripts>
+</material>
