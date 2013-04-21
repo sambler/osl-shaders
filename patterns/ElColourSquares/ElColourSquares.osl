@@ -1,0 +1,65 @@
+/*
+ * ElColourSquares.osl by elbrujodelatribu (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from - http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page17
+ *
+ */
+
+/*
+*   Migrated from "http://glsl.heroku.com/e#5335.0"
+*   Author: elbrujodelatribu
+*/
+
+#include "stdosl.h"
+
+// Devuelve la parte fraccional
+float fract(float x)
+{
+    return (x - floor(x));
+}
+
+// Devuelve la parte fractional, coordenada por coordenada
+point fract(point x)
+{
+    return point(fract(x[0]),fract(x[1]),fract(x[2]));
+}
+
+point tri(point p, float r)
+{
+    point pos = p;
+
+    pos *= r;
+    point x = fract(pos);
+    point i = pos - x;
+    point c = point(sin(i[0]*2.0), sin(i[1]*2.0), 0.0)*0.2+0.2;
+
+    return (((x[0] < x[1]) == (x[0] < 1.0 - x[1])) ? 1.0 : 0.0) * c;
+}
+
+shader ElColourSquares(
+    float Scale = 1.0,
+    vector Vector = P,
+    output color ColorOut = 0.8)
+{
+    vector pos = Vector*Scale;
+
+    float r = 20.0;
+    point x = fract(pos*r);
+    point i = pos*r - x;
+
+    float w = 50.0;
+    float l = clamp(0.0, 1.0, (0.5 - abs(x[0]-0.5))*w);
+    l *= clamp(0.0, 1.0, (0.5 - abs(x[1]-0.5))*w);
+    l *= clamp(0.0, 1.0, abs(x[0] - x[1])*w);
+    l *= clamp(0.0, 1.0, abs(1.0 - x[0] - x[1])*w);
+
+    point tc = tri(pos, r);
+    tc += tri(pos, r*0.5);
+    tc += tri(pos, r*0.25);
+    tc += tri(pos, r*0.125);
+
+    //Fac = tc*l;
+    ColorOut = color(tc*l);
+}
+
