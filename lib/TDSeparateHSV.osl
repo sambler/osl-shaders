@@ -1,0 +1,22 @@
+/*
+ * TDSeparateHSV.osl by Thomas Dinges (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from -
+ * http://www.openshading.com/osl/example-shaders/
+ *
+ */
+
+#include "stdosl.h"
+
+shader TDSeparateHSV(
+    color Color = 0.8,
+    output float H = 0.0,
+    output float S = 0.0,
+    output float V = 0.0)
+{
+    color HSV = transformc("hsv", Color);
+    H = HSV[0];
+    S = HSV[1];
+    V = HSV[2];
+}

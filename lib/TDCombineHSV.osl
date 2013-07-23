@@ -1,0 +1,19 @@
+/*
+ * TDCombineHSV.osl by Thomas Dinges (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from -
+ * http://www.openshading.com/osl/example-shaders/
+ *
+ */
+
+#include "stdosl.h"
+
+shader TDCombineHSV(
+    float H = 0.0,
+    float S = 0.0,
+    float V = 0.0,
+    output color Color = 0.8)
+{
+    Color = color("hsv", H, S, V);
+}
