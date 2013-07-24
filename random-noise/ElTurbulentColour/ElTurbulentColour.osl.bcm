@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="BSDF_DIFFUSE" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.0" width="150" loc="-122, 278" />
+		<node type="BSDF_GLOSSY" distribution="BECKMANN" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.10000" width="150" loc="-125, 148" />
+		<node type="LAYER_WEIGHT" blend="0.40000" width="140" loc="-114, 392" />
+		<node type="HUE_SAT" hue="0.5" saturation="1.50000" value="1.0" fac="1.0" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" width="150" loc="-308, 324" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" scale="9.00000" time="2.99999" maxiterations="64" width="140" loc="-495, 243" />
+		<node type="MIX_SHADER" fac="0.09999" width="140" loc="69, 321" />
+		<node type="OUTPUT_MATERIAL" width="140" loc="246, 315" />
+		<node type="TEX_COORD" dupli="False" width="140" loc="-680, 228" />
+	</nodes>
+	<links>
+		<link to="5" input="1" from="0" output="0" />
+		<link to="6" input="0" from="5" output="0" />
+		<link to="5" input="2" from="1" output="0" />
+		<link to="0" input="0" from="3" output="0" />
+		<link to="3" input="4" from="4" output="0" />
+		<link to="4" input="0" from="7" output="0" />
+		<link to="5" input="0" from="2" output="0" />
+	</links>
+	<scripts>
+		<script name="ElTurbulentColour.osl" id="0">
+/*<br /> * ElTurbulentColour.osl by elbrujodelatribu (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * original script from -<br /> * http://elbrujodelatribu.blogspot.com.au/2013/05/blender-cycles-osl-color-turbulence.html<br /> * based on work from<br /> * http://glsl.heroku.com/e#8664.0<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader ElTurbulentColour(<br />    vector Vector = P,<br />    float Scale = 0.2,<br />    float Time = 1.0,<br />    int MaxIterations = 64,<br />    output color Color = 0.8)<br />{<br />    vector p = Vector * Scale;//surfacePosition;<br /><br />    for(int i=1; i &lt; MaxIterations; i++)<br />    {<br />        vector newp = p;<br />        newp[0]+=0.6/float(i)*sin(float(i)*p[1]+Time/20.0+0.3*float(i))+20.0;<br />        newp[1]+=0.6/float(i)*sin(float(i)*p[0]+Time/20.0+0.3*float(i+10))-5.0;<br />        p=newp;<br />    }<br /><br />    Color = color(sin(Time+p[1]+p[0]-M_PI*color(0,2,4)/(4.0+sin(Time)))*0.3+0.5);<br />}<br />
+		</script>
+	</scripts>
+</material>
