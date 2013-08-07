@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
 	<nodes>
-		<node type="OUTPUT_MATERIAL" width="120" loc="122, 275" />
-		<node type="BSDF_GLOSSY" distribution="BECKMANN" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.20000" width="150" loc="-81, 284" />
 		<node type="TEX_COORD" dupli="False" width="150" loc="-773, 259" />
-		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" scale="1.0" zoom="0.10000" maxiterations="10.0" width="140" loc="-569, 275" />
-		<node type="VALTORGB" interpolation="EASE" fac="0.5" stops="7" stop1="0.0|rgba(1.0, 0.0, 0.0, 1.0)" stop2="0.16818|rgba(1.0, 0.21223, 0.0, 1.0)" stop3="0.32727|rgba(1.0, 1.0, 0.0, 1.0)" stop4="0.5|rgba(0.0, 1.0, 0.0, 1.0)" stop5="0.66818|rgba(0.0, 0.0, 1.0, 1.0)" stop6="0.83636|rgba(0.07036, 0.0, 0.22322, 1.0)" stop7="1.0|rgba(0.27467, 0.0, 1.0, 1.0)" width="240" loc="-375, 297" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" scale="10.0" zoom="1.0" maxiterations="10.0" width="140" loc="-569, 275" />
+		<node type="REROUTE" width="16" loc="-385, 104" />
+		<node type="BSDF_ANISOTROPIC" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.10000" anisotropy="0.80000" rotation="0.0" width="150" loc="-79, 225" />
+		<node type="OUTPUT_MATERIAL" width="120" loc="110, 218" />
+		<node type="VALTORGB" interpolation="EASE" fac="0.5" stops="4" stop1="0.12272|rgba(0.08865, 0.0, 0.05448, 1.0)" stop2="0.38409|rgba(0.72305, 0.32777, 0.04091, 1.0)" stop3="0.63636|rgba(0.00030, 0.01850, 0.31854, 1.0)" stop4="0.86931|rgba(0.89626, 0.70837, 0.10224, 1.0)" width="240" loc="-361, 335" />
 	</nodes>
 	<links>
-		<link to="3" input="0" from="2" output="2" />
-		<link to="0" input="0" from="1" output="0" />
-		<link to="1" input="0" from="4" output="0" />
+		<link to="1" input="0" from="0" output="2" />
+		<link to="5" input="0" from="1" output="0" />
 		<link to="4" input="0" from="3" output="0" />
+		<link to="3" input="0" from="5" output="0" />
+		<link to="3" input="3" from="2" output="0" />
+		<link to="2" input="0" from="1" output="0" />
 	</links>
 	<scripts>
 		<script name="ElSierpinskiSquares.osl" id="0">

@@ -3,6 +3,7 @@
  * from https://github.com/sambler/osl-shaders
  *
  * original script from - http://blenderartists.org/forum/showthread.php?270332-OSL-Goodness/page16
+ * updated from http://elbrujodelatribu.blogspot.com.au/2013/05/blender-cycles-osl-sierpinski-squares.html
  *
  */
 
@@ -16,12 +17,13 @@ float genCheck(vector p, float res)
 
 shader ElSierpinskiSquares(
     vector Vector = P,
+    float Scale = 1.0,
     float Zoom = 1.0,
     float MaxIterations = 10.0,
     output float Fac = 1.0,
     output color ColorOut = 0.8)
 {
-    vector p = Vector/(2.0*Zoom);
+    vector p = Vector*Scale/(2.0*Zoom);
     float diExp = 1.0;
     float result = genCheck(p,1.0);
 
@@ -36,4 +38,3 @@ shader ElSierpinskiSquares(
     Fac = result;
     ColorOut = color(result,result,result);
 }
-
