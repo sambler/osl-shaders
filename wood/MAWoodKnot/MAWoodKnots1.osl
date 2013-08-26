@@ -1,0 +1,77 @@
+/*
+ * MAWoodKnots1.osl by Michel J. Anders (c)2012
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: cc-by-sa
+ *
+ * original script from -
+ * http://blenderthings.blogspot.com.au/2013/06/an-osl-wood-knot-shader.html
+ *
+ */
+
+#include "stdosl.h"
+
+int bend(vector p, vector k, float r, float a, float m, output vector B){
+    vector D = k - p;
+    float L = length(D);
+    if( L < r ){
+        float c = L/r;
+        float d = m * pow( 1 - c , a);
+        if( d < L ){
+            B = d * normalize(D);
+            return 1;
+        }else{
+            B = D;
+            return 2;
+        }
+    }
+    return 0;
+}
+
+shader MAWoodKnots1(
+    vector Vector = P,
+    float Scale = 5,
+
+    float Density = 0.8,
+    float Falloff = 1.0,
+    float Knots=0.5,
+    float KnotSize = 0.9,
+
+    output vector Vec = P,
+    output float Fac = 0
+){
+    vector p = Scale * Vector;
+    vector sdp = 0;
+
+    float TR = ceil(Density);
+    for(float dx=-TR; dx <= TR; dx++){
+        for(float dy=-TR; dy <= TR; dy++){
+            for(float dz=-TR; dz <= TR; dz++){
+                vector ip = floor(p)+vector(dx,dy,dz);
+                for(int ik=0; ik < (int)Knots; ik++){
+                    vector k = noise("cell",ip,ik);
+                    vector dp= 0;
+                    int ret = bend(p,ip+k,Density,Falloff,KnotSize,dp);
+                    if(ret != 0){
+                        Fac=max(Fac,ret==2);
+                        sdp+=dp;
+                    }
+                }
+                if( noise("cell",ip,-1) < mod(Knots,1.0) ){
+                    vector k = noise("cell",ip,-2);
+                    vector dp= 0;
+                    int ret = bend(p,ip+k,Density,Falloff,KnotSize,dp);
+                    if(ret != 0){
+                        Fac=max(Fac,ret==2);
+                        sdp+=dp;
+                    }
+                }
+            }
+        }
+    }
+    if( Fac < 1 ){
+        Vec = p + sdp;
+    }else{
+        Vec = sdp;
+    }
+}

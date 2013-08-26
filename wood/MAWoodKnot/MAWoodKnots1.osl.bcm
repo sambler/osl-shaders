@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+    <nodes>
+        <node type="MATH" operation="MULTIPLY" use_clamp="False" value1="0.5" value2="203.31300" width="140" loc="-505, 398" />
+        <node type="MATH" hide="True" operation="SINE" use_clamp="False" value1="0.5" value2="0.5" width="42" loc="-326, 354" />
+        <node type="MATH" operation="LESS_THAN" use_clamp="False" value1="0.5" value2="0.89999" width="140" loc="-505, 235" />
+        <node type="TEX_WAVE" wave="BANDS" scale="1.0" distortion="0.0" detail="2.0" detail_scale="1.0" width="150" loc="-508, 61" />
+        <node type="BSDF_DIFFUSE" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.0" width="150" loc="-302, 96" />
+        <node type="MIX_SHADER" fac="0.5" width="140" loc="0, 265" />
+        <node type="BSDF_DIFFUSE" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.0" width="150" loc="-208, 354" />
+        <node type="VECT_MATH" operation="DOT_PRODUCT" vector1="Vector(0.5, 0.5, 0.5)" vector2="Vector(0.5, 0.5, 0.5)" width="140" loc="-709, 350" />
+        <node type="OUTPUT_MATERIAL" width="140" loc="196, 261" />
+        <node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" scale="4.99999" falloff="1.50000" knots="0.05000" density="2.29999" knotsize="1.20000" width="184" loc="-970, 242" />
+    </nodes>
+    <links>
+        <link to="2" input="0" from="9" output="1" />
+        <link to="3" input="0" from="9" output="0" />
+        <link to="7" input="1" from="9" output="0" />
+        <link to="7" input="0" from="9" output="0" />
+        <link to="0" input="0" from="7" output="1" />
+        <link to="1" input="0" from="0" output="0" />
+        <link to="6" input="0" from="1" output="0" />
+        <link to="5" input="0" from="2" output="0" />
+        <link to="5" input="2" from="4" output="0" />
+        <link to="5" input="1" from="6" output="0" />
+        <link to="4" input="0" from="3" output="0" />
+        <link to="8" input="0" from="5" output="0" />
+    </links>
+    <scripts>
+        <script name="MAWoodKnot1.osl" id="0">
+/*<br /> * MAWoodKnots1.osl by Michel J. Anders (c)2012<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: cc-by-sa<br /> *<br /> * original script from -<br /> * http://blenderthings.blogspot.com.au/2013/06/an-osl-wood-knot-shader.html<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />int bend(vector p, vector k, float r, float a, float m, output vector B){<br />    vector D = k - p;<br />    float L = length(D);<br />    if( L &lt; r ){<br />        float c = L/r;<br />        float d = m * pow( 1 - c , a);<br />        if( d &lt; L ){<br />            B = d * normalize(D);<br />            return 1;<br />        }else{<br />            B = D;<br />            return 2;<br />        }<br />    }<br />    return 0;<br />}<br /><br />shader MAWoodKnots1(<br />    vector Vector = P,<br />    float Scale = 5,<br /><br />    float Density = 0.8,<br />    float Falloff = 1.0,<br />    float Knots=0.5,<br />    float KnotSize = 0.9,<br /><br />    output vector Vec = P,<br />    output float Fac = 0<br />){<br />    vector p = Scale * Vector;<br />    vector sdp = 0;<br /><br />    float TR = ceil(Density);<br />    for(float dx=-TR; dx &lt;= TR; dx++){<br />        for(float dy=-TR; dy &lt;= TR; dy++){<br />            for(float dz=-TR; dz &lt;= TR; dz++){<br />                vector ip = floor(p)+vector(dx,dy,dz);<br />                for(int ik=0; ik &lt; (int)Knots; ik++){<br />                    vector k = noise(&quot;cell&quot;,ip,ik);<br />                    vector dp= 0;<br />                    int ret = bend(p,ip+k,Density,Falloff,KnotSize,dp);<br />                    if(ret != 0){<br />                        Fac=max(Fac,ret==2);<br />                        sdp+=dp;<br />                    }<br />                }<br />                if( noise(&quot;cell&quot;,ip,-1) &lt; mod(Knots,1.0) ){<br />                    vector k = noise(&quot;cell&quot;,ip,-2);<br />                    vector dp= 0;<br />                    int ret = bend(p,ip+k,Density,Falloff,KnotSize,dp);<br />                    if(ret != 0){<br />                        Fac=max(Fac,ret==2);<br />                        sdp+=dp;<br />                    }<br />                }<br />            }<br />        }<br />    }<br />    if( Fac &lt; 1 ){<br />        Vec = p + sdp;<br />    }else{<br />        Vec = sdp;<br />    }<br />}<br />
+        </script>
+    </scripts>
+</material>
