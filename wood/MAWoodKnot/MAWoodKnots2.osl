@@ -1,0 +1,94 @@
+/*
+ * MAWoodKnots2.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: cc-by-sa
+ *
+ * original script from -
+ * http://blenderthings.blogspot.com.au/2013/07/OSL-wood-shader-with-knots-for-Blender-Cycles.html
+ *
+ */
+
+#include "stdosl.h"
+
+vector random_sphere(point p, int n, float zdistribution){
+    float t = M_2PI*noise("cell",p,n*2+0);
+    float u = 2*noise("cell",p,n*2+1)-1;
+    float s,c,a;
+    sincos(t,s,c);
+    a = sqrt(1-u*u);
+    float x = a*c;
+    float y = a*s;
+    float z = u*zdistribution;
+    return vector(x,y,z);
+}
+
+int bend(vector p, vector k, vector kv, float r, float a, float m, output vector B){
+    vector pk = k - p;
+    vector t = dot(pk,kv)/dot(kv,kv);
+    vector D = k + t * kv - p;
+    float L = length(D);
+    if( L < r ){
+        float c = L/r;
+        float d = m * pow( 1 - c , a);
+        if( d < L ){
+            B = d * normalize(D);
+            return 1;
+        }else{
+            B = D;
+            return 2;
+        }
+    }
+    return 0;
+}
+
+shader MAWoodKnots2(
+  vector Pos = P,
+  float Scale = 1.5,
+
+  float Density = 2.9,
+  float Falloff = 2.0,
+  float Knots=0.1,
+  float KnotSize = 1.0,
+  float Distortion=1.0,
+
+  output vector Vec = P,
+  output float Fac = 0 )
+{
+    vector p = Scale * Pos;
+    vector sdp = 0;
+
+    float TR = ceil(Density);
+    for(float dx=-TR; dx <= TR; dx++){
+        for(float dy=-TR; dy <= TR; dy++){
+            for(float dz=-TR; dz <= TR; dz++){
+                vector ip = floor(p)+vector(dx,dy,dz);
+                for(int ik=0; ik < (int)Knots; ik++){
+                    vector k = noise("cell",ip,ik);
+                    vector kv= random_sphere(ip,ik+1000,Distortion);
+                    vector dp= 0;
+                    int ret = bend(p,ip+k,kv,Density,Falloff,KnotSize,dp);
+                    if(ret != 0){
+                        Fac=max(Fac,ret==2);
+                        sdp+=dp;
+                    }
+                }
+                if( noise("cell",ip,-1) < mod(Knots,1.0) ){
+                    vector k = noise("cell",ip,-2);
+                    vector kv= random_sphere(ip,998,Distortion);
+                    vector dp= 0;
+                    int ret = bend(p,ip+k,kv,Density,Falloff,KnotSize,dp);
+                    if(ret != 0){
+                        Fac=max(Fac,ret==2);
+                        sdp+=dp;
+                    }
+                }
+            }
+        }
+    }
+    if( Fac < 1 ){
+        Vec = p + sdp;
+    }else{
+        Vec = sdp;
+    }
+}
