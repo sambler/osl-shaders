@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="OUTPUT_MATERIAL" width="140" loc="291, 300" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" forecolor="rgba(0.93011, 0.60382, 0.06662, 1.0)" middlecolor="rgba(0.65140, 0.27889, 0.00402, 1.0)" backcolor="rgba(0.52711, 0.24620, 0.03560, 1.0)" foreroughness="0.00999" backroughness="0.03999" normal="Vector(0.0, 0.0, 0.0)" width="169" loc="76, 306" />
+	</nodes>
+	<links>
+		<link to="0" input="0" from="1" output="0" />
+	</links>
+	<scripts>
+		<script name="ElGold.osl" id="0">
+/*<br /> * ElGold.osl by elbrujodelatribu (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * original script from -<br /> * http://elbrujodelatribu.blogspot.com.au/2013/07/blender-cycles-osl-gold-material.html<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader ElGold(<br />    color ForeColor = color(0.93,0.6,0.06),<br />    color MiddleColor = color(0.651,0.279,0.004),<br />    color BackColor = color(0.527,0.246,0.036),<br />    float ForeRoughness = 0.01,<br />    float BackRoughness = 0.04,<br />    vector Normal = N,<br />    output closure color Metal = 0.0)<br />{<br />    closure color ForeClosure = background();<br />    closure color BackClosure = background();<br /><br />    // Facing colors - formula from Blender OSL code<br />    float Factor1 = 1.0 - pow(fabs(dot(I,Normal)),2.0*0.465);<br /><br />    // Dot vectors<br />    float Factor2 = clamp(pow(dot(Normal,I),1.3),0.0,1.0);<br /><br />    ForeClosure = ((1-Factor1)*ForeColor + MiddleColor*Factor1)*microfacet_beckmann(Normal,ForeRoughness);<br />    BackClosure = BackColor*microfacet_beckmann(Normal,BackRoughness);<br /><br />    Metal = ((1-Factor2)*BackClosure)+(ForeClosure*Factor2);<br />}<br />
+		</script>
+	</scripts>
+</material>

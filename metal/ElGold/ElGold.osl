@@ -1,0 +1,34 @@
+/*
+ * ElGold.osl by elbrujodelatribu (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * original script from -
+ * http://elbrujodelatribu.blogspot.com.au/2013/07/blender-cycles-osl-gold-material.html
+ *
+ */
+
+#include "stdosl.h"
+
+shader ElGold(
+    color ForeColor = color(0.93,0.6,0.06),
+    color MiddleColor = color(0.651,0.279,0.004),
+    color BackColor = color(0.527,0.246,0.036),
+    float ForeRoughness = 0.01,
+    float BackRoughness = 0.04,
+    vector Normal = N,
+    output closure color Metal = 0.0)
+{
+    closure color ForeClosure = background();
+    closure color BackClosure = background();
+
+    // Facing colors - formula from Blender OSL code
+    float Factor1 = 1.0 - pow(fabs(dot(I,Normal)),2.0*0.465);
+
+    // Dot vectors
+    float Factor2 = clamp(pow(dot(Normal,I),1.3),0.0,1.0);
+
+    ForeClosure = ((1-Factor1)*ForeColor + MiddleColor*Factor1)*microfacet_beckmann(Normal,ForeRoughness);
+    BackClosure = BackColor*microfacet_beckmann(Normal,BackRoughness);
+
+    Metal = ((1-Factor2)*BackClosure)+(ForeClosure*Factor2);
+}
