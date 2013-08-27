@@ -1,0 +1,71 @@
+/*
+ * MAAbstractSquares.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: cc-by-sa
+ *
+ * original script from -
+ * http://blenderthings.blogspot.com.au/2013/08/irregular-stone-patterns-in-osl-first.html
+ *
+ * Written as a first step to creating a stone wall texture
+ *
+ */
+
+#include "stdosl.h"
+
+shader MAAbstractSquares(
+    vector Vector = P,
+    float Scale = 1.0,
+    float LineWidth = 0.1,
+    float Offset = 2.0,
+
+    output float Fac = 0 )
+{
+    point Pos = Vector * Scale;
+    float width = LineWidth * 0.1; // scale down so input values are easier to adjust
+
+    float bot = floor(Pos[1]-1)+cellnoise(Pos[1]-1);
+    float lev = floor(Pos[1])+cellnoise(Pos[1]);
+    float top = floor(Pos[1]+1)+cellnoise(Pos[1]+1);
+
+    if( Pos[1] < lev ){
+        Pos[0] += Offset * cellnoise(Pos[1]);
+    }else{
+        Pos[0] += Offset * cellnoise(Pos[1]+1);
+    }
+    float left = floor(Pos[0]-1)+cellnoise(Pos[0]-1);
+    float mid = floor(Pos[0])+cellnoise(Pos[0]);
+    float right = floor(Pos[0]+1)+cellnoise(Pos[0]+1);
+    if(
+      ((Pos[0] > left + width) && ( Pos[0] < mid - width ))
+      ||
+      ((Pos[0] > mid + width ) && ( Pos[0] < right - width))
+      ){
+        if(
+          ((Pos[1] > bot + width) && ( Pos[1] < lev - width ))
+          ||
+          ((Pos[1] > lev + width ) && ( Pos[1] < top - width))
+          ){
+            int stoneindex=0;
+            float seeda = left;
+            float seedb = bot;
+            float bounda = mid;
+            float boundb = lev;
+
+            if( Pos[0] > mid ){ stoneindex += 2; seeda = mid; bounda = right; }
+            if( Pos[1] > lev ){ stoneindex += 1; seedb = lev; boundb = top; }
+            int pattern = (int)floor(cellnoise(seeda,seedb)*4);
+            if( pattern == 0 ){
+                // horizontally halved
+                float nlev = (seedb + boundb)/2;
+                if( (Pos[1] > nlev - width) &&  (Pos[1] < nlev + width) ){
+                    Fac = 0;
+                } else {
+                    Fac = cellnoise(vector(seeda,seedb,Pos[1]>nlev));
+                }
+            } else {
+                Fac = cellnoise(vector(seeda,seedb,-1));
+            }
+        }
+    }
+}

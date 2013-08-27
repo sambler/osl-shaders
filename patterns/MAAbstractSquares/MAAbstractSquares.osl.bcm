@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="BSDF_DIFFUSE" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.0" width="150" loc="113, 300" />
+		<node type="VALTORGB" interpolation="CONSTANT" fac="0.5" stops="5" stop1="0.0|rgba(0.0, 0.0, 0.0, 1.0)" stop2="0.04886|rgba(0.0, 1.0, 0.0, 1.0)" stop3="0.29318|rgba(1.0, 0.0, 0.02624, 1.0)" stop4="0.54545|rgba(0.0, 0.0, 1.0, 1.0)" stop5="0.80909|rgba(1.0, 1.0, 1.0, 1.0)" width="240" loc="-174, 309" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" scale="5.0" linewidth="0.09999" offset="2.0" width="154" loc="-386, 298" />
+		<node type="TEX_COORD" dupli="False" width="140" loc="-578, 304" />
+		<node type="OUTPUT_MATERIAL" width="140" loc="292, 295" />
+	</nodes>
+	<links>
+		<link to="4" input="0" from="0" output="0" />
+		<link to="0" input="0" from="1" output="0" />
+		<link to="2" input="0" from="3" output="2" />
+		<link to="1" input="0" from="2" output="0" />
+	</links>
+	<scripts>
+		<script name="MAAbstractSquares.osl" id="0">
+/*<br /> * MAAbstractSquares.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: cc-by-sa<br /> *<br /> * original script from -<br /> * http://blenderthings.blogspot.com.au/2013/08/irregular-stone-patterns-in-osl-first.html<br /> *<br /> * Written as a first step to creating a stone wall texture<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader MAAbstractSquares(<br />    vector Vector = P,<br />    float Scale = 1.0,<br />    float LineWidth = 0.1,<br />    float Offset = 2.0,<br /><br />    output float Fac = 0 )<br />{<br />    point Pos = Vector * Scale;<br />    float width = LineWidth * 0.1; // scale down so input values are easier to adjust<br /><br />    float bot = floor(Pos[1]-1)+cellnoise(Pos[1]-1);<br />    float lev = floor(Pos[1])+cellnoise(Pos[1]);<br />    float top = floor(Pos[1]+1)+cellnoise(Pos[1]+1);<br /><br />    if( Pos[1] &lt; lev ){<br />        Pos[0] += Offset * cellnoise(Pos[1]);<br />    }else{<br />        Pos[0] += Offset * cellnoise(Pos[1]+1);<br />    }<br />    float left = floor(Pos[0]-1)+cellnoise(Pos[0]-1);<br />    float mid = floor(Pos[0])+cellnoise(Pos[0]);<br />    float right = floor(Pos[0]+1)+cellnoise(Pos[0]+1);<br />    if(<br />      ((Pos[0] &gt; left + width) &amp;&amp; ( Pos[0] &lt; mid - width ))<br />      ||<br />      ((Pos[0] &gt; mid + width ) &amp;&amp; ( Pos[0] &lt; right - width))<br />      ){<br />        if(<br />          ((Pos[1] &gt; bot + width) &amp;&amp; ( Pos[1] &lt; lev - width ))<br />          ||<br />          ((Pos[1] &gt; lev + width ) &amp;&amp; ( Pos[1] &lt; top - width))<br />          ){<br />            int stoneindex=0;<br />            float seeda = left;<br />            float seedb = bot;<br />            float bounda = mid;<br />            float boundb = lev;<br /><br />            if( Pos[0] &gt; mid ){ stoneindex += 2; seeda = mid; bounda = right; }<br />            if( Pos[1] &gt; lev ){ stoneindex += 1; seedb = lev; boundb = top; }<br />            int pattern = (int)floor(cellnoise(seeda,seedb)*4);<br />            if( pattern == 0 ){<br />                // horizontally halved<br />                float nlev = (seedb + boundb)/2;<br />                if( (Pos[1] &gt; nlev - width) &amp;&amp;  (Pos[1] &lt; nlev + width) ){<br />                    Fac = 0;<br />                } else {<br />                    Fac = cellnoise(vector(seeda,seedb,Pos[1]&gt;nlev));<br />                }<br />            } else {<br />                Fac = cellnoise(vector(seeda,seedb,-1));<br />            }<br />        }<br />    }<br />}<br />
+		</script>
+	</scripts>
+</material>
