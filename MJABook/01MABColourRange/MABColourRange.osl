@@ -1,0 +1,32 @@
+/*
+ * MABColourRange.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: gplv3
+ *
+ * original script from -
+ * Open Shading Language for Blender by Michel J. Anders
+ *
+ */
+
+#include "stdosl.h"
+
+shader MABColourRange(
+    float Value = 0,
+    float Low = 0,
+    float High = 0,
+    color LowColor = 0,
+    color MidColor = 0.5, // grey
+    color HighColor = 1,
+
+    output color Color = 0 )
+{
+    Color = LowColor;
+    if( Value >= Low && Value <= High ){
+        Color = MidColor;
+    } else {
+        if( Value > High ){
+            Color = HighColor;
+        }
+    }
+}
