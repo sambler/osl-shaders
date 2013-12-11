@@ -1,0 +1,24 @@
+/*
+ * MABRange.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: gplv3
+ *
+ * original script from -
+ * Open Shading Language for Blender by Michel J. Anders
+ *
+ */
+
+#include "stdosl.h"
+
+shader MABRange(
+    float Value = 0,
+    float Low = 0,
+    float High = 0,
+
+    output float Fac = 0 )
+{
+    if( Value >= Low && Value <= High ) {
+        Fac = 1;
+    }
+}
