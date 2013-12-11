@@ -1,0 +1,40 @@
+
+Scripts within this folder are all based on scripts contained
+in the book Open Shading Languge for Blender by Michel J. Anders
+
+This book is a great starting point if you wish to learn to
+create your own OSL scripts.
+
+The ebook can be purchased from
+https://www.smashwords.com/books/view/368598
+
+More scripting information is also available at the authors website
+http://blenderthings.blogspot.com.au/
+
+
+Book review by Martin Norris --
+
+This book is a good introduction to OSL in Blender.
+
+The layout is excellent, the author has been very careful to make the
+code examples and diagrams {very necessary for showing Blender node
+networks} as clear and concise as possible.
+
+The style is also effortless to read. Everything necessary is
+explained without information overload, and without skipping any
+necessary detail. References lead to more details on different sites.
+Including the authors blog which is an excellent Blender resource too.
+
+The content is good. The first chapters deal with programming concepts.
+I am a programmer so this was a quick skim read for me; but I think the
+examples are sufficient to start even if you know nothing. Then the
+main content of the book is on creating shaders in OSL. Each chapter
+highlights a feature of OSL and generally creates a procedural texture
+type of material.
+
+The book is quite short. Formatted for my 7" tablet it is about
+100 pages. There is no contents list or index. I was disappointed
+there were no chapters that dealt with the behavior of light,
+reflection and refraction etc. Even though there are existing shaders
+available for these it would have been very useful to know how to
+create shaders that change the light path.
