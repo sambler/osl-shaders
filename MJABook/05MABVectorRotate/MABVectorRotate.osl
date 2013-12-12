@@ -1,0 +1,24 @@
+/*
+ * MABVectorRotate.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: gplv3
+ *
+ * original script from -
+ * Open Shading Language for Blender by Michel J. Anders
+ *
+ */
+
+#include "stdosl.h"
+
+shader rotate(
+    vector V = 0,
+    vector From = 0,
+    vector To = point(0,0,1),
+    float Angle = 0, // in degrees
+
+    output vector Out = 0 )
+{
+    float rads = radians(Angle);
+    Out = rotate(V, rads, From, To);
+}
