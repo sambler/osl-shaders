@@ -1,0 +1,21 @@
+/*
+ * MABVectorScale.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: gplv3
+ *
+ * original script from -
+ * Open Shading Language for Blender by Michel J. Anders
+ *
+ */
+
+#include "stdosl.h"
+
+shader MABVectorScale(
+    vector V = 0,
+    vector Scale = 1,
+
+    output vector Out = 0 )
+{
+    Out = V * Scale;
+}
