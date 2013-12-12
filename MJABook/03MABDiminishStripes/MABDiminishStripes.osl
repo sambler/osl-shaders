@@ -1,0 +1,33 @@
+/*
+ * MABDiminishStripes.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: gplv3
+ *
+ * original script from -
+ * Open Shading Language for Blender by Michel J. Anders
+ *
+ */
+
+#include "stdosl.h"
+
+shader MABDiminishStripes(
+    point Pos = P,
+    float Limit = 0.01,
+
+    output float Fac = 0 )
+{
+    float x = mod(Pos[0],1)*2;
+    float dx = 0.5;
+    float xlimit = dx;
+
+    float ActualLimit = Limit>0.001 ? Limit : 0.001;
+    while( dx >= ActualLimit ){
+        if( x < xlimit ){
+            break;
+        }
+        Fac = abs(Fac-1);
+        dx *= 0.75;
+        xlimit += dx;
+    }
+}
