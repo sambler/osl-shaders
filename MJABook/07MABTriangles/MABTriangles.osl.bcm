@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="BSDF_DIFFUSE" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.0" width="150" loc="75, 317" />
+		<node type="OUTPUT_MATERIAL" width="140" loc="270, 310" />
+		<node type="TEX_COORD" dupli="False" width="140" loc="-297, 315" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" pos="Vector(0.0, 0.0, 0.0)" scale="8.0" color1="rgba(1.0, 0.0, 0.0, 1.0)" color2="rgba(0.0, 1.0, 0.0, 1.0)" width="157" loc="-113, 319" />
+	</nodes>
+	<links>
+		<link to="1" input="0" from="0" output="0" />
+		<link to="0" input="0" from="3" output="0" />
+		<link to="3" input="0" from="2" output="2" />
+	</links>
+	<scripts>
+		<script name="MABTriangles.osl" id="0">
+/*<br /> * MABTriangles.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: gplv3<br /> *<br /> * original script from -<br /> * Open Shading Language for Blender by Michel J. Anders<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader MABTriangles(<br />    point Pos = P,<br />    float Scale = 1,<br />    color Color1 = color(1,0,0), // red<br />    color Color2 = color(0,1,0), // green<br /><br />    output color Col = 0 )<br />{<br />    point p = Pos * Scale;<br /><br />    // ignore the z component, this is a 2D pattern<br />    float y = p[1] / (sqrt(3)/2);<br />    float x = mod(p[0] - y/2, 1.0);<br />    y = mod(y,1.0);<br />    if( y &gt; 1 - x ){<br />        Col = Color1;<br />    } else {<br />        Col = Color2;<br />    }<br />}<br />
+		</script>
+	</scripts>
+</material>
