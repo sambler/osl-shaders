@@ -1,0 +1,233 @@
+/*
+ * MABLeopard.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: gplv3
+ *
+ * original script from -
+ * Open Shading Language for Blender by Michel J. Anders
+ *
+ */
+
+#include "stdosl.h"
+
+// bubble sort. fast enough
+// for small collections
+void sort(int np,
+    output point p[],
+    output float f[] )
+{
+    int n = np;
+    for(int j = 0; j < np; j++){
+        for(int i = 1; i < n; i++){
+            if( f[i-1] > f[i] ){
+                float tf = f[i-1];
+                f[i-1] = f[i];
+                f[i] = tf;
+                point tp = p[i-1];
+                p[i-1] = p[i];
+                p[i] = tp;
+            }
+        }
+        n--;
+    }
+}
+
+void voronoip9d(
+    point q,
+    float T,
+    output point vp[9],
+    output float vd[9] )
+{
+    point p = point(q[0],q[1],0);
+
+    float xx, yy, xi, yi;
+
+    xi = floor(p[0]);
+    yi = floor(p[1]);
+
+    int i = -1;
+    for(xx = xi-1; xx <= xi+1; xx++){
+        for(yy = yi-1; yy <= yi+1; yy++){
+            i++;
+            vector ip = vector(xx, yy, 0);
+            vector np = cellnoise(ip);
+            vp[i] = ip + np * T + vector((1-T)/2,(1-T)/2,0);
+            vp[i][2] = 0;
+            vector dp = vp[i] - p;
+            vd[i] = dp[0] * dp[0] + dp[1] * dp[1];
+        }
+    }
+    sort(9,vp,vd);
+}
+
+void voronoip8a(
+    point q,
+    float T,
+    output point vp[8],
+    output float angles[8] )
+{
+    point p = point(q[0],q[1],0);
+
+    float xx, yy, xi, yi;
+
+    xi = floor(p[0]);
+    yi = floor(p[1]);
+
+    int i = -1;
+    for(xx = xi-1; xx <= xi+1; xx++){
+        for(yy = yi-1; yy <= yi+1; yy++){
+            vector ip = vector(xx, yy, 0);
+            vector np = cellnoise(ip);
+            np[2] = 0;
+            vector vvp = ip + np * T + vector((1-T)/2,(1-T)/2,0);
+            vector d = vvp-p;
+            if( dot(d,d) > 1e-7 ){
+                float angle = atan2(d[1],d[0]);
+                i++;
+                vp[i] = vvp;
+                angles[i] = angle;
+            }
+        }
+    }
+    sort(8,vp,angles);
+}
+
+int closest_convex_polygon(
+    point c0,
+    point vp[8],
+    output point mp[8] )
+{
+    int imp[8] = {0, 1};
+    int nmp = 2;
+
+    int delauney(int b, int c, int d)
+    {
+        float alpha = acos(
+        dot(vp[b]-vp[c], vp[b]-c0));
+        float gamma = acos(dot(vp[d]-vp[c],vp[d]-c0));
+        return (alpha+gamma) <= M_PI;
+    }
+
+    for(int i = 2; i < 8; i++){
+        if( delauney(imp[nmp-2], imp[nmp-1], i) )
+        {
+            imp[nmp] = i;
+            nmp++;
+        }else{
+            imp[nmp-1] = i;
+        }
+    }
+    while( (nmp > 3) && !delauney(imp[nmp-2], imp[nmp-1], imp[0]) )
+    {
+        nmp--;
+    }
+
+    for(int i = 0; i < nmp; i++){
+        mp[i] = vp[imp[i]];
+    }
+    return nmp;
+}
+
+int point_inside_polygon(
+    point p,
+    point verts[],
+    int nverts,
+
+    output float sumangle )
+{
+    int i;
+    sumangle = 0;
+    vector ref = normalize(verts[0]-p);
+    vector ref2;
+    float amod;
+    for(i = 1; i < nverts; i++){
+        ref2 = normalize(verts[i]-p);
+        sumangle += acos(dot(ref, ref2));
+        ref = ref2;
+    }
+    ref2 = normalize(verts[0]-p);
+    sumangle += acos(dot(ref, ref2));
+    amod = abs(mod(sumangle,M_2PI));
+
+    return (amod < 1e-2) || (M_2PI - amod < 1e-2);
+}
+
+shader MABLeopard(
+    point Pos = P,
+    float Scale = 3.0,
+
+    color BaseColor = color(0.79,0.68,0.36),
+
+    float Shape = 0.3, // shape variation
+    float Ratio = 160, // ratio between inner and outer
+    float Radius = 2.6, // size of inner spot
+
+    float InnerNoise = 0.1, // amount on noise within the inner spot
+    float InnerNoiseSeed = 5.0,
+    color InnerColor = color(0.67,0.25,0.11),
+
+    float OuterSize = 1.4, // size of spots around the edge
+    float OuterBlur = -2.1, // amount of blur between outer spots
+    color OuterColor = color(0.012,0.001,0.007),
+
+    float CentreProbability = 0.2, // chance of another spot in centre
+    float CentreRadius = 0.2, // size of centre spot
+    color CenterColor = color(0.046,0.038,0.036),
+
+    // Debug helpers
+    //output float D = 0,
+    //output float Edge = 0
+
+    output color Color = OuterColor )
+{
+    point p = Pos * Scale;
+    p[2] = 0;
+    point vp[9];
+    float dp[9];
+
+    voronoip9d(p,Shape, vp, dp);
+
+    point nvp[8];
+    float angles[8];
+    voronoip8a(vp[0], Shape, nvp, angles);
+
+    point mp[8];
+    int m = closest_convex_polygon(vp[0], nvp, mp);
+
+    float sump = 0;
+    float mind = 1e7;
+
+    point mmp[8];
+    for(int i = 0; i < m; i++){
+        mmp[i] = mix(vp[0], mp[i], Radius/10);
+        float d = distance(mmp[i], p);
+        sump += OuterSize * pow(d, OuterBlur);
+        d = distance(vp[0], mp[i]);
+        if( d < mind ){ mind = d; }
+    }
+
+    if( noise("cell",p) < CentreProbability && dp[0] < (CentreRadius*.01) ){
+        Color = CenterColor;
+    }else if( sump < Ratio ){
+        float sumangle;
+        if(point_inside_polygon(p + noise("snoise",InnerNoiseSeed * p)* (InnerNoise*.01), mmp, m, sumangle) ){
+            Color = InnerColor;
+        }else{
+            Color = BaseColor;
+        }
+    }
+
+    // Debug helpers
+    // also enable shader outputs for these
+
+    // the distance from the
+    // center of the rosette
+    //D = dp[0];
+
+    // for debugging, highlight
+    // the edge of a cell
+    //if ( mod(p[0],1.0) < 0.02 || mod(p[1],1.0) < 0.02){
+    //    Edge = 1;
+    //}
+}
