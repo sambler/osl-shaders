@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="TEX_COORD" dupli="False" width="140" loc="-1278, 99" />
+		<node type="MATH" operation="ADD" use_clamp="False" value1="0.5" value2="0.5" width="140" loc="-700, 286" />
+		<node type="VALTORGB" interpolation="B_SPLINE" fac="0.5" stops="3" stop1="0.06363|rgba(0.01080, 0.01080, 0.01080, 1.0)" stop2="0.16136|rgba(0.05254, 0.05303, 0.08342, 1.0)" stop3="0.62272|rgba(0.45047, 0.45047, 0.45047, 1.0)" width="240" loc="-520, 286" />
+		<node type="BUMP" strength="0.49999" width="140" loc="-696, 50" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.09999" width="150" loc="-227, 180" />
+		<node type="BSDF_ANISOTROPIC" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.10000" anisotropy="0.20000" rotation="0.0" width="150" loc="-225, 49" />
+		<node type="MIX_SHADER" fac="0.40000" width="140" loc="-46, 148" />
+		<node type="OUTPUT_MATERIAL" width="140" loc="129, 143" />
+		<node type="MATH" operation="MULTIPLY" use_clamp="False" value1="0.5" value2="0.30000" width="140" loc="-888, 288" />
+		<node type="TEX_NOISE" scale="116.0" detail="2.0" distortion="0.0" width="140" loc="-1055, 273" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" scale="16.0" diamonds="4" margin="0.10000" width="203" loc="-1055, 85" />
+	</nodes>
+	<links>
+		<link to="6" input="2" from="5" output="0" />
+		<link to="6" input="1" from="4" output="0" />
+		<link to="7" input="0" from="6" output="0" />
+		<link to="9" input="0" from="0" output="2" />
+		<link to="8" input="0" from="9" output="1" />
+		<link to="1" input="0" from="8" output="0" />
+		<link to="2" input="0" from="1" output="0" />
+		<link to="4" input="0" from="2" output="0" />
+		<link to="5" input="4" from="3" output="0" />
+		<link to="4" input="2" from="3" output="0" />
+		<link to="10" input="0" from="0" output="2" />
+		<link to="3" input="2" from="10" output="1" />
+		<link to="1" input="1" from="10" output="0" />
+	</links>
+	<scripts>
+		<script name="MABDiamondPlate.osl" id="0">
+/*<br /> * MABDiamondPlate.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: gplv3<br /> *<br /> * original script from -<br /> * Open Shading Language for Blender by Michel J. Anders<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader MABDiamondPlate(<br />    point Vector = P,<br />    float Scale = 2.0,<br />    int Diamonds = 4,<br />    float Margin = 0.1,<br /><br />    output int Fac = 0,<br />    output float Displacement = 0,<br />    output normal Normal = normal(0,0,1) )<br />{<br />    point p = Vector * Scale;<br />    int xi = (int)floor(p[0]);<br />    int yi = (int)floor(p[1]);<br /><br />    float x = abs(fmod(p[0],1.0));<br />    float y = abs(fmod(p[1],1.0));<br />    int flipxy = 0;<br />    float flipx = 1, flipy = 1;<br />    if( (xi%2)^(yi%2) ){<br />        float t = x;<br />        x = y;<br />        y = t;<br />        flipxy=1;<br />    }<br /><br />    if( (x &lt; Margin) || (x &gt; 1-Margin) || (y &lt; Margin) || (y &gt; 1-Margin) ){<br />        Fac = 0; // do nothing<br />    }else{<br />        x -= Margin;<br />        if(y &gt; 0.5){<br />            y = 1-y;<br />            flipy = -1;<br />        }<br />        y -= Margin;<br />        float w = (1 - 2 * Margin)/Diamonds;<br />        x = mod(x,w)/w;<br />        if(x &gt; 0.5){<br />            x = 1-x;<br />            flipx = -1;<br />        }<br /><br />        float topx = 0.15;<br />        float topy = 0.5;<br />        float topy2 = 0.55;<br />        float botx = 0.5;<br />        float boty = 0;<br />        float a = (boty - topy) / (botx - topx);<br />        if(x &gt;= topx){<br />            float uppery = (x - topx) * a + topy2;<br />            float lowery = (x - topx) * a + topy;<br /><br />            if(y &gt; lowery){<br />                if(y &gt; uppery){<br />                Fac = 1;<br />                Displacement = 1.0;<br />                }else{<br />                    Fac = 2;<br />                    Displacement = (y-lowery)/(uppery - lowery);<br />                    if(flipxy){<br />                        Normal = normalize(vector(-flipy, flipx/a, 1));<br />                    }else{<br />                        Normal = normalize(vector(flipx/a, -flipy, 1));<br />                    }<br />                }<br />            }<br />        }<br />    }<br />}<br />
+		</script>
+	</scripts>
+</material>

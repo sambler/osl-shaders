@@ -1,0 +1,81 @@
+/*
+ * MABDiamondPlate.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: gplv3
+ *
+ * original script from -
+ * Open Shading Language for Blender by Michel J. Anders
+ *
+ */
+
+#include "stdosl.h"
+
+shader MABDiamondPlate(
+    point Vector = P,
+    float Scale = 2.0,
+    int Diamonds = 4,
+    float Margin = 0.1,
+
+    output int Fac = 0,
+    output float Displacement = 0,
+    output normal Normal = normal(0,0,1) )
+{
+    point p = Vector * Scale;
+    int xi = (int)floor(p[0]);
+    int yi = (int)floor(p[1]);
+
+    float x = abs(fmod(p[0],1.0));
+    float y = abs(fmod(p[1],1.0));
+    int flipxy = 0;
+    float flipx = 1, flipy = 1;
+    if( (xi%2)^(yi%2) ){
+        float t = x;
+        x = y;
+        y = t;
+        flipxy=1;
+    }
+
+    if( (x < Margin) || (x > 1-Margin) || (y < Margin) || (y > 1-Margin) ){
+        Fac = 0; // do nothing
+    }else{
+        x -= Margin;
+        if(y > 0.5){
+            y = 1-y;
+            flipy = -1;
+        }
+        y -= Margin;
+        float w = (1 - 2 * Margin)/Diamonds;
+        x = mod(x,w)/w;
+        if(x > 0.5){
+            x = 1-x;
+            flipx = -1;
+        }
+
+        float topx = 0.15;
+        float topy = 0.5;
+        float topy2 = 0.55;
+        float botx = 0.5;
+        float boty = 0;
+        float a = (boty - topy) / (botx - topx);
+        if(x >= topx){
+            float uppery = (x - topx) * a + topy2;
+            float lowery = (x - topx) * a + topy;
+
+            if(y > lowery){
+                if(y > uppery){
+                Fac = 1;
+                Displacement = 1.0;
+                }else{
+                    Fac = 2;
+                    Displacement = (y-lowery)/(uppery - lowery);
+                    if(flipxy){
+                        Normal = normalize(vector(-flipy, flipx/a, 1));
+                    }else{
+                        Normal = normalize(vector(flipx/a, -flipy, 1));
+                    }
+                }
+            }
+        }
+    }
+}
