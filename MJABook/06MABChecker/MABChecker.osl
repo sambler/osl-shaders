@@ -12,21 +12,21 @@
 #include "stdosl.h"
 
 shader MABChecker(
-    point Pos = P,
+    point Vector = P,
     float Scale = 1,
     color Color1 = color(1,0,0),
     color Color2 = color(0,1,0),
 
-    output color Col = 0 )
+    output color Color = 0 )
 {
-    point p = Pos * Scale;
+    point p = Vector * Scale;
     int x = (int)mod(p[0],2.0);
     int y = (int)mod(p[1],2.0);
     int z = (int)mod(p[2],2.0);
 
     if( ((x%2) ^ (y%2)) == (z%2) ){
-        Col = Color1;
+        Color = Color1;
     } else {
-        Col = Color2;
+        Color = Color2;
     }
 }

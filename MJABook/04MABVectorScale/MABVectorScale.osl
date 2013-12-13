@@ -12,10 +12,10 @@
 #include "stdosl.h"
 
 shader MABVectorScale(
-    vector V = 0,
+    vector VectorIn = 0,
     vector Scale = 1,
 
-    output vector Out = 0 )
+    output vector VectorOut = 0 )
 {
-    Out = V * Scale;
+    VectorOut = VectorIn * Scale;
 }

@@ -12,14 +12,14 @@
 #include "stdosl.h"
 
 shader MABRandomCircle(
-    point Pos = P,
+    point Vector = P,
     int Seed = 1,
 
-    output color Col = 0 )
+    output color Color = 0 )
 {
     point center = noise("cell", Seed);
     center[2] = 0;
-    if(distance(Pos, center) < 0.2){
-        Col = 1;
+    if(distance(Vector, center) < 0.2){
+        Color = 1;
     }
 }

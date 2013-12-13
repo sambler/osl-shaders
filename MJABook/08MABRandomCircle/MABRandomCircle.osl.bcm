@@ -3,17 +3,17 @@
 	<nodes>
 		<node type="BSDF_DIFFUSE" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.0" width="150" loc="75, 317" />
 		<node type="OUTPUT_MATERIAL" width="140" loc="270, 310" />
-		<node type="SCRIPT" mode="INTERNAL" script="0" pos="Vector(0.0, 0.0, 0.0)" seed="1" width="157" loc="-113, 319" />
-		<node type="TEX_COORD" dupli="False" width="140" loc="-303, 321" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" seed="1" width="184" loc="-157, 312" />
+		<node type="TEX_COORD" dupli="False" width="140" loc="-340, 316" />
 	</nodes>
 	<links>
 		<link to="1" input="0" from="0" output="0" />
-		<link to="0" input="0" from="2" output="0" />
 		<link to="2" input="0" from="3" output="2" />
+		<link to="0" input="0" from="2" output="0" />
 	</links>
 	<scripts>
 		<script name="MABRandomCircle.osl" id="0">
-/*<br /> * MABRandomCircle.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: gplv3<br /> *<br /> * original script from -<br /> * Open Shading Language for Blender by Michel J. Anders<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader MABRandomCircle(<br />    point Pos = P,<br />    int Seed = 1,<br /><br />    output color Col = 0 )<br />{<br />    point center = (vector)noise(&quot;cell&quot;, Seed);<br />    center[2] = 0;<br />    if(distance(Pos, center) &lt; 0.2){<br />        Col = 1;<br />    }<br />}<br />
+/*<br /> * MABRandomCircle.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: gplv3<br /> *<br /> * original script from -<br /> * Open Shading Language for Blender by Michel J. Anders<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader MABRandomCircle(<br />    point Vector = P,<br />    int Seed = 1,<br /><br />    output color Color = 0 )<br />{<br />    point center = noise(&quot;cell&quot;, Seed);<br />    center[2] = 0;<br />    if(distance(Vector, center) &lt; 0.2){<br />        Color = 1;<br />    }<br />}<br />
 		</script>
 	</scripts>
 </material>

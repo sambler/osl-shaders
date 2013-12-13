@@ -3,7 +3,7 @@
 	<nodes>
 		<node type="BSDF_DIFFUSE" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.0" width="150" loc="75, 317" />
 		<node type="OUTPUT_MATERIAL" width="140" loc="270, 310" />
-		<node type="SCRIPT" mode="INTERNAL" script="0" pos="Vector(0.0, 0.0, 0.0)" scale="2.0" radius="0.60000" width="138" loc="-116, 314" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" scale="2.0" radius="0.60000" width="157" loc="-127, 314" />
 	</nodes>
 	<links>
 		<link to="1" input="0" from="0" output="0" />
@@ -11,7 +11,7 @@
 	</links>
 	<scripts>
 		<script name="MABDots.osl" id="0">
-/*<br /> * MABDots.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: gplv3<br /> *<br /> * original script from -<br /> * Open Shading Language for Blender by Michel J. Anders<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader MABDots(<br />    point Pos = P,<br />    float Scale = 1,<br />    float Radius = 0.05,<br /><br />    output color Col = 0,<br />    output float Fac = 0 )<br />{<br />    point p = Pos * Scale;<br /><br />    float x,y,z;<br />    for(x=-1; x&lt;=1; x++){<br />        for(y=-1; y&lt;=1; y++){<br />            for(z=-1; z&lt;=1; z++){<br />                vector offset = vector(x,y,z);<br />                point dotposition = floor(p+offset) + noise(&quot;cell&quot;, p+offset,1);<br />                float d = distance(p, dotposition);<br />                if( d &lt; Radius ){<br />                    Col = noise(&quot;cell&quot;,p+offset,2);<br />                    Fac = Radius - d;<br />                    y=2; x=2;<br />                    return;<br />                }<br />            }<br />        }<br />    }<br />}<br />
+/*<br /> * MABDots.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: gplv3<br /> *<br /> * original script from -<br /> * Open Shading Language for Blender by Michel J. Anders<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader MABDots(<br />    point Vector = P,<br />    float Scale = 1,<br />    float Radius = 0.05,<br /><br />    output color Color = 0,<br />    output float Fac = 0 )<br />{<br />    point p = Vector * Scale;<br /><br />    float x,y,z;<br />    for(x=-1; x&lt;=1; x++){<br />        for(y=-1; y&lt;=1; y++){<br />            for(z=-1; z&lt;=1; z++){<br />                vector offset = vector(x,y,z);<br />                point dotposition = floor(p+offset) + noise(&quot;cell&quot;, p+offset,1);<br />                float d = distance(p, dotposition);<br />                if( d &lt; Radius ){<br />                    Color = noise(&quot;cell&quot;,p+offset,2);<br />                    Fac = Radius - d;<br />                    y=2; x=2;<br />                    return;<br />                }<br />            }<br />        }<br />    }<br />}<br />
 		</script>
 	</scripts>
 </material>

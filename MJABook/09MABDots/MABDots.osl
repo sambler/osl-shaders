@@ -12,14 +12,14 @@
 #include "stdosl.h"
 
 shader MABDots(
-    point Pos = P,
+    point Vector = P,
     float Scale = 1,
     float Radius = 0.05,
 
-    output color Col = 0,
+    output color Color = 0,
     output float Fac = 0 )
 {
-    point p = Pos * Scale;
+    point p = Vector * Scale;
 
     float x,y,z;
     for(x=-1; x<=1; x++){
@@ -29,7 +29,7 @@ shader MABDots(
                 point dotposition = floor(p+offset) + noise("cell", p+offset,1);
                 float d = distance(p, dotposition);
                 if( d < Radius ){
-                    Col = noise("cell",p+offset,2);
+                    Color = noise("cell",p+offset,2);
                     Fac = Radius - d;
                     y=2; x=2;
                     return;

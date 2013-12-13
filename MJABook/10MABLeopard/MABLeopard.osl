@@ -154,7 +154,7 @@ int point_inside_polygon(
 }
 
 shader MABLeopard(
-    point Pos = P,
+    point Vector = P,
     float Scale = 3.0,
 
     color BaseColor = color(0.79,0.68,0.36),
@@ -181,7 +181,7 @@ shader MABLeopard(
 
     output color Color = OuterColor )
 {
-    point p = Pos * Scale;
+    point p = Vector * Scale;
     p[2] = 0;
     point vp[9];
     float dp[9];

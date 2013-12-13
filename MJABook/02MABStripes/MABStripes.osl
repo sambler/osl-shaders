@@ -12,12 +12,12 @@
 #include "stdosl.h"
 
 shader stripes(
-    point Pos = P,
+    point Vector = P,
     int Number = 4,
 
     output float Fac = 0 )
 {
-    float x = mod(Pos[0],1);
+    float x = mod(Vector[0],1);
 
     int i;
     for(i=1; i <= Number; i++){

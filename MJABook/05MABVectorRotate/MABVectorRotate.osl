@@ -12,13 +12,12 @@
 #include "stdosl.h"
 
 shader rotate(
-    vector V = 0,
+    vector VectorIn = 0,
     vector From = 0,
     vector To = point(0,0,1),
     float Angle = 0, // in degrees
 
-    output vector Out = 0 )
+    output vector VectorOut = 0 )
 {
-    float rads = radians(Angle);
-    Out = rotate(V, rads, From, To);
+    VectorOut = rotate(VectorIn, radians(Angle), From, To);
 }

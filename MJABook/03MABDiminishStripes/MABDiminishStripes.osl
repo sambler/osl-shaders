@@ -12,12 +12,12 @@
 #include "stdosl.h"
 
 shader MABDiminishStripes(
-    point Pos = P,
+    point Vector = P,
     float Limit = 0.01,
 
     output float Fac = 0 )
 {
-    float x = mod(Pos[0],1)*2;
+    float x = mod(Vector[0],1)*2;
     float dx = 0.5;
     float xlimit = dx;
 
