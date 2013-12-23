@@ -176,8 +176,9 @@ shader MABLeopard(
     color CenterColor = color(0.046,0.038,0.036),
 
     // Debug helpers
+    // also enable below
     //output float D = 0,
-    //output float Edge = 0
+    //output float Edge = 0,
 
     output color Color = OuterColor )
 {
