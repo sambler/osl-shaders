@@ -1,0 +1,27 @@
+/*
+ * MABRotate90.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: gplv3
+ *
+ * original script from -
+ * Open Shading Language for Blender by Michel J. Anders
+ *
+ */
+
+#include "stdosl.h"
+
+point rotate_90(point p){
+    vector v = vector(0.5, 0.5, 0);
+    point q = p - v;
+    q=point(q[1],-q[0],0);
+    return q+v;
+}
+
+shader MABRotate90(
+    point VectorIn = P,
+
+    output point VectorOut = P )
+{
+    VectorOut = rotate_90(VectorIn);
+}

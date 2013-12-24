@@ -1,0 +1,32 @@
+/*
+ * MABMirrorLine.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: gplv3
+ *
+ * original script from -
+ * Open Shading Language for Blender by Michel J. Anders
+ *
+ */
+
+#include "stdosl.h"
+
+point mirror_line(
+    point p,
+    float a,
+    float b )
+{
+    float Mx = abs(b) > 1e-7 ? (b * p[1] + p[0] - a * b) / (b * b + 1) : p[0];
+    float My = a + b * Mx;
+    return point(2 * Mx - p[0], 2 * My - p[1], 0);
+}
+
+shader MABMirrorLine(
+    point VectorIn = P,
+    float a = 0,
+    float b = 1,
+
+    output point VectorOut = P )
+{
+    VectorOut = mirror_line(VectorIn, a, b);
+}

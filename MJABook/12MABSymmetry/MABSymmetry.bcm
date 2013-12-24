@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material name="MAB12Symmetry" view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="FRAME" custom_color="rgb(0.0, 0.03739, 0.60799)" label="OriginalF" name="Frame.002" height="185" width="367" width_hidden="42" loc="-313, 376" />
+		<node type="FRAME" custom_color="rgb(0.05129, 0.44797, 0.05667)" label="MirrorV" name="Frame" height="186" width="524" width_hidden="42" loc="-335, 143" />
+		<node type="FRAME" custom_color="rgb(0.05129, 0.44797, 0.05667)" label="Rotate90" name="Frame.005" height="186" width="518" width_hidden="42" loc="-337, -958" />
+		<node type="FRAME" custom_color="rgb(0.05129, 0.44797, 0.05667)" label="Rotate270" name="Frame.006" height="185" width="518" width_hidden="42" loc="-329, -1183" />
+		<node type="FRAME" custom_color="rgb(0.05129, 0.44797, 0.05667)" label="Rotate" name="Frame.007" height="207" width="508" width_hidden="42" loc="-336, -1397" />
+		<node type="FRAME" custom_color="rgb(0.05129, 0.44797, 0.05667)" label="Rotate-Offset" name="Frame.008" height="226" width="512" width_hidden="42" loc="-334, -1629" />
+		<node type="FRAME" custom_color="rgb(0.05129, 0.44797, 0.05667)" label="MirrorH" name="Frame.001" height="185" width="521" width_hidden="42" loc="-339, -67" />
+		<node type="FRAME" custom_color="rgb(0.05129, 0.44797, 0.05667)" label="MirrorXY" name="Frame.003" height="185" width="519" width_hidden="42" loc="-338, -276" />
+		<node type="FRAME" custom_color="rgb(0.05129, 0.44797, 0.05667)" label="MirrorLine" name="Frame.009" height="226" width="521" width_hidden="42" loc="-331, -482" />
+		<node type="FRAME" custom_color="rgb(0.05129, 0.44797, 0.05667)" label="Rotate180" name="Frame.004" height="185" width="518" width_hidden="42" loc="-335, -743" />
+		<node type="TEX_COORD" dupli="False" height="100" width="150" width_hidden="42" loc="-629, 303" />
+		<node type="REROUTE" height="100" width="16" width_hidden="42" loc="397, 212" />
+		<node type="MIX_RGB" blend_type="MIX" use_clamp="False" fac="0.5" color1="rgba(0.5, 0.5, 0.5, 1.0)" color2="rgba(1.0, 1.0, 1.0, 1.0)" height="100" width="140" width_hidden="42" loc="510, 249" />
+		<node type="HUE_SAT" hue="0.49999" saturation="2.0" value="1.0" fac="1.0" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" height="100" width="150" width_hidden="42" loc="716, 256" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.0" height="100" width="150" width_hidden="42" loc="918, 253" />
+		<node type="OUTPUT_MATERIAL" height="100" width="120" width_hidden="42" loc="1102, 251" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" height="100" width="152" width_hidden="42" parent="Frame.002" loc="5, -28" />
+		<node type="VALTORGB" hide="True" interpolation="LINEAR" fac="0.5" stops="2" stop1="0.0|rgba(0.0, 0.0, 1.0, 1.0)" stop2="0.99090|rgba(1.0, 1.0, 1.0, 0.0)" height="100" width="240" width_hidden="42" parent="Frame.002" loc="226, -53" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" height="100" width="152" width_hidden="42" parent="Frame" loc="207, -16" />
+		<node type="VALTORGB" hide="True" interpolation="LINEAR" fac="0.5" stops="2" stop1="0.0|rgba(0.0, 1.0, 0.0, 1.0)" stop2="0.99090|rgba(1.0, 1.0, 1.0, 0.0)" height="100" width="240" width_hidden="42" parent="Frame" loc="393, -38" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" height="100" width="152" width_hidden="42" parent="Frame.005" loc="207, -16" />
+		<node type="VALTORGB" hide="True" interpolation="LINEAR" fac="0.5" stops="2" stop1="0.0|rgba(0.0, 1.0, 0.0, 1.0)" stop2="0.99090|rgba(1.0, 1.0, 1.0, 0.0)" height="100" width="235" width_hidden="42" parent="Frame.005" loc="388, -41" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" height="100" width="152" width_hidden="42" parent="Frame.006" loc="207, -16" />
+		<node type="VALTORGB" hide="True" interpolation="LINEAR" fac="0.5" stops="2" stop1="0.0|rgba(0.0, 1.0, 0.0, 1.0)" stop2="0.99090|rgba(1.0, 1.0, 1.0, 0.0)" height="100" width="235" width_hidden="42" parent="Frame.006" loc="388, -41" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" height="100" width="152" width_hidden="42" parent="Frame.007" loc="207, -16" />
+		<node type="VALTORGB" hide="True" interpolation="LINEAR" fac="0.5" stops="2" stop1="0.0|rgba(0.0, 1.0, 0.0, 1.0)" stop2="0.99090|rgba(1.0, 1.0, 1.0, 0.0)" height="100" width="235" width_hidden="42" parent="Frame.007" loc="388, -41" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" height="100" width="152" width_hidden="42" parent="Frame.008" loc="207, -16" />
+		<node type="VALTORGB" hide="True" interpolation="LINEAR" fac="0.5" stops="2" stop1="0.0|rgba(0.0, 1.0, 0.0, 1.0)" stop2="0.99090|rgba(1.0, 1.0, 1.0, 0.0)" height="100" width="235" width_hidden="42" parent="Frame.008" loc="388, -41" />
+		<node type="REROUTE" height="100" width="16" width_hidden="42" loc="-390, -603" />
+		<node type="REROUTE" height="100" width="16" width_hidden="42" loc="-391, 224" />
+		<node type="REROUTE" height="100" width="16" width_hidden="42" loc="-389, 17" />
+		<node type="SCRIPT" mode="INTERNAL" script="1" vectorin="Vector(0.0, 0.0, 0.0)" height="100" width="152" width_hidden="42" parent="Frame" loc="16, -15" />
+		<node type="SCRIPT" mode="INTERNAL" script="2" vectorin="Vector(0.0, 0.0, 0.0)" height="100" width="152" width_hidden="42" parent="Frame.001" loc="16, -15" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" height="100" width="152" width_hidden="42" parent="Frame.001" loc="207, -16" />
+		<node type="VALTORGB" hide="True" interpolation="LINEAR" fac="0.5" stops="2" stop1="0.0|rgba(0.0, 1.0, 0.0, 1.0)" stop2="0.99090|rgba(1.0, 1.0, 1.0, 0.0)" height="100" width="235" width_hidden="42" parent="Frame.001" loc="390, -41" />
+		<node type="REROUTE" height="100" width="16" width_hidden="42" loc="-391, -192" />
+		<node type="REROUTE" height="100" width="16" width_hidden="42" loc="-391, -399" />
+		<node type="SCRIPT" mode="INTERNAL" script="3" vectorin="Vector(0.0, 0.0, 0.0)" height="100" width="152" width_hidden="42" parent="Frame.003" loc="16, -15" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" height="100" width="152" width_hidden="42" parent="Frame.003" loc="207, -16" />
+		<node type="VALTORGB" hide="True" interpolation="LINEAR" fac="0.5" stops="2" stop1="0.0|rgba(0.0, 1.0, 0.0, 1.0)" stop2="0.99090|rgba(1.0, 1.0, 1.0, 0.0)" height="100" width="235" width_hidden="42" parent="Frame.003" loc="389, -43" />
+		<node type="VALTORGB" hide="True" interpolation="LINEAR" fac="0.5" stops="2" stop1="0.0|rgba(0.0, 1.0, 0.0, 1.0)" stop2="0.99090|rgba(1.0, 1.0, 1.0, 0.0)" height="100" width="235" width_hidden="42" parent="Frame.009" loc="388, -41" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" height="100" width="152" width_hidden="42" parent="Frame.009" loc="207, -16" />
+		<node type="SCRIPT" mode="INTERNAL" script="4" vectorin="Vector(0.0, 0.0, 0.0)" a="4.29999" b="-8.69999" height="100" width="140" width_hidden="42" parent="Frame.009" loc="13, -15" />
+		<node type="SCRIPT" mode="INTERNAL" script="5" vectorin="Vector(0.0, 0.0, 0.0)" height="100" width="152" width_hidden="42" parent="Frame.004" loc="16, -15" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" height="100" width="152" width_hidden="42" parent="Frame.004" loc="207, -16" />
+		<node type="VALTORGB" hide="True" interpolation="LINEAR" fac="0.5" stops="2" stop1="0.0|rgba(0.0, 1.0, 0.0, 1.0)" stop2="0.99090|rgba(1.0, 1.0, 1.0, 0.0)" height="100" width="235" width_hidden="42" parent="Frame.004" loc="388, -41" />
+		<node type="REROUTE" height="100" width="16" width_hidden="42" loc="-389, -870" />
+		<node type="SCRIPT" mode="INTERNAL" script="6" vectorin="Vector(0.0, 0.0, 0.0)" height="100" width="152" width_hidden="42" parent="Frame.005" loc="16, -15" />
+		<node type="REROUTE" height="100" width="16" width_hidden="42" loc="-391, -1083" />
+		<node type="SCRIPT" mode="INTERNAL" script="7" vectorin="Vector(0.0, 0.0, 0.0)" height="100" width="152" width_hidden="42" parent="Frame.006" loc="16, -15" />
+		<node type="REROUTE" height="100" width="16" width_hidden="42" loc="-389, -1308" />
+		<node type="SCRIPT" mode="INTERNAL" script="8" vectorin="Vector(0.0, 0.0, 0.0)" angle="32.0" height="100" width="140" width_hidden="42" parent="Frame.007" loc="26, -18" />
+		<node type="REROUTE" height="100" width="16" width_hidden="42" loc="-389, -1520" />
+		<node type="REROUTE" height="100" width="16" width_hidden="42" loc="-388, -1753" />
+		<node type="SCRIPT" mode="INTERNAL" script="9" vectorin="Vector(0.0, 0.0, 0.0)" centre="Vector(0.20000, 0.20000, 0.0)" angle="32.0" height="100" width="140" width_hidden="42" parent="Frame.008" loc="22, -14" />
+		<node type="REROUTE" height="100" width="16" width_hidden="42" loc="389, 102" />
+		<node type="REROUTE" height="100" width="16" width_hidden="42" loc="388, 61" />
+		<node type="REROUTE" height="100" width="16" width_hidden="42" loc="389, -20" />
+		<node type="REROUTE" height="100" width="16" width_hidden="42" loc="391, -91" />
+		<node type="REROUTE" height="100" width="16" width_hidden="42" loc="392, -163" />
+		<node type="REROUTE" height="100" width="16" width_hidden="42" loc="398, -245" />
+		<node type="REROUTE" height="100" width="16" width_hidden="42" loc="398, -331" />
+		<node type="REROUTE" height="100" width="16" width_hidden="42" loc="393, -435" />
+		<node type="REROUTE" height="100" width="16" width_hidden="42" loc="392, 139" />
+	</nodes>
+	<links>
+		<link to="15" input="0" from="14" output="0" />
+		<link to="29" input="0" from="10" output="2" />
+		<link to="30" input="0" from="29" output="0" />
+		<link to="35" input="0" from="30" output="0" />
+		<link to="36" input="0" from="35" output="0" />
+		<link to="19" input="0" from="18" output="0" />
+		<link to="34" input="0" from="33" output="0" />
+		<link to="39" input="0" from="38" output="0" />
+		<link to="28" input="0" from="36" output="0" />
+		<link to="45" input="0" from="44" output="0" />
+		<link to="12" input="1" from="11" output="0" />
+		<link to="17" input="0" from="16" output="0" />
+		<link to="14" input="0" from="13" output="0" />
+		<link to="13" input="4" from="12" output="0" />
+		<link to="63" input="0" from="19" output="0" />
+		<link to="55" input="0" from="34" output="0" />
+		<link to="56" input="0" from="39" output="0" />
+		<link to="58" input="0" from="45" output="0" />
+		<link to="11" input="0" from="17" output="0" />
+		<link to="21" input="0" from="20" output="0" />
+		<link to="46" input="0" from="28" output="0" />
+		<link to="59" input="0" from="21" output="0" />
+		<link to="23" input="0" from="22" output="0" />
+		<link to="48" input="0" from="46" output="0" />
+		<link to="60" input="0" from="23" output="0" />
+		<link to="25" input="0" from="24" output="0" />
+		<link to="50" input="0" from="48" output="0" />
+		<link to="27" input="0" from="26" output="0" />
+		<link to="52" input="0" from="50" output="0" />
+		<link to="61" input="0" from="25" output="0" />
+		<link to="62" input="0" from="27" output="0" />
+		<link to="40" input="0" from="41" output="0" />
+		<link to="57" input="0" from="40" output="0" />
+		<link to="53" input="0" from="52" output="0" />
+		<link to="16" input="0" from="29" output="0" />
+		<link to="31" input="0" from="30" output="0" />
+		<link to="18" input="0" from="31" output="0" />
+		<link to="33" input="0" from="32" output="0" />
+		<link to="32" input="0" from="35" output="0" />
+		<link to="37" input="0" from="36" output="0" />
+		<link to="38" input="0" from="37" output="0" />
+		<link to="41" input="0" from="42" output="0" />
+		<link to="42" input="0" from="28" output="0" />
+		<link to="44" input="0" from="43" output="0" />
+		<link to="43" input="0" from="46" output="0" />
+		<link to="20" input="0" from="47" output="0" />
+		<link to="47" input="0" from="48" output="0" />
+		<link to="22" input="0" from="49" output="0" />
+		<link to="49" input="0" from="50" output="0" />
+		<link to="24" input="0" from="51" output="0" />
+		<link to="51" input="0" from="52" output="0" />
+		<link to="54" input="0" from="53" output="0" />
+		<link to="26" input="0" from="54" output="0" />
+		<link to="12" input="2" from="63" output="0" />
+	</links>
+	<scripts>
+		<script name="MABF.osl" id="0">
+/*<br /> * MABF.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: gplv3<br /> *<br /> * original script from -<br /> * Open Shading Language for Blender by Michel J. Anders<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader MABF (<br />    point Vector = P,<br /><br />    output float Fac = 1 )<br />{<br />    point a=point(0.1,0.1,0);<br />    point b=point(0.1,0.25,0);<br />    point c=point(0.1,0.4,0);<br />    point d=point(0.25,0.25,0);<br />    point e=point(0.35,0.4,0);<br />    float w=0.02;<br /><br />    if( (distance(a,c,Vector) &lt;w) || (distance(b,d,Vector) &lt;w) || (distance(c,e,Vector) &lt;w) ){<br />        Fac = 0;<br />    }<br />}<br />
+		</script>
+		<script name="MABMirrorV.osl" id="1">
+/*<br /> * MABMirrorV.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: gplv3<br /> *<br /> * original script from -<br /> * Open Shading Language for Blender by Michel J. Anders<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />point mirror_v(point p){<br />    return point(p[0],1-p[1],p[2]);<br />}<br /><br />shader MABMirrorV(<br />    point VectorIn = P,<br /><br />    output point VectorOut = P )<br />{<br />    VectorOut = mirror_v(VectorIn);<br />}<br />
+		</script>
+		<script name="MABMirrorH.osl" id="2">
+/*<br /> * MABMirrorH.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: gplv3<br /> *<br /> * original script from -<br /> * Open Shading Language for Blender by Michel J. Anders<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />point mirror_h(point p){<br />    return point(1-p[0],p[1],p[2]);<br />}<br /><br />shader MABMirrorH(<br />    point VectorIn = P,<br /><br />    output point VectorOut = P )<br />{<br />    VectorOut = mirror_h(VectorIn);<br />}<br />
+		</script>
+		<script name="MABMirrorXY.osl" id="3">
+/*<br /> * MABMirrorXY.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: gplv3<br /> *<br /> * original script from -<br /> * Open Shading Language for Blender by Michel J. Anders<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />point mirror_xy(point p){<br />    return point(p[1],p[0],p[2]);<br />}<br /><br />shader MABMirrorXY(<br />    point VectorIn = P,<br /><br />    output point VectorOut = P )<br />{<br />    VectorOut = mirror_xy(VectorIn);<br />}<br />
+		</script>
+		<script name="MABMirrorLine.osl" id="4">
+/*<br /> * MABMirrorLine.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: gplv3<br /> *<br /> * original script from -<br /> * Open Shading Language for Blender by Michel J. Anders<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />point mirror_line(<br />    point p,<br />    float a,<br />    float b )<br />{<br />    float Mx = abs(b) &gt; 1e-7 ? (b * p[1] + p[0] - a * b) / (b * b + 1) : p[0];<br />    float My = a + b * Mx;<br />    return point(2 * Mx - p[0], 2 * My - p[1], 0);<br />}<br /><br />shader MABMirrorLine(<br />    point VectorIn = P,<br />    float a = 0,<br />    float b = 1,<br /><br />    output point VectorOut = P )<br />{<br />    VectorOut = mirror_line(VectorIn, a, b);<br />}<br />
+		</script>
+		<script name="MABRotate180.osl" id="5">
+/*<br /> * MABRotate180.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: gplv3<br /> *<br /> * original script from -<br /> * Open Shading Language for Blender by Michel J. Anders<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />point rotate_180(point p){<br />    return point(1-p[0],1-p[1],p[2]);<br />}<br /><br />shader MABRotate180(<br />    point VectorIn = P,<br /><br />    output point VectorOut = P )<br />{<br />    VectorOut = rotate_180(VectorIn);<br />}<br />
+		</script>
+		<script name="MABRotate90.osl" id="6">
+/*<br /> * MABRotate90.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: gplv3<br /> *<br /> * original script from -<br /> * Open Shading Language for Blender by Michel J. Anders<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />point rotate_90(point p){<br />    vector v = vector(0.5, 0.5, 0);<br />    point q = p - v;<br />    q=point(q[1],-q[0],0);<br />    return q+v;<br />}<br /><br />shader MABRotate90(<br />    point VectorIn = P,<br /><br />    output point VectorOut = P )<br />{<br />    VectorOut = rotate_90(VectorIn);<br />}<br />
+		</script>
+		<script name="MABRotate270.osl" id="7">
+/*<br /> * MABRotate270.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: gplv3<br /> *<br /> * original script from -<br /> * Open Shading Language for Blender by Michel J. Anders<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />point rotate_270(point p){<br />    vector v = vector(0.5, 0.5, 0);<br />    point q = p - v;<br />    q=point(-q[1],q[0],0);<br />    return q+v;<br />}<br /><br />shader MABRotate270(<br />    point VectorIn = P,<br /><br />    output point VectorOut = P )<br />{<br />    VectorOut = rotate_270(VectorIn);<br />}<br />
+		</script>
+		<script name="MABRotate.osl" id="8">
+/*<br /> * MABRotate.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: gplv3<br /> *<br /> * original script from -<br /> * Open Shading Language for Blender by Michel J. Anders<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br /><br /><br />point rotate_point_angle(<br />    point p,<br />    point q,<br />    float angle )<br />{<br />    vector z = vector(0, 0, 1);<br />    return rotate(p, radians(angle), q, q + z);<br />}<br /><br />shader MABRotate(<br />    point VectorIn = P,<br />    float Angle = 0,<br /><br />    output point VectorOut = P )<br />{<br />    VectorOut = rotate_point_angle(VectorIn, point(0.5, 0.5, 0), Angle);<br />}<br />
+		</script>
+		<script name="MABRotateOffset.osl" id="9">
+/*<br /> * MABRotateOffset.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: gplv3<br /> *<br /> * original script from -<br /> * Open Shading Language for Blender by Michel J. Anders<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br /><br /><br />point rotate_point_angle(<br />    point p,<br />    point q,<br />    float angle )<br />{<br />    vector z = vector(0, 0, 1);<br />    return rotate(p, radians(angle), q, q + z);<br />}<br /><br />shader MABRotateOffset(<br />    point VectorIn = P,<br />    point Centre = point(0, 0, 0), // 0,0 = bottom left<br />    float Angle = 0,<br /><br />    output point VectorOut = P )<br />{<br />    VectorOut = rotate_point_angle(VectorIn, Centre, Angle);<br />}<br />
+		</script>
+	</scripts>
+</material>
