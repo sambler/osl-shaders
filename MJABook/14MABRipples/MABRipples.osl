@@ -1,0 +1,42 @@
+/*
+ * MABRipples.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: gplv3
+ *
+ * original script from -
+ * Open Shading Language for Blender by Michel J. Anders
+ *
+ */
+
+#include "stdosl.h"
+
+shader MABRipples(
+        point Vector = P,
+
+        int Drops = 1,
+        float Time = 1.5,
+        float StartTime = 0.0,
+        float EndTime = 1.0,
+        float Amplitude = 1.0,
+        float Wavelength = 0.2,
+        float Spread = 0.5,
+        float Damping = 0.9,
+
+        output float Height = 0 )
+{
+    float wlength = Wavelength / 10; //make input value in decent range
+    
+    for(int i=0; i <Drops; i++) {
+        vector center = noise("cell",i,1);
+        float start = (EndTime-StartTime) * noise("cell", i, 2);
+        float peak = Time - start;
+        float dc = hypot(Vector[0]-center[0], Vector[1]-center[1]);
+        float t = dc/wlength;
+        float a = Amplitude * cos(t);
+        a *= pow(Damping, start);
+        a *= exp(-(dc-peak)*(dc-peak)/Spread);
+        Height += a;
+    }
+}
+

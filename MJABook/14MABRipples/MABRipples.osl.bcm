@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material name="MAB14Ripples" view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="OUTPUT_MATERIAL" height="100" width="120" width_hidden="42" loc="1630, 267" />
+		<node type="BSDF_GLOSSY" distribution="BECKMANN" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.0" height="100" width="150" width_hidden="42" loc="1428, 269" />
+		<node type="BUMP" strength="0.69999" height="100" width="140" width_hidden="42" loc="1238, 236" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" drops="2" time="2.0" starttime="0.0" endtime="1.00000" amplitude="1.00000" wavelength="0.19999" spread="0.49999" damping="0.89999" height="100" width="173" width_hidden="42" loc="1008, 214" />
+		<node type="MAPPING" translation="Vector(0.39999, 0.39999, 0.0)" rotation="Vector(0.0, 0.0, 0.0)" scale="Vector(0.5, 0.5, 0.5)" use_min="False" use_max="False" vector="Vector(0.0, 0.0, 0.0)" height="100" width="320" width_hidden="42" loc="645, 188" />
+		<node type="TEX_COORD" dupli="False" height="100" width="140" width_hidden="42" loc="457, 118" />
+	</nodes>
+	<links>
+		<link to="0" input="0" from="1" output="0" />
+		<link to="1" input="2" from="2" output="0" />
+		<link to="2" input="2" from="3" output="0" />
+		<link to="4" input="0" from="5" output="2" />
+		<link to="3" input="0" from="4" output="0" />
+	</links>
+	<scripts>
+		<script name="MABRipples.osl" id="0">
+/*<br /> * MABRipples.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: gplv3<br /> *<br /> * original script from -<br /> * Open Shading Language for Blender by Michel J. Anders<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader MABRipples(<br />        point Vector = P,<br /><br />        int Drops = 1,<br />        float Time = 1.5,<br />        float StartTime = 0.0,<br />        float EndTime = 1.0,<br />        float Amplitude = 1.0,<br />        float Wavelength = 0.2,<br />        float Spread = 0.5,<br />        float Damping = 0.9,<br /><br />        output float Height = 0 )<br />{<br />    float wlength = Wavelength / 10; //make input value in decent range<br />    <br />    for(int i=0; i &lt;Drops; i++) {<br />        vector center = noise(&quot;cell&quot;,i,1);<br />        float start = (EndTime-StartTime) * noise(&quot;cell&quot;, i, 2);<br />        float peak = Time - start;<br />        float dc = hypot(Vector[0]-center[0], Vector[1]-center[1]);<br />        float t = dc/wlength;<br />        float a = Amplitude * cos(t);<br />        a *= pow(Damping, start);<br />        a *= exp(-(dc-peak)*(dc-peak)/Spread);<br />        Height += a;<br />    }<br />}<br /><br />
+		</script>
+	</scripts>
+</material>
