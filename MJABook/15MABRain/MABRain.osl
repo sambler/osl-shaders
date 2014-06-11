@@ -1,0 +1,56 @@
+/*
+ * MABRain.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: gplv3
+ *
+ * original script from -
+ * Open Shading Language for Blender by Michel J. Anders
+ *
+ */
+
+#include "stdosl.h"
+
+shader MABRain(
+        point Vector = P,
+        float Scale = 5.0,
+
+        int Drops = 4,
+        float Time = 0.1,
+        float StartTime = 0.0,
+        float EndTime = 2.0,
+        float Amplitude = 0.4,
+        float Wavelength = 0.3,
+        float Spread = 0.1,
+        float Limit = 0.8,
+        float Damping = 0.3,
+
+        output float Height = 0 )
+{
+    float L = max(ceil(abs(Limit)),1);
+
+    vector Pos = Vector * Scale;
+    vector ip = floor(Pos);
+
+    float h = 0;
+    for(float dx = -L; dx<=L; dx++) {
+    for(float dy = -L; dy<=L; dy++) {
+        vector p = ip+vector(dx,dy,0);
+        for(int i = 0; i<Drops; i++) {
+            vector center = noise("cell",p,i) + p;
+            float start = (EndTime-StartTime)*noise("cell",p,-i-1);
+            float peak = Time - start;
+            float dc = hypot(Pos[0]-center[0],Pos[1]-center[1]);
+            float t = dc/Wavelength;
+            float a = Amplitude*cos(t);
+            float dr = (Limit-peak)/Limit;
+            float dm = pow(dr,Damping);
+            dm *= exp(-(dc-peak)*(dc-peak)/Spread);
+            if( dm >0 ) {
+                h += a*dm;
+            }
+        }
+    }
+    }
+    Height = h;
+}
