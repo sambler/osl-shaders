@@ -1,0 +1,139 @@
+/*
+ * MABConcrete.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: gplv3
+ *
+ * original script from -
+ * Open Shading Language for Blender by Michel J. Anders
+ *
+ */
+
+#include "stdosl.h"
+
+point voronoi3d(point p, float t)
+{
+    int xx, yy, zz, xi, yi, zi;
+
+    xi = (int)floor(p[0]);
+    yi = (int)floor(p[1]);
+    zi = (int)floor(p[2]);
+
+    float dbest = 1e10;
+    point pbest = 1e10;
+    for (xx = xi - 1; xx <= xi + 1; xx++) {
+        for (yy = yi - 1; yy <= yi + 1; yy++) {
+            for (zz = zi - 1; zz <= zi + 1; zz++) {
+                vector ip = vector(xx, yy, zz);
+                point  vp = ip + noise("cell", ip, t);
+                vector dp = p - vp;
+                float  d  = dot(dp,dp);
+                if (d < dbest) {
+                    dbest = d;
+                    pbest = vp;
+                }
+            }
+        }
+    }
+    return pbest;
+}
+
+float voronoi(point p, float t, output point pos, output float v1, output float v2){
+  pos = voronoi3d(p, t);
+  v1 = noise("cell",pos,t-713);
+  v2 = noise("cell",pos,t+317);
+  return noise("cell",pos,t+173);
+}
+
+shader MABConcrete(
+        point Vector     = P,
+        float Scale      = 1.0,
+
+        color Cement1    = 0.9,
+        color Cement2    = 0.75,
+        color Sand1      = 0.35,
+        color Sand2      = 0.42,
+        float Sand       = 0.5,
+        float SandSize   = 0.1,
+        float SandDensity= 4.0,
+        float GrainHigh  = 0.5,
+        float GrainLow   = 0.1,
+
+        color Split1     = 0.7,
+        color Split2     = color(0.7,0.6,0.5),
+        float Split      = 0.2,
+        float SplitSize  = 0.12,
+        float SplitGaps  = 0.3,
+
+        color Pebble1    = 0.8,
+        color Pebble2    = color(0.8,0.7,0.6),
+        float Pebbles    = 0.2,
+        float PebbleSize = 1.5,
+        float PebbleGaps = 0.06,
+
+        color Stain1     = 0.3,
+        color Stain2     = color(0.3,0.4,0.3),
+        float Stains     = 0.4,
+        float StainSize  = 4.0,
+        float StainMix   = 0.05,
+
+        output color Col     = 0.5,
+        output normal Normal = 0,
+        output float Disp    = 0.0,
+        output int IsCement  = 1,
+        output int IsPebble  = 0,
+        output int IsSplit   = 0,
+        output int IsSand    = 0 )
+{
+    point p = Vector * Scale;
+    Col = mix(Cement1,Cement2,noise("uperlin",p,0));
+
+    float pebblenoise = noise("uperlin",p/PebbleSize,1);
+    if(Pebbles > pebblenoise) {
+        Disp = sqrt(pebblenoise-Pebbles);
+        if(PebbleGaps < noise("cell",p/PebbleSize,2)) {
+            IsCement = 0;
+            IsPebble = 1;
+            Col = mix(Pebble1, Pebble2, pow(noise("uperlin",p/PebbleSize, 3), 2));
+        }else{
+            Disp = -Disp;
+        }
+    }else{
+        // angular split
+        float peakheight, gapvalue;
+        point splitpos;
+        float splitnoise = voronoi(p/SplitSize, 4, splitpos, peakheight, gapvalue);
+        if(Split > splitnoise) {
+            Disp = peakheight*(1-distance(p, splitpos));
+            if(SplitGaps < gapvalue) {
+                IsCement = 0;
+                IsSplit = 1;
+                Col = mix(Split1, Split2, pow(noise("uperlin", p/SplitSize, 6), 2));
+            }else{
+                Disp = -Disp;
+            }
+        }else{
+            // sandgrains
+            int sandvisible = Sand > noise("uperlin", p/SandSize, 7);
+            if(sandvisible) {
+                float grain = noise("gabor", p, 8, "bandwidth", 4,
+                        "anisotropic", 2, "direction", vector(SandDensity, 0, 0));
+                if(grain > GrainLow && grain < GrainHigh) {
+                    IsCement = 0;
+                    IsSand = 1;
+                    Col   = mix(Sand1, Sand2, noise("uperlin", p, 9));
+                    Disp  = noise("cell", (p*SandDensity)*0.001*grain, 10);
+                    Normal= noise("cell", (p*SandDensity)*0.001*grain, 11);
+                    Normal[2]=1;
+                    Normal = normalize(Normal);
+                }
+            }
+        }
+    }
+    // overall color stain
+    float stainnoise = noise("uperlin", p/StainSize, 12);
+    if(Stains > stainnoise){
+        color StainCol = mix(Stain1, Stain2, noise("uperlin", p, 13));
+        Col = mix(Col, StainCol, StainMix);
+    }
+}
