@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material name="MABSphericalDots" view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="BSDF_DIFFUSE" color="rgba(0.61979, 0.16574, 0.10834, 1.0)" roughness="0.20000" height="100" width="150" width_hidden="42" loc="1078, 231" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.71999, 0.67160, 0.22830, 1.0)" roughness="0.10000" height="100" width="150" width_hidden="42" loc="1079, 94" />
+		<node type="MATH" operation="GREATER_THAN" use_clamp="False" value1="0.5" value2="0.0" height="100" width="140" width_hidden="42" loc="1081, 391" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" number="1000" radius="1.50000" height="100" width="170" width_hidden="42" loc="823, 326" />
+		<node type="MIX_SHADER" fac="0.5" height="100" width="140" width_hidden="42" loc="1292, 275" />
+		<node type="OUTPUT_MATERIAL" height="100" width="120" width_hidden="42" loc="1473, 269" />
+	</nodes>
+	<links>
+		<link to="4" input="0" from="2" output="0" />
+		<link to="5" input="0" from="4" output="0" />
+		<link to="2" input="0" from="3" output="0" />
+		<link to="4" input="2" from="1" output="0" />
+		<link to="4" input="1" from="0" output="0" />
+	</links>
+	<scripts>
+		<script name="MABSphericalDots.osl" id="0">
+/*<br /> * MABSphericalDots.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: gplv3<br /> *<br /> * original script from -<br /> * Open Shading Language for Blender by Michel J. Anders<br /> *<br /> * This shader is about placing spots on a spherical surface<br /> * not making spots that are round<br /> *<br /> * The focus is on evenly distibuting the spots better<br /> * than when using a more random scattering<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />float haltonsequence(int index, int base)<br />{<br />    float result = 0.0;<br />    float f = 1.0/base;<br />    int ri = index;<br />    while(ri &gt; 0){<br />        result += f*(ri%base);<br />        ri = int(ri/base);<br />        f /= base;<br />    }<br />    return result;<br />}<br /><br />vector haltonsequence(int index){<br />    return vector(haltonsequence(index,2),<br />        haltonsequence(index,3),<br />        haltonsequence(index,5) );<br />}<br /><br />vector pointonsphere(int index){<br />    float z = haltonsequence(index,2)*2-1;<br />    float t = haltonsequence(index,3)*M_2PI;<br />    float r = sqrt(1-z*z);<br />    float s,c;<br />    sincos(t,s,c);<br />    return vector(s*r,c*r,z);<br />}<br /><br />shader MABSphericalDots(<br />        int Number = 1000,<br />        float Radius = 1.0,<br /><br />        output float Fac = 0 )<br />{<br />    point p = transform(&quot;object&quot;,P);<br />    float r = length(p);<br />    float sRad = Radius/10;<br /><br />    for(int n=1; n&lt;=Number; n++){<br />        vector v = r * pointonsphere(n);<br />        float d = distance(v,p);<br />        if( d &lt; sRad ){<br />            Fac = sRad - d;<br />            break;<br />        }<br />    }<br />}<br /><br />
+		</script>
+	</scripts>
+</material>

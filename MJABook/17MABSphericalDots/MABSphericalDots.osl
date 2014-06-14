@@ -1,0 +1,67 @@
+/*
+ * MABSphericalDots.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: gplv3
+ *
+ * original script from -
+ * Open Shading Language for Blender by Michel J. Anders
+ *
+ * This shader is about placing spots on a spherical surface
+ * not making spots that are round
+ *
+ * The focus is on evenly distibuting the spots better
+ * than when using a more random scattering
+ *
+ */
+
+#include "stdosl.h"
+
+float haltonsequence(int index, int base)
+{
+    float result = 0.0;
+    float f = 1.0/base;
+    int ri = index;
+    while(ri > 0){
+        result += f*(ri%base);
+        ri = int(ri/base);
+        f /= base;
+    }
+    return result;
+}
+
+vector haltonsequence(int index){
+    return vector(haltonsequence(index,2),
+        haltonsequence(index,3),
+        haltonsequence(index,5) );
+}
+
+vector pointonsphere(int index){
+    float z = haltonsequence(index,2)*2-1;
+    float t = haltonsequence(index,3)*M_2PI;
+    float r = sqrt(1-z*z);
+    float s,c;
+    sincos(t,s,c);
+    return vector(s*r,c*r,z);
+}
+
+shader MABSphericalDots(
+        int Number = 1000,
+        float Radius = 1.0,
+
+        output float Fac = 0 )
+{
+    point p = transform("object",P);
+    float r = length(p);
+    float sRad = Radius/10;
+
+    for(int n=1; n<=Number; n++){
+        vector v = r * pointonsphere(n);
+        float d = distance(v,p);
+        if( d < sRad ){
+            Fac = sRad - d;
+            break;
+        }
+    }
+}
+
