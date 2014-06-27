@@ -1,0 +1,73 @@
+/*
+ * MABMountains.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: gplv3
+ *
+ * original script from -
+ * Open Shading Language for Blender by Michel J. Anders
+ *
+ */
+
+#include "stdosl.h"
+
+shader terrain(
+        point Object = P,
+
+        string UpAxis = "z",
+        int InvertNormal = 0,
+        int MirrorHeight = 1,
+        int MirrorAngle = 0,
+
+        float UpperLimit = 2.6,
+        float LimitVar = 0.75,
+        float SteepestAngle = 56.0,
+        float AngleVar = 9.0,
+        float NoiseScale = 55.0,
+
+        output int High = 0,
+        output int Steep = 0 )
+{
+    vector up[6]={
+        vector(1,0,0), // x-axis
+        vector(-1,0,0), // neg. x-axis
+        vector(0,1,0), // y-axis
+        vector(0,-1,0), // neg. y-axis
+        vector(0,0,1), // z-axis
+        vector(0,0,-1) // neg. z-axis
+        };
+
+    int i=0;
+    if(startswith(UpAxis,"-"))
+        i++;
+
+    string last=substr(UpAxis,-1);
+    if(last=="z"){
+        i+=4;
+    }else{
+        if(last=="y"){
+            i+=2;
+        }else{
+            if(last!="x"){
+                warning("Unknown axis [%s]",UpAxis);
+            }
+        }
+    }
+    vector axis=up[i];
+
+    normal n=N;
+    if(InvertNormal)
+        n *= -1;
+
+    float d=length(Object*axis);
+    if(MirrorHeight)
+        d=abs(d);
+
+    float angle=degrees(acos(dot(n,axis)));
+    if(MirrorAngle)
+        angle=abs(angle);
+
+    High = d>(UpperLimit+LimitVar*noise("perlin",Object*NoiseScale,1));
+
+    Steep = angle>(SteepestAngle+AngleVar*noise("perlin",Object*NoiseScale,2));
+}

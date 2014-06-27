@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material name="MABMountains" view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="BSDF_DIFFUSE" color="rgba(1.0, 1.0, 1.0, 1.0)" roughness="0.0" height="100" width="150" width_hidden="42" loc="992, 48" />
+		<node type="MIX_SHADER" fac="0.5" height="100" width="140" width_hidden="42" loc="1364, 280" />
+		<node type="REROUTE" height="100" width="16" width_hidden="42" loc="1257, 270" />
+		<node type="OUTPUT_MATERIAL" height="100" width="120" width_hidden="42" loc="1546, 275" />
+		<node type="MIX_SHADER" fac="0.5" height="100" width="140" width_hidden="42" loc="1172, 238" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.22767, 0.04845, 0.03031, 1.0)" roughness="0.0" height="100" width="150" width_hidden="42" loc="992, -77" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.00218, 0.44300, 0.0, 1.0)" roughness="0.0" height="100" width="150" width_hidden="42" loc="991, 176" />
+		<node type="TEX_COORD" dupli="False" height="100" width="140" width_hidden="42" loc="581, 245" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" object="Vector(0.0, 0.0, 0.0)" upaxis="z" invertnormal="0" mirrorheight="1" mirrorangle="0" upperlimit="2.60000" limitvar="0.75" steepestangle="56.0" anglevar="9.0" noisescale="55.0" height="100" width="176" width_hidden="42" loc="776, 274" />
+	</nodes>
+	<links>
+		<link to="3" input="0" from="1" output="0" />
+		<link to="1" input="1" from="4" output="0" />
+		<link to="1" input="0" from="2" output="0" />
+		<link to="4" input="2" from="0" output="0" />
+		<link to="1" input="2" from="5" output="0" />
+		<link to="4" input="1" from="6" output="0" />
+		<link to="4" input="0" from="8" output="0" />
+		<link to="2" input="0" from="8" output="1" />
+		<link to="8" input="0" from="7" output="3" />
+	</links>
+	<scripts>
+		<script name="MABMountains.osl" id="0">
+/*<br /> * MABMountains.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: gplv3<br /> *<br /> * original script from -<br /> * Open Shading Language for Blender by Michel J. Anders<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader terrain(<br />        point Object = P,<br /><br />        string UpAxis = &quot;z&quot;,<br />        int InvertNormal = 0,<br />        int MirrorHeight = 1,<br />        int MirrorAngle = 0,<br /><br />        float UpperLimit = 2.6,<br />        float LimitVar = 0.75,<br />        float SteepestAngle = 56.0,<br />        float AngleVar = 9.0,<br />        float NoiseScale = 55.0,<br /><br />        output int High = 0,<br />        output int Steep = 0 )<br />{<br />    vector up[6]={<br />        vector(1,0,0), // x-axis<br />        vector(-1,0,0), // neg. x-axis<br />        vector(0,1,0), // y-axis<br />        vector(0,-1,0), // neg. y-axis<br />        vector(0,0,1), // z-axis<br />        vector(0,0,-1) // neg. z-axis<br />        };<br /><br />    int i=0;<br />    if(startswith(UpAxis,&quot;-&quot;))<br />        i++;<br /><br />    string last=substr(UpAxis,-1);<br />    if(last==&quot;z&quot;){<br />        i+=4;<br />    }else{<br />        if(last==&quot;y&quot;){<br />            i+=2;<br />        }else{<br />            if(last!=&quot;x&quot;){<br />                warning(&quot;Unknown axis [%s]&quot;,UpAxis);<br />            }<br />        }<br />    }<br />    vector axis=up[i];<br /><br />    normal n=N;<br />    if(InvertNormal)<br />        n *= -1;<br /><br />    float d=length(Object*axis);<br />    if(MirrorHeight)<br />        d=abs(d);<br /><br />    float angle=degrees(acos(dot(n,axis)));<br />    if(MirrorAngle)<br />        angle=abs(angle);<br /><br />    High = d&gt;(UpperLimit+LimitVar*noise(&quot;perlin&quot;,Object*NoiseScale,1));<br /><br />    Steep = angle&gt;(SteepestAngle+AngleVar*noise(&quot;perlin&quot;,Object*NoiseScale,2));<br />}<br />
+		</script>
+	</scripts>
+</material>
