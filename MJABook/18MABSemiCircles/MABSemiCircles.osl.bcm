@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material name="MABSemiCircles" view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="TEX_NOISE" scale="500.0" detail="2.0" distortion="0.0" height="100" width="140" width_hidden="42" loc="799, 26" />
+		<node type="BUMP" strength="0.30000" height="100" width="140" width_hidden="42" loc="985, 26" />
+		<node type="MIX_SHADER" fac="0.60000" height="100" width="140" width_hidden="42" loc="1395, 303" />
+		<node type="TEX_COORD" dupli="False" height="100" width="140" width_hidden="42" loc="605, 136" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.67115, 0.78575, 0.80000, 1.0)" roughness="0.0" height="100" width="150" width_hidden="42" loc="1195, 343" />
+		<node type="OUTPUT_MATERIAL" height="100" width="120" width_hidden="42" loc="1578, 298" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" color="rgba(0.67729, 0.68812, 0.80000, 1.0)" scale="8.0" positionvar="1.0" radius="1.0" radiusvar="0.30000" roughness="0.80000" anisotropy="0.60000" normal="Vector(0.0, 0.0, 0.0)" height="100" width="161" width_hidden="42" loc="1187, 214" />
+	</nodes>
+	<links>
+		<link to="2" input="1" from="4" output="0" />
+		<link to="1" input="2" from="0" output="1" />
+		<link to="0" input="0" from="3" output="2" />
+		<link to="6" input="8" from="1" output="0" />
+		<link to="2" input="2" from="6" output="0" />
+		<link to="5" input="0" from="2" output="0" />
+		<link to="6" input="0" from="3" output="2" />
+	</links>
+	<scripts>
+		<script name="MABSemiCircles.osl" id="0">
+/*<br /> * MABSemiCircles.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: gplv3<br /> *<br /> * original script from -<br /> * Open Shading Language for Blender by Michel J. Anders<br /> *<br /> */<br /><br />#include &quot;stdosl.h&quot;<br /><br />shader MABSemiCircles(<br />        point Vector = P,<br />        color Color = 0.8,<br />        float Scale = 8.0,<br />        float PositionVar = 1.0,<br />        float Radius = 1.0,<br />        float Radiusvar = 0.3,<br />        float Roughness = 0.8,<br />        float Anisotropy = 0.6,<br />        normal Normal = N,<br /><br />        output closure color BSDF = 0,<br />        output float Fac = 0 )<br />{<br />    vector p = Vector * Scale;<br />    vector pi = floor(p);<br />    int range = (int)ceil(Radius+Radiusvar);<br /><br />    for(float x=-range; x&lt;=range; x++){<br />    for(float y=-range; y&lt;=range; y++){<br />        vector pc = pi+vector(x,y,0);<br />        vector pq = pc+PositionVar*noise(&quot;cell&quot;,pc,1);<br />        float r = Radius+Radiusvar*noise(&quot;cell&quot;,pc,2);<br />        vector d = pq-p;<br />        if(length(d)&lt;r){<br />            vector Tangent = cross(normalize(d),vector(0,0,1));<br />            Fac = noise(&quot;cell&quot;,pc,3);<br />            BSDF = Color * Fac * ashikhmin_shirley(Normal, Tangent,<br />                    Roughness*(1-Anisotropy), Roughness/(1-Anisotropy));<br />            return;<br />        }<br />    }<br />    }<br />}<br />
+		</script>
+	</scripts>
+</material>

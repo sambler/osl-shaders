@@ -1,0 +1,47 @@
+/*
+ * MABSemiCircles.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: gplv3
+ *
+ * original script from -
+ * Open Shading Language for Blender by Michel J. Anders
+ *
+ */
+
+#include "stdosl.h"
+
+shader MABSemiCircles(
+        point Vector = P,
+        color Color = 0.8,
+        float Scale = 8.0,
+        float PositionVar = 1.0,
+        float Radius = 1.0,
+        float Radiusvar = 0.3,
+        float Roughness = 0.8,
+        float Anisotropy = 0.6,
+        normal Normal = N,
+
+        output closure color BSDF = 0,
+        output float Fac = 0 )
+{
+    vector p = Vector * Scale;
+    vector pi = floor(p);
+    int range = (int)ceil(Radius+Radiusvar);
+
+    for(float x=-range; x<=range; x++){
+    for(float y=-range; y<=range; y++){
+        vector pc = pi+vector(x,y,0);
+        vector pq = pc+PositionVar*noise("cell",pc,1);
+        float r = Radius+Radiusvar*noise("cell",pc,2);
+        vector d = pq-p;
+        if(length(d)<r){
+            vector Tangent = cross(normalize(d),vector(0,0,1));
+            Fac = noise("cell",pc,3);
+            BSDF = Color * Fac * ashikhmin_shirley(Normal, Tangent,
+                    Roughness*(1-Anisotropy), Roughness/(1-Anisotropy));
+            return;
+        }
+    }
+    }
+}
