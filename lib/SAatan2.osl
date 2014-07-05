@@ -1,0 +1,21 @@
+/*
+ * SAatan2.osl by Shane Ambler (c)2014
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: BSD
+ *
+ * Simple node to give access to atan2
+ * as this is not an option in a math node.
+ *
+ */
+
+#include "stdosl.h"
+
+shader SAatan2(
+    float X = 0.0,
+    float Y = 0.0,
+
+    output float result = 0.0 )
+{
+    result = atan2(X,Y);
+}
