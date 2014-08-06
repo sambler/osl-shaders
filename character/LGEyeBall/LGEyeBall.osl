@@ -153,6 +153,6 @@ shader LGEyeBall (
 
     Nf = normalize(N);
     BSDF = Ct * DiffuseAmt * diffuse(Nf);
-    BSDF += SpecularColor * ks * ward(Nf,-normalize(I),rough,rough);
+    BSDF += SpecularColor * ks * ashikhmin_shirley(Nf,-normalize(I),rough,rough);
 }
 
