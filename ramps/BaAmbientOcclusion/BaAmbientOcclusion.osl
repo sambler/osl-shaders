@@ -9,20 +9,18 @@
 
 /* Original code from Brecht:
    http://projects.blender.org/scm/viewvc.php?view=rev&root=bf-blender&revision=51952
-   
-   Mode: 0: Concave (AO) 
-         1: Convex (Wear) 
+
+   Mode: 0: Concave (AO)
+         1: Convex (Wear)
          2: Both
-         
+
    InvertEffect: Swaps Effect and No_Effect colors
-   
+
    Samples: 1 or above (set 0 or negative to turn off the effect)
-   
+
    Output Color: Mix between the two colors driven by Fac
    Output Fac: Exposed because it can be useful to have it too
 */
-
-#include "stdosl.h"
 
 void rng_seed(output int rng, int seed)
 {
@@ -43,7 +41,7 @@ void to_unit_disk(float x, float y, output float x_out, output float y_out)
   float r, phi;
   float a = 2.0 * x - 1.0;
   float b = 2.0 * y - 1.0;
-    
+
   if(a > -b) {
     if(a > b) {
       r = a;
@@ -73,7 +71,7 @@ void make_orthonormals(vector N, output vector a, output vector b)
 {
   if(N[0] != N[1] || N[0] != N[2]) a = cross(vector(1, 1, 1), N);
   else a = cross(vector(-1, 1, 1), N);
-  
+
   a = normalize(a);
   b = cross(N, a);
 }
@@ -81,7 +79,7 @@ void make_orthonormals(vector N, output vector a, output vector b)
 vector sample_cos_hemisphere(vector N, float randu, float randv)
 {
   vector T, B;
-    
+
   make_orthonormals(N, T, B);
   to_unit_disk(randu, randv, randu, randv);
   float costheta = sqrt(max(1.0 - randu * randu - randv * randv, 0.0));
@@ -105,15 +103,15 @@ shader BaAmbientOcclusion(
 
   f = fmod(cellnoise(P*123456.0), 1.0);
   rng_seed(rng, int(f * 2137483647));
-  
+
   for(i = 0; i < Samples; i++) {
     randu = rng_uniform(rng);
     randv = rng_uniform(rng);
-    
+
     ray_P = P;
     ray_R = sample_cos_hemisphere(-N, randu, randv);
     ray_t = Distance;
-        
+
     if (!Mode) {
       if(trace(ray_P, -ray_R, "maxdist", ray_t)) hits += 1.0;
     }
