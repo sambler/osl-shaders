@@ -7,7 +7,6 @@
  *
  */
 
-#include "stdosl.h"
 
 shader node_velvet(
     normal Normal = N,

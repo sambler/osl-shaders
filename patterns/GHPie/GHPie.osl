@@ -12,7 +12,6 @@
  *
  */
 
-#include "stdosl.h"
 
 color pie(point p, int Divides, float Angle, float Noise)
 {

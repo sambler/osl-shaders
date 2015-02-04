@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 #include "node_texture.h"
 
 float apple_noise(point p, string basis, float distortion, float detail)

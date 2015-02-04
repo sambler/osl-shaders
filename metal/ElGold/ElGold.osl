@@ -7,7 +7,6 @@
  *
  */
 
-#include "stdosl.h"
 
 shader ElGold(
     color ForeColor = color(0.93,0.6,0.06),

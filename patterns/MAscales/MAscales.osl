@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 shader MAscales(
         vector Vector = 0,

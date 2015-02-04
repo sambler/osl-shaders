@@ -15,7 +15,6 @@
  *
  */
 
-#include "stdosl.h"
 
 float haltonsequence(int index, int base)
 {

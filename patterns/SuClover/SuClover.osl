@@ -6,7 +6,6 @@
  *
  */
 
-#include "stdosl.h"
 
 float clover(
     float x,

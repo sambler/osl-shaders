@@ -39,7 +39,6 @@ RowShift -- shifts x/y alternate rows based on modulos setting
 
 */
 
-#include "stdosl.h"
 #include "node_texture.h"
 
 shader ChPatterns(

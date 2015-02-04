@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 shader MABChecker(
     point Vector = P,

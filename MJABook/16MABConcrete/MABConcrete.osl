@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 point voronoi3d(point p, float t)
 {

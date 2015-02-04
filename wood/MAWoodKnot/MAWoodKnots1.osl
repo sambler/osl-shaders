@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 int bend(vector p, vector k, float r, float a, float m, output vector B){
     vector D = k - p;

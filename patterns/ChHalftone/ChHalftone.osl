@@ -7,7 +7,6 @@
  *
  */
 
-#include "stdosl.h"
 
 /**
 Pattern selects the dot type

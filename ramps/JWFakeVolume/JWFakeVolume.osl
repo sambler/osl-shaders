@@ -12,7 +12,6 @@
  * based on some code by François GASTALDO
  */
 
-#include "stdosl.h"
 
 shader JWFakeVolume(
     float Scatter_Angle = 0.1 ,

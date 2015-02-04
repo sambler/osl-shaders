@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 shader terrain(
         point Object = P,

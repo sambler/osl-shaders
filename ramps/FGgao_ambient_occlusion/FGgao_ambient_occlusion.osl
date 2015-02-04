@@ -53,7 +53,6 @@
   * François Gastaldo
   */
  
-#include "stdosl.h"
 #include "node_fresnel.h"
 #include "oslutil.h"
 

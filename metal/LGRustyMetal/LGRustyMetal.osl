@@ -37,7 +37,6 @@
  *
  */
 
-#include "stdosl.h"
 
 /* Signed noise varies from -1 to 1 (like Perlin uses) */
 #define snoise(x) (2*noise(x)-1)

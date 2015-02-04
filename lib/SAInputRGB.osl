@@ -9,7 +9,6 @@
  * This script simply allows the input to be visible for easy sharing.
  */
 
-#include "stdosl.h"
 
 shader SARGBInput(
     float R = 0.0,

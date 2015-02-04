@@ -14,7 +14,6 @@
  *
  */
 
-#include "stdosl.h"
 
 // replacement for the missing distance(a, b, q) function
 float minimum_distance(point v, point w, point p) {

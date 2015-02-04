@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 void cellnoise_color4d(float p[4], float c[4])
 {

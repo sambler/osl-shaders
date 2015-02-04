@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 float arc(float r){ return sqrt(0.25-(r-0.5)*(r-0.5)); }
 

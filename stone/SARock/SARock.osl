@@ -15,7 +15,6 @@
             were compiled before 4th January 2013
  */
 
-#include "stdosl.h"
 #include "node_texture.h"
 
 /* noise from node_noise_texture.osl from blender source tree - removed fac and colour*/

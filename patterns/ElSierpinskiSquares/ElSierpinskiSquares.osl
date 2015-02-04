@@ -7,7 +7,6 @@
  *
  */
 
-#include "stdosl.h"
 
 float genCheck(vector p, float res)
 {

@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 // for the original renderman shader, check http://www.larrygritz.com/arman/materials.html
 

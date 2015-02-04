@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 point rotate_180(point p){
     return point(1-p[0],1-p[1],p[2]);

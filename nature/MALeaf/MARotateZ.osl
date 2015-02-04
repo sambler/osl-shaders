@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 shader rotate_z(
         point Vector = P, 

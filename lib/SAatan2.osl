@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 shader SAatan2(
     float X = 0.0,

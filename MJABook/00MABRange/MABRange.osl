@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 shader MABRange(
     float Value = 0,

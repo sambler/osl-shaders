@@ -11,7 +11,6 @@
  * in the 3DView N panel the Location)
 */
 
-#include "stdosl.h"
 
 shader BaiRobotMix(  
   color Color1 = color(0, 1, 0),

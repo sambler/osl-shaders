@@ -8,7 +8,6 @@
  *
  */
 
-#include "stdosl.h"
 
 /* {roughly based on}
  * IDoutline written by Ivan DeWolf

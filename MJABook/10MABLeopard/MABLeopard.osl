@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 // bubble sort. fast enough
 // for small collections

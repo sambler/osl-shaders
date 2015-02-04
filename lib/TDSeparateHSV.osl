@@ -7,7 +7,6 @@
  *
  */
 
-#include "stdosl.h"
 
 shader TDSeparateHSV(
     color Color = 0.8,

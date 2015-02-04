@@ -72,7 +72,6 @@
  *   - plankwidth from .05 to .2
  */
  
-#include "stdosl.h"
 
 shader DWParquetTile (
         vector Vector = P,

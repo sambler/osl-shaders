@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 shader MABColourRange(
     float Value = 0,

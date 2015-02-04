@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 vector random_sphere(point p, int n, float zdistribution){
     float t = M_2PI*noise("cell",p,n*2+0);

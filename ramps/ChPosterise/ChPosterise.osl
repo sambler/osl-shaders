@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 shader posterise(
     int Range = 8,

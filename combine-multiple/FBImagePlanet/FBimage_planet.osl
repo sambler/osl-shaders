@@ -25,7 +25,6 @@
  *   
  */
 
-#include "stdosl.h"
 
 
 float factor_map(float factor, float boundary, float dmargin, float nmargin) {

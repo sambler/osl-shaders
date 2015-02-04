@@ -29,7 +29,6 @@
  * 
  */
 
-#include "stdosl.h"
 
 shader
 LGGreenMarble (

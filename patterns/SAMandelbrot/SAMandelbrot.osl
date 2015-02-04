@@ -10,7 +10,6 @@
  *
  */
 
-#include "stdosl.h"
 
 shader mandelbrot(
     vector Vector = P,

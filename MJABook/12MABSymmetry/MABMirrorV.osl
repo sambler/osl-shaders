@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 point mirror_v(point p){
     return point(p[0],1-p[1],p[2]);

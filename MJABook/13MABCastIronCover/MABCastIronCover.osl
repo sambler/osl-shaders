@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 int incircle(float x, float y, float r, float cx, float cy){
     float rx = x - cx;

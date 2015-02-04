@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 #define A 0.86602540378443864676372317075294 // sqrt(3)/2
 #define A2 (2*A)

@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 int between(float v, float a, float b){ return v >= a && v <= b; }
 

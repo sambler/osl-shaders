@@ -23,7 +23,6 @@
  * 2013-02-09 (varkenvarken) added fBM turbulence (Octaves)
  */
 
-#include "stdosl.h"
 
 int fastfloor(float x) {
  int xi = (int)x;

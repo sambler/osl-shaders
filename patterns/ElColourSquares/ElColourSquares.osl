@@ -11,7 +11,6 @@
 *   Author: elbrujodelatribu
 */
 
-#include "stdosl.h"
 
 // Devuelve la parte fraccional
 float fract(float x)

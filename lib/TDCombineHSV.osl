@@ -7,7 +7,6 @@
  *
  */
 
-#include "stdosl.h"
 
 shader TDCombineHSV(
     float H = 0.0,

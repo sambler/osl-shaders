@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 shader MABRipples(
         point Vector = P,

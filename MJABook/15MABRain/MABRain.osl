@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 shader MABRain(
         point Vector = P,

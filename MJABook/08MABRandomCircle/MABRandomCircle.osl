@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 shader MABRandomCircle(
     point Vector = P,

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdosl.h"
 
 int FASTFLOOR(float x) {
  int xi = (int)x;

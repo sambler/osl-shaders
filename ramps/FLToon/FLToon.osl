@@ -6,7 +6,6 @@
  *
  */
 
-#include "stdosl.h"
 
 shader bi_toon_shader(
         float Size = 0.1,

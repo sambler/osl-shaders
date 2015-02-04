@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 shader MAsoapbubble (
         float InteriorIOR  = 1, // approximate refractive index of air

@@ -9,7 +9,6 @@
  *
  */
 
-#include "stdosl.h"
 
 // greatest common divisor
 int gcd(int A, int B){

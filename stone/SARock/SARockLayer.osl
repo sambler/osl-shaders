@@ -11,7 +11,6 @@
  *
  */
 
-#include "stdosl.h"
 #include "node_texture.h"
 
 /* noise from node_noise_texture.osl from blender source tree - removed fac and colour*/

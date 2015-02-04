@@ -13,7 +13,6 @@
  *
  */
 
-#include "stdosl.h"
 
 shader SAPointInput(
     float X = 0.0,
