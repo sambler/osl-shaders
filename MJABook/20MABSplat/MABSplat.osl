@@ -1,0 +1,93 @@
+/*
+ * MABSplat.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: gplv3
+ *
+ * original script from -
+ * Open Shading Language for Blender by Michel J. Anders
+ *
+ */
+
+
+// bubble sort. fast enough
+// for small collections
+void sort(int np,
+    output point p[],
+    output float f[] )
+{
+    int n = np;
+    for(int j = 0; j < np; j++){
+        for(int i = 1; i < n; i++){
+            if( f[i-1] > f[i] ){
+                float tf = f[i-1];
+                f[i-1] = f[i];
+                f[i] = tf;
+                point tp = p[i-1];
+                p[i-1] = p[i];
+                p[i] = tp;
+            }
+        }
+        n--;
+    }
+}
+
+void voronoip9z(point q,
+        output point vp[9],
+        output float z[9] )
+{
+    point p = point(q[0], q[1], 0);
+
+    float xx, yy, xi, yi;
+
+    xi = floor(p[0]);
+    yi = floor(p[1]);
+
+    int i=-1;
+    for (xx=xi-1; xx<=xi+1; xx++){
+    for (yy=yi-1; yy<=yi+1; yy++){
+        i++;
+        vector ip = vector(xx, yy, 0);
+        vector np = cellnoise(ip);
+        vp[i] = ip + np;
+        z[i] = cellnoise(ip,42);
+    }
+    }
+    sort(9,vp,z);
+}
+
+shader MABSplat(
+        point Vector = P,
+        float Scale = 1,
+        string Texture = "",
+        color Background = 1,
+        float TextureScale = 1,
+
+        output color Color = color(1,0,1) )
+{
+    point p = Vector * Scale;
+
+    color splat, result;
+    float alpha;
+    int resolution[2];
+    if(!gettextureinfo(Texture, "resolution", resolution)) {
+        return;
+    }
+    float aspectratio = (float)resolution[1]/resolution[0];
+
+    point vp[9];
+    float z[9];
+    voronoip9z(p,vp,z);
+
+    result = Background;
+    for(int i=0; i<9; i++){
+        vector xy = vector(vp[i][0], vp[i][1], 0);
+        vector q = vp[i] - p;
+        q = rotate(q, vp[i][2]*M_2PI, point(0,0,0), point(0,0,1));
+        q = q + 0.5;
+        q = q * TextureScale;
+        splat = texture(Texture, q[0]*aspectratio, q[1], "alpha", alpha);
+        result = mix(result, splat, alpha);
+    }
+    Color = result;
+}

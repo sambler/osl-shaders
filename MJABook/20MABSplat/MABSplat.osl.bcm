@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="TEX_COORD" dupli="False" width="140" loc="565, 247" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.00218, 0.44300, 0.0, 1.0)" roughness="0.0" width="150" loc="1045, 295" />
+		<node type="OUTPUT_MATERIAL" width="120" loc="1261, 289" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" scale="10.0" texture="lib/theheart.png" background="rgba(1.0, 1.0, 1.0, 1.0)" texturescale="1.0" width="221" loc="756, 275" />
+	</nodes>
+	<links>
+		<link to="2" input="0" from="1" output="0" />
+		<link to="1" input="0" from="3" output="0" />
+		<link to="3" input="0" from="0" output="2" />
+	</links>
+	<scripts>
+		<script name="MABSplat.osl" id="0">
+/*<br /> * MABSplat.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: gplv3<br /> *<br /> * original script from -<br /> * Open Shading Language for Blender by Michel J. Anders<br /> *<br /> */<br /><br /><br />// bubble sort. fast enough<br />// for small collections<br />void sort(int np,<br />    output point p[],<br />    output float f[] )<br />{<br />    int n = np;<br />    for(int j = 0; j &lt; np; j++){<br />        for(int i = 1; i &lt; n; i++){<br />            if( f[i-1] &gt; f[i] ){<br />                float tf = f[i-1];<br />                f[i-1] = f[i];<br />                f[i] = tf;<br />                point tp = p[i-1];<br />                p[i-1] = p[i];<br />                p[i] = tp;<br />            }<br />        }<br />        n--;<br />    }<br />}<br /><br />void voronoip9z(point q,<br />        output point vp[9],<br />        output float z[9] )<br />{<br />    point p = point(q[0], q[1], 0);<br /><br />    float xx, yy, xi, yi;<br /><br />    xi = floor(p[0]);<br />    yi = floor(p[1]);<br /><br />    int i=-1;<br />    for (xx=xi-1; xx&lt;=xi+1; xx++){<br />    for (yy=yi-1; yy&lt;=yi+1; yy++){<br />        i++;<br />        vector ip = vector(xx, yy, 0);<br />        vector np = cellnoise(ip);<br />        vp[i] = ip + np;<br />        z[i] = cellnoise(ip,42);<br />    }<br />    }<br />    sort(9,vp,z);<br />}<br /><br />shader MABSplat(<br />        point Vector = P,<br />        float Scale = 1,<br />        string Texture = &quot;&quot;,<br />        color Background = 1,<br />        float TextureScale = 1,<br /><br />        output color Color = color(1,0,1) )<br />{<br />    point p = Vector * Scale;<br /><br />    color splat, result;<br />    float alpha;<br />    int resolution[2];<br />    if(!gettextureinfo(Texture, &quot;resolution&quot;, resolution)) {<br />        return;<br />    }<br />    float aspectratio = (float)resolution[1]/resolution[0];<br /><br />    point vp[9];<br />    float z[9];<br />    voronoip9z(p,vp,z);<br /><br />    result = Background;<br />    for(int i=0; i&lt;9; i++){<br />        vector xy = vector(vp[i][0], vp[i][1], 0);<br />        vector q = vp[i] - p;<br />        q = rotate(q, vp[i][2]*M_2PI, point(0,0,0), point(0,0,1));<br />        q = q + 0.5;<br />        q = q * TextureScale;<br />        splat = texture(Texture, q[0]*aspectratio, q[1], &quot;alpha&quot;, alpha);<br />        result = mix(result, splat, alpha);<br />    }<br />    Color = result;<br />}<br />
+		</script>
+	</scripts>
+</material>
