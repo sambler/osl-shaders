@@ -3,7 +3,7 @@
 	<nodes>
 		<node type="MIX_SHADER" fac="0.69999" width="140" loc="1064, 196" />
 		<node type="OUTPUT_MATERIAL" width="120" loc="1635, 311" />
-		<node type="BSDF_TRANSLUCENT" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" width="140" loc="848, 384" />
+		<node type="BSDF_TRANSLUCENT" color="rgba(0.04, 0.4, 0.06, 1.0)" width="140" loc="848, 384" />
 		<node type="BSDF_TRANSPARENT" color="rgba(1.0, 1.0, 1.0, 1.0)" width="140" loc="852, 468" />
 		<node type="ADD_SHADER" width="140" loc="1241, 251" />
 		<node type="MIX_SHADER" fac="0.5" width="140" loc="1442, 328" />
@@ -51,3 +51,4 @@
 		</script>
 	</scripts>
 </material>
+
