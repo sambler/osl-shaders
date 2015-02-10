@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="BSDF_TRANSLUCENT" color="rgba(0.03999, 0.40000, 0.05954, 1.0)" width="140" loc="848, 384" />
+		<node type="BSDF_GLOSSY" distribution="GGX" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.20000" width="150" loc="844, 273" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.03999, 0.40000, 0.05954, 1.0)" roughness="0.0" width="150" loc="842, 107" />
+		<node type="REROUTE" width="16" loc="808, 7" />
+		<node type="REROUTE" width="16" loc="806, 145" />
+		<node type="REROUTE" width="16" loc="807, 308" />
+		<node type="REROUTE" width="16" loc="1324, 375" />
+		<node type="REROUTE" width="16" loc="894, 410" />
+		<node type="OBJECT_INFO" hide="True" width="42" loc="223, 68" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" leafimage="lib/leaf.png" scale="20.0" direction="Vector(0.0, 0.0, 1.0)" variance="0.89999" size="0.80000" sizevariance="0.69999" seed="42" width="233" loc="395, 373" />
+		<node type="TEX_COORD" dupli="False" width="140" loc="213, 322" />
+		<node type="MIX_SHADER" fac="0.89999" width="140" loc="1042, 201" />
+		<node type="ADD_SHADER" width="140" loc="1219, 251" />
+		<node type="BSDF_TRANSPARENT" color="rgba(1.0, 1.0, 1.0, 1.0)" width="140" loc="1182, 338" />
+		<node type="MIX_SHADER" fac="0.5" width="140" loc="1392, 334" />
+		<node type="OUTPUT_MATERIAL" width="120" loc="1568, 327" />
+		<node type="BRIGHTCONTRAST" color="rgba(1.0, 1.0, 1.0, 1.0)" bright="-0.19999" contrast="0.29999" width="140" loc="654, 85" />
+	</nodes>
+	<links>
+		<link to="15" input="0" from="14" output="0" />
+		<link to="11" input="1" from="1" output="0" />
+		<link to="11" input="2" from="2" output="0" />
+		<link to="12" input="1" from="11" output="0" />
+		<link to="14" input="2" from="12" output="0" />
+		<link to="14" input="1" from="13" output="0" />
+		<link to="12" input="0" from="0" output="0" />
+		<link to="0" input="1" from="5" output="0" />
+		<link to="1" input="2" from="4" output="0" />
+		<link to="4" input="0" from="5" output="0" />
+		<link to="2" input="2" from="3" output="0" />
+		<link to="3" input="0" from="4" output="0" />
+		<link to="14" input="0" from="6" output="0" />
+		<link to="6" input="0" from="7" output="0" />
+		<link to="9" input="0" from="10" output="2" />
+		<link to="9" input="7" from="8" output="3" />
+		<link to="7" input="0" from="9" output="1" />
+		<link to="5" input="0" from="9" output="0" />
+		<link to="2" input="0" from="16" output="0" />
+		<link to="16" input="0" from="9" output="2" />
+	</links>
+	<scripts>
+		<script name="MABHedgeImage.osl" id="0">
+/*<br /> * MABHedgeImage.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: gplv3<br /> *<br /> * original script from -<br /> * Open Shading Language for Blender by Michel J. Anders<br /> *<br /> */<br /><br /><br />shader MABHedgeImage(<br />        vector Vector = P,<br /><br />        string LeafImage = &quot;&quot;,<br />        float Scale = 1.0,<br /><br />        vector Direction = vector(0,0,1),<br />        float Variance = 0.1,<br /><br />        float Size = 0.3,<br />        float SizeVariance = 0.1,<br /><br />        int Seed = 42,<br /><br />        output normal Normal = N,<br />        output float Fac = 0,<br />        output color Color = 0 )<br />{<br />    vector p = Vector * Scale;<br /><br />    for(int xx=-1; xx&lt;=1 &amp;&amp; Fac == 0; xx++) {<br />    for(int yy=-1; yy&lt;=1 &amp;&amp; Fac == 0; yy++) {<br />    for(int zz=-1; zz&lt;=1 &amp;&amp; Fac == 0; zz++) {<br />        vector pp = p + vector(xx,yy,zz);<br />        vector ip=floor(pp);<br /><br />        vector leafp = ip + noise(&quot;cell&quot;,pp,Seed);<br /><br />        vector leafn = normalize(Direction + (noise(&quot;cell&quot;, pp, Seed+1) -<br />            vector(0.5,0.5,0.5)) * Variance);<br />        vector leafk = noise(&quot;cell&quot;, pp, Seed+2);<br />        vector leafj = normalize(cross(leafn,leafk));<br />        leafk = cross(leafn, leafj);<br />        float leafs = Size + SizeVariance * noise(&quot;cell&quot;, pp, Seed+3);<br /><br />        vector in = normalize(I);<br />        float d = dot(leafp - p, leafn)/dot(in, leafn);<br />        vector dp = leafp - (d * in + p);<br /><br />        float dpx = dot(dp,leafk);<br />        float dpy = dot(dp,leafj);<br /><br />        if( dpx&gt;0 &amp;&amp; dpy&gt;0) {<br />            float u = dpx/leafs;<br />            float v = 1-dpy/leafs;<br />            float alpha = 0;<br />            color c = texture(LeafImage, u, v, &quot;alpha&quot;, alpha);<br />            if(alpha){<br />                Fac = 1;<br />                Normal = leafn;<br />                Color = c;<br />            }<br />        }<br />    }<br />    }<br />    }<br />}<br />
+		</script>
+	</scripts>
+</material>
