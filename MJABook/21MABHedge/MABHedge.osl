@@ -1,0 +1,55 @@
+/*
+ * MABHedge.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: gplv3
+ *
+ * original script from -
+ * Open Shading Language for Blender by Michel J. Anders
+ *
+ */
+
+
+shader MABHedge(
+        vector Vector = P,
+        float Scale = 1.0,
+
+        vector Direction = vector(0,0,1),
+        float Variance = 0.1,
+
+        float Size = 0.3,
+        float SizeVariance = 0.1,
+
+        int Seed = 42,
+
+        output normal Normal = N,
+        output float Fac = 0,
+        output float Distance = 0 )
+{
+    vector p = Vector * Scale;
+
+    for(int xx=-1; xx<=1 && Fac == 0; xx++) {
+    for(int yy=-1; yy<=1 && Fac == 0; yy++) {
+    for(int zz=-1; zz<=1 && Fac == 0; zz++) {
+        vector pp = p + vector(xx,yy,zz);
+        vector ip=floor(pp);
+
+        vector leafp = ip + noise("cell",pp,Seed);
+        vector leafn = normalize(Direction + (noise("cell", pp, Seed+1) -
+            vector(0.5,0.5,0.5) ) * Variance);
+        float leafs = Size + SizeVariance * noise("cell", pp, Seed+3);
+
+        vector in = normalize(I);
+        float d = dot(leafp - p, leafn)/dot(in, leafn);
+        vector dp = leafp - (d * in + p);
+
+        float r = length(dp);
+        if(r < leafs) {
+            Fac = 1;
+            Normal = leafn;
+            Distance = r;
+        }
+    }
+    }
+    }
+}

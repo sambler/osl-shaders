@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="MIX_SHADER" fac="0.69999" width="140" loc="1064, 196" />
+		<node type="OUTPUT_MATERIAL" width="120" loc="1635, 311" />
+		<node type="BSDF_TRANSLUCENT" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" width="140" loc="848, 384" />
+		<node type="BSDF_TRANSPARENT" color="rgba(1.0, 1.0, 1.0, 1.0)" width="140" loc="852, 468" />
+		<node type="ADD_SHADER" width="140" loc="1241, 251" />
+		<node type="MIX_SHADER" fac="0.5" width="140" loc="1442, 328" />
+		<node type="BSDF_GLOSSY" distribution="GGX" color="rgba(0.80000, 0.80000, 0.80000, 1.0)" roughness="0.20000" width="150" loc="844, 273" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.00218, 0.44300, 0.0, 1.0)" roughness="0.0" width="150" loc="842, 107" />
+		<node type="REROUTE" width="16" loc="808, 11" />
+		<node type="REROUTE" width="16" loc="806, 142" />
+		<node type="REROUTE" width="16" loc="809, 313" />
+		<node type="VALTORGB" interpolation="LINEAR" fac="0.5" stops="2" stop1="0.0|rgba(0.0, 0.06599, 0.0, 1.0)" stop2="1.0|rgba(0.0, 0.71564, 0.0, 1.0)" width="240" loc="526, 89" />
+		<node type="REROUTE" width="16" loc="497, -98" />
+		<node type="REROUTE" width="16" loc="507, 385" />
+		<node type="REROUTE" width="16" loc="1346, 458" />
+		<node type="REROUTE" width="16" loc="848, 491" />
+		<node type="OBJECT_INFO" hide="True" width="42" loc="72, 174" />
+		<node type="TEX_COORD" dupli="False" width="140" loc="51, 433" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" scale="30.0" direction="Vector(0.0, 0.0, 1.0)" variance="0.60000" size="0.20000" sizevariance="0.80000" seed="42" width="186" loc="234, 469" />
+	</nodes>
+	<links>
+		<link to="1" input="0" from="5" output="0" />
+		<link to="0" input="1" from="6" output="0" />
+		<link to="0" input="2" from="7" output="0" />
+		<link to="4" input="1" from="0" output="0" />
+		<link to="5" input="2" from="4" output="0" />
+		<link to="5" input="1" from="3" output="0" />
+		<link to="4" input="0" from="2" output="0" />
+		<link to="7" input="0" from="11" output="0" />
+		<link to="2" input="1" from="10" output="0" />
+		<link to="6" input="2" from="9" output="0" />
+		<link to="9" input="0" from="10" output="0" />
+		<link to="7" input="2" from="8" output="0" />
+		<link to="8" input="0" from="9" output="0" />
+		<link to="11" input="0" from="12" output="0" />
+		<link to="12" input="0" from="13" output="0" />
+		<link to="5" input="0" from="14" output="0" />
+		<link to="14" input="0" from="15" output="0" />
+		<link to="18" input="6" from="16" output="3" />
+		<link to="18" input="0" from="17" output="2" />
+		<link to="10" input="0" from="18" output="0" />
+		<link to="15" input="0" from="18" output="1" />
+		<link to="13" input="0" from="18" output="2" />
+	</links>
+	<scripts>
+		<script name="MABHedge.osl" id="0">
+/*<br /> * MABHedge.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: gplv3<br /> *<br /> * original script from -<br /> * Open Shading Language for Blender by Michel J. Anders<br /> *<br /> */<br /><br /><br />shader MABHedge(<br />        vector Vector = P,<br />        float Scale = 1.0,<br /><br />        vector Direction = vector(0,0,1),<br />        float Variance = 0.1,<br /><br />        float Size = 0.3,<br />        float SizeVariance = 0.1,<br /><br />        int Seed = 42,<br /><br />        output normal Normal = N,<br />        output float Fac = 0,<br />        output float Distance = 0 )<br />{<br />    vector p = Vector * Scale;<br /><br />    for(int xx=-1; xx&lt;=1 &amp;&amp; Fac == 0; xx++) {<br />    for(int yy=-1; yy&lt;=1 &amp;&amp; Fac == 0; yy++) {<br />    for(int zz=-1; zz&lt;=1 &amp;&amp; Fac == 0; zz++) {<br />        vector pp = p + vector(xx,yy,zz);<br />        vector ip=floor(pp);<br /><br />        vector leafp = ip + noise(&quot;cell&quot;,pp,Seed);<br />        vector leafn = normalize(Direction + (noise(&quot;cell&quot;, pp, Seed+1) -<br />            vector(0.5,0.5,0.5) ) * Variance);<br />        float leafs = Size + SizeVariance * noise(&quot;cell&quot;, pp, Seed+3);<br /><br />        vector in = normalize(I);<br />        float d = dot(leafp - p, leafn)/dot(in, leafn);<br />        vector dp = leafp - (d * in + p);<br /><br />        float r = length(dp);<br />        if(r &lt; leafs) {<br />            Fac = 1;<br />            Normal = leafn;<br />            Distance = r;<br />        }<br />    }<br />    }<br />    }<br />}<br />
+		</script>
+	</scripts>
+</material>
