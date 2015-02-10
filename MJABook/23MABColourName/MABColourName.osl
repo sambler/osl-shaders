@@ -1,0 +1,24 @@
+/*
+ * MABColourName.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: gplv3
+ *
+ * original script from -
+ * Open Shading Language for Blender by Michel J. Anders
+ *
+ */
+
+shader MABColourName(
+        string Name="aliceblue",
+        string ColorsFile="MJABook/23MABColourName/colours.xml",
+
+        output color Color = 0 )
+{
+    string xpath = concat("//color[@name='", Name, "']/text()");
+    int nodeid = dict_find(ColorsFile, xpath);
+    if(nodeid > 0) {
+        dict_value(nodeid, "", Color);
+        Color = Color/255;
+    }
+}
