@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material view_color="rgb(0.80000, 0.80000, 0.80000)" sample_lamp="True">
+	<nodes>
+		<node type="BSDF_GLASS" distribution="BECKMANN" color="rgba(1.0, 1.0, 1.0, 1.0)" roughness="0.0" ior="1.45000" width="150" loc="972, 329" />
+		<node type="BSDF_DIFFUSE" color="rgba(0.07618, 0.17464, 0.42869, 1.0)" roughness="0.0" width="150" loc="970, 459" />
+		<node type="ADD_SHADER" width="140" loc="1365, 441" />
+		<node type="MIX_SHADER" fac="0.5" width="140" loc="1181, 462" />
+		<node type="OUTPUT_MATERIAL" width="120" loc="1537, 437" />
+		<node type="REROUTE" width="16" loc="1143, 475" />
+		<node type="MATH" operation="MULTIPLY" use_clamp="False" value1="0.5" value2="0.70000" width="140" loc="770, 511" />
+		<node type="MATH" operation="POWER" use_clamp="False" value1="0.5" value2="0.5" width="145" loc="561, 269" />
+		<node type="BUMP" strength="0.10000" width="140" loc="749, 311" />
+		<node type="MATH" operation="MULTIPLY" use_clamp="False" value1="0.5" value2="5.0" width="140" loc="957, -105" />
+		<node type="MATH" operation="POWER" use_clamp="False" value1="0.5" value2="0.70000" width="140" loc="764, -104" />
+		<node type="REROUTE" width="16" loc="637, -66" />
+		<node type="EMISSION" color="rgba(1.0, 0.0, 0.0, 1.0)" strength="1.0" width="140" loc="1177, 115" />
+		<node type="MAPPING" translation="Vector(-0.5, -3.79999, 0.0)" rotation="Vector(0.0, 0.0, 0.0)" scale="Vector(8.0, 8.0, 8.0)" use_min="False" use_max="False" vector="Vector(0.0, 0.0, 0.0)" width="320" loc="-157, 308" />
+		<node type="TEX_COORD" dupli="False" width="140" loc="-368, 263" />
+		<node type="VALTORGB" interpolation="CARDINAL" fac="0.5" stops="2" stop1="0.0|rgba(1.0, 0.30568, 0.0, 1.0)" stop2="0.91363|rgba(0.39463, 0.15559, 0.03418, 1.0)" width="240" loc="810, 126" />
+		<node type="SCRIPT" mode="INTERNAL" script="0" vector="Vector(0.0, 0.0, 0.0)" offset="0" text="Blender" font="MJABook/24MABMatrixDisplay/font5x7.xml" width="243" loc="237, 283" />
+	</nodes>
+	<links>
+		<link to="13" input="0" from="14" output="2" />
+		<link to="0" input="3" from="8" output="0" />
+		<link to="3" input="1" from="1" output="0" />
+		<link to="3" input="2" from="0" output="0" />
+		<link to="2" input="0" from="3" output="0" />
+		<link to="2" input="1" from="12" output="0" />
+		<link to="4" input="0" from="2" output="0" />
+		<link to="12" input="1" from="9" output="0" />
+		<link to="9" input="0" from="10" output="0" />
+		<link to="8" input="2" from="7" output="0" />
+		<link to="3" input="0" from="5" output="0" />
+		<link to="5" input="0" from="6" output="0" />
+		<link to="6" input="0" from="16" output="0" />
+		<link to="7" input="0" from="16" output="0" />
+		<link to="10" input="0" from="11" output="0" />
+		<link to="11" input="0" from="16" output="0" />
+		<link to="12" input="0" from="15" output="0" />
+		<link to="15" input="0" from="11" output="0" />
+		<link to="16" input="0" from="13" output="0" />
+	</links>
+	<scripts>
+		<script name="MABMatrixDisplay.osl" id="0">
+/*<br /> * MABMatrixDisplay.osl by Michel J. Anders (c)2013<br /> * from https://github.com/sambler/osl-shaders<br /> *<br /> * license: gplv3<br /> *<br /> * original script from -<br /> * Open Shading Language for Blender by Michel J. Anders<br /> *<br /> */<br /><br />shader MABMatrixDisplay(<br />        point Vector = P,<br />        int Offset = 0,<br />        string Text = &quot;Blender&quot;,<br />        string Font = &quot;MJABook/24MABMatrixDisplay/font5x7.xml&quot;,<br /><br />        output float Fac = 0 )<br />{<br />    float x = Vector[0] - Offset / 5.0;<br />    int nchar = (int)floor(x);<br />    if(nchar &gt;= 0 &amp;&amp; nchar &lt; strlen(Text)) {<br />        string xpath = format(&quot;//char[@name='%s']&quot;, substr(Text,nchar,1));<br />        int nodeid = dict_find(Font, xpath);<br />        if( nodeid &gt; 0 ) {<br />            string pattern;<br />            dict_value(nodeid, &quot;pattern&quot;, pattern);<br />            int row= 6 - (int)floor(Vector[1] * 7);<br />            int col= (int)floor(mod(x,1) * 5);<br />            if(row &gt;= 0 &amp;&amp; row &lt; 7 &amp;&amp; col &lt; 5) {<br />                string bits[5];<br />                split(pattern, bits);<br />                if(substr(bits[col], row, 1) == &quot;1&quot;) {<br />                    float xcell = mod(mod(x, 1.0) * 5, 1.0);<br />                    float ycell = mod(mod(Vector[1], 1.0) * 7, 1.0);<br />                    Fac = max((0.4 - hypot(xcell - 0.5, ycell - 0.5)) / 0.4, 0.0);<br />                }<br />            }<br />        }<br />    }<br />}<br />
+		</script>
+	</scripts>
+</material>

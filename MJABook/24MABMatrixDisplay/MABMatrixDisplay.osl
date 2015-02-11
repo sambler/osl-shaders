@@ -1,0 +1,42 @@
+/*
+ * MABMatrixDisplay.osl by Michel J. Anders (c)2013
+ * from https://github.com/sambler/osl-shaders
+ *
+ * license: gplv3
+ *
+ * original script from -
+ * Open Shading Language for Blender by Michel J. Anders
+ * font5x7.xml from https://github.com/varkenvarken/osl-shaders
+ *
+ */
+
+shader MABMatrixDisplay(
+        point Vector = P,
+        int Offset = 0,
+        string Text = "Blender",
+        string Font = "MJABook/24MABMatrixDisplay/font5x7.xml",
+
+        output float Fac = 0 )
+{
+    float x = Vector[0] - Offset / 5.0;
+    int nchar = (int)floor(x);
+    if(nchar >= 0 && nchar < strlen(Text)) {
+        string xpath = format("//char[@name='%s']", substr(Text,nchar,1));
+        int nodeid = dict_find(Font, xpath);
+        if( nodeid > 0 ) {
+            string pattern;
+            dict_value(nodeid, "pattern", pattern);
+            int row= 6 - (int)floor(Vector[1] * 7);
+            int col= (int)floor(mod(x,1) * 5);
+            if(row >= 0 && row < 7 && col < 5) {
+                string bits[5];
+                split(pattern, bits);
+                if(substr(bits[col], row, 1) == "1") {
+                    float xcell = mod(mod(x, 1.0) * 5, 1.0);
+                    float ycell = mod(mod(Vector[1], 1.0) * 7, 1.0);
+                    Fac = max((0.4 - hypot(xcell - 0.5, ycell - 0.5)) / 0.4, 0.0);
+                }
+            }
+        }
+    }
+}
